@@ -1,4 +1,24 @@
 ```mermaid
+
+%%{init: { 
+  "theme": "default", 
+  "themeCSS": [
+    "[id^=entity-Member] .er.entityBox { fill: #F88379; }",
+    "[id^=entity-Community] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Asset] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Site] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-AssetStatus] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Production] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Consumption] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Trade] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Bid] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Offer] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Market] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Billing] .er.entityBox { fill: #F88379; }"
+    "[id^=entity-Payment] .er.entityBox { fill: #F88379; }"
+  ] 
+}}%%
+
 erDiagram
   Member }o--|| Community : "belongs to"
   Member |o--o{ Asset : "owns"
