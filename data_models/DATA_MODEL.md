@@ -15,7 +15,6 @@
     "[id^=entity-Offer] .er.entityBox { fill: #F88379; }"
     "[id^=entity-Market] .er.entityBox { fill: #F88379; }"
     "[id^=entity-Billing] .er.entityBox { fill: #F88379; }"
-    "[id^=entity-Payment] .er.entityBox { fill: #F88379; }"
   ] 
 }}%%
 
@@ -33,16 +32,31 @@ erDiagram
   Trade }o--|| Member : "buys"
   Trade }o--|| Member : "offers"
   Billing ||--o| Payment : "has"
+  TimeGrid ||--o{ AcceptedVolumes : "has"
+  TimeGrid ||--o{ ClearingPrices : "has"
+  PilotTelemetryUpdate ||--|| InputTimeseriesPoint : "has"
+  TelemetryPayload ||--o{ TelemetryPowers : "has"
+  TelemetryPayload ||--o{ TelemetryState : "has"
+  InputTimeseriesResponse ||--o{ InputTimeseriesItem : "has"
+  InputTimeseriesItem ||--o{ InputTimeseriesPoint : "has"
+  MarketWindow }o--|| Market : "has"
+  Tenant ||--o{ MarketOutcomeEvent : "participates in"
+  Prosumer ||--o{ MarketOutcomeEvent : "participates in"
+  Cycle ||--o{ MarketOutcomeEvent : "has"
+  Bid ||--o{ MarketOutcomeEvent : "has"
+  MarketOutcomeEvent }o--|| MarketWindow : "logs for"
+  MarketOutcomeEvent ||--o{ AcceptedVolumes : "has"
+  MarketOutcomeEvent ||--o{ ClearingPrices : "has"
 
-  Community {
+  Community ["Community (UG)"] {
     UUID id
     String communityName
   }
-  Site {
+  Site ["Site (UG)"] {
     UUID id
     String name
   }
-  Member {
+  Member ["Member (UG)"] {
     UUID id
     UUID communityId
     timestamp validFrom
@@ -61,7 +75,7 @@ erDiagram
     string contact_telephoneNo
     string contact_emailAddress
   }
-  Asset {
+  Asset ["Asset (UG)"] {
     UUID id
     UUID memberId
     UUID siteId
@@ -74,23 +88,23 @@ erDiagram
     Production[] productionList
     Consumption[] consumptionList
   }
-  AssetStatus {
+  AssetStatus ["AssetStatus (UG)"] {
     UUID id
     UUID assetId
     string code
     string message
     bool isHealthy
   }
-  Bid {
+  Bid ["Bid (UG)"] {
     UUID id
   }
-  Offer {
+  Offer ["Offer (UG)"] {
     UUID id
   }
-  Market {
+  Market ["Market (UG)"] {
     UUID id
   }
-  Trade {
+  Trade ["Trade (UG)"] {
     UUID id
     UUID bidId
     UUID buyerId
@@ -104,7 +118,7 @@ erDiagram
     number price
     timestamp timestamp
   }
-  Production {
+  Production ["Production (UG)"] {
     UUID id
     UUID assetId
     string aggregationPeriod
@@ -113,7 +127,7 @@ erDiagram
     string unit
     timestamp timestamp
   }
-  Consumption {
+  Consumption ["Consumption (UG)"] {
     UUID id
     UUID assetId
     string aggregationPeriod
@@ -122,7 +136,7 @@ erDiagram
     string unit
     timestamp timestamp
   }
-  Billing {
+  Billing ["Billing (UG)"] {
     UUID id
     UUID memberId
     UUID siteId
@@ -136,7 +150,7 @@ erDiagram
     timestamp overdueDate
     TBD issuingParty
   }
-  Payment {
+  Payment ["Payment (UG)"] {
     UUID id
     UUID invoiceId "(Same as Billing.id?)"
     timestamp date
@@ -144,5 +158,100 @@ erDiagram
     number residual
     string paymentMethod
     string provider
+  }
+  TimeGrid ["TimeGrid (TUM)"] {
+    UUID id
+    timestamp startTime
+    number stepS
+    number nSteps
+  }
+  MarketWindow ["MarketWindow (TUM)"] {
+    UUID id
+    string marketType "marketId?"
+    string product
+    string timezone
+    timestamp startTime
+    timestamp endTime
+    timestamp gateClosure
+    timestamp internalDeadline
+    string currency
+    number resolutionS
+  }
+  AcceptedVolumes ["AcceptedVolumes (TUM) : Why plural?"] {
+    UUID timeGridId
+    number eSigned
+    string eUnit
+    string flexDirection
+    number pFlex
+    string pUnit
+  }
+  ClearingPrices ["ClearingPrices (TUM) : Why plural?"] {
+    UUID timeGridId
+    number price
+    string price_unit
+  }
+  Cycle ["Cycle (TUM)"] {
+    UUID id
+  }
+  Tenant ["Tenant (TUM)"] {
+    UUID id
+  }
+  Prosumer ["Prosumer (TUM)"] {
+    UUID id
+  }
+  MarketOutcomeEvent ["MarketOutcomeEvent (TUM)"] {
+    UUID tenantId "Is this a form of Member?"
+    UUID prosumerId "Is this a form of Member?"
+    UUID cycleId
+    UUID bidId
+    UUID marketWindowId
+    string marketType "marketId?"
+    bool cleared
+    AcceptedVolumes[] acceptedVolumes
+    ClearingPrices[] prices
+    JSON settlementMeta
+    string policyVersion
+    JSON inputDigests
+    timestamp generatedAt
+    string status
+    string reason
+  }
+  InputTimeseriesPoint ["InputTimeseriesPoint (TUM)"] {
+    timestamp ts
+    number value
+  }
+  InputTimeseriesItem ["InputTimeseriesItem (TUM)"] {
+    string signal
+    string unit
+    string source
+    string description
+    InputTimeseriesPoint[] points
+  }
+  InputTimeseriesResponse ["InputTimeseriesResponse (TUM)"] {
+    InputTimeseriesItem[] series
+  }
+  TelemetryState ["TelemetryState (TUM)"] {
+    number soeBesKwh
+    number socBes
+    number soeWvKwh
+    number socEv
+    number tIndoorC
+    number tDhwC
+  }
+  TelemetryPowers ["TelemetryPowers (TUM)"] {
+    number load
+    number pv
+    number grid
+    number bes
+    number ev
+  }
+  TelemetryPayload ["TelemetryPayload (TUM)"] {
+    TelemetryPowers[] powersAvgKw
+    TelemetryState[] states
+  }
+  PilotTelemetryUpdate ["PilotTelemetryUpdate (TUM)"] {
+    UUID prosumerId "Is this a form of Member?"
+    timestamp ts
+    TelemetryPayload telemetry
   }
 ```
