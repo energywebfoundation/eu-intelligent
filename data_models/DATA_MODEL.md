@@ -48,15 +48,15 @@ erDiagram
   MarketOutcomeEvent ||--o{ AcceptedVolumes : "has"
   MarketOutcomeEvent ||--o{ ClearingPrices : "has"
 
-  Community ["Community (UG)"] {
+  Community ["Community (R2M)"] {
     UUID id
     String communityName
   }
-  Site ["Site (UG)"] {
+  Site ["Site (R2M)"] {
     UUID id
     String name
   }
-  Member ["Member (UG)"] {
+  Member ["Member (R2M)"] {
     UUID id
     UUID communityId
     timestamp validFrom
@@ -75,7 +75,7 @@ erDiagram
     string contact_telephoneNo
     string contact_emailAddress
   }
-  Asset ["Asset (UG)"] {
+  Asset ["Asset (R2M)"] {
     UUID id
     UUID memberId
     UUID siteId
@@ -88,23 +88,23 @@ erDiagram
     Production[] productionList
     Consumption[] consumptionList
   }
-  AssetStatus ["AssetStatus (UG)"] {
+  AssetStatus ["AssetStatus (R2M)"] {
     UUID id
     UUID assetId
     string code
     string message
     bool isHealthy
   }
-  Bid ["Bid (UG)"] {
+  Bid ["Bid (R2M)"] {
     UUID id
   }
-  Offer ["Offer (UG)"] {
+  Offer ["Offer (R2M)"] {
     UUID id
   }
-  Market ["Market (UG)"] {
+  Market ["Market (R2M)"] {
     UUID id
   }
-  Trade ["Trade (UG)"] {
+  Trade ["Trade (R2M)"] {
     UUID id
     UUID bidId
     UUID buyerId
@@ -118,7 +118,7 @@ erDiagram
     number price
     timestamp timestamp
   }
-  Production ["Production (UG)"] {
+  Production ["Production (R2M)"] {
     UUID id
     UUID assetId
     string aggregationPeriod
@@ -127,7 +127,7 @@ erDiagram
     string unit
     timestamp timestamp
   }
-  Consumption ["Consumption (UG)"] {
+  Consumption ["Consumption (R2M)"] {
     UUID id
     UUID assetId
     string aggregationPeriod
@@ -136,7 +136,7 @@ erDiagram
     string unit
     timestamp timestamp
   }
-  Billing ["Billing (UG)"] {
+  Billing ["Billing (R2M)"] {
     UUID id
     UUID memberId
     UUID siteId
@@ -150,7 +150,7 @@ erDiagram
     timestamp overdueDate
     TBD issuingParty
   }
-  Payment ["Payment (UG)"] {
+  Payment ["Payment (R2M)"] {
     UUID id
     UUID invoiceId "(Same as Billing.id?)"
     timestamp date
@@ -253,5 +253,44 @@ erDiagram
     UUID prosumerId "Is this a form of Member?"
     timestamp ts
     TelemetryPayload telemetry
+  }
+  Battery ["Battery (UG) --> Asset?"] {
+    UUID id
+    number chargePower
+    number dischargePower
+    number chargeEnergy
+    number dischargeEnergy
+    number stateOfCharge
+    number stateOfHealth
+    number temperature
+    number voltage
+    number current
+    number cycleCount
+  }
+  PvSystem ["PvSystem (UG) --> Asset?"] {
+    UUID id
+    number power
+    number current
+    number voltage
+    number energyYield
+    number energyYieldYesterday
+    number mppEnergy
+  }
+  Grid ["Grid (UG)"] {
+    UUID id
+    number power
+    number reactivePower
+    number current
+    number voltage
+    number frequency
+    number importEnergy
+    number exportEnergy
+  }
+  Load ["Load (UG)"] {
+    UUID id
+    number power
+    number current
+    number voltage
+    number frequency
   }
 ```
