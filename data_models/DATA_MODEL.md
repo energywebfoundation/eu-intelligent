@@ -254,37 +254,39 @@ erDiagram
     timestamp ts
     TelemetryPayload telemetry
   }
-  Battery ["Battery (UG) --> Asset?"] {
+  Battery ["Battery (UG, HSLU) --> Asset?"] {
     UUID id
-    number chargePower
-    number dischargePower
-    number chargeEnergy
-    number dischargeEnergy
-    number stateOfCharge
-    number stateOfHealth
-    number temperature
-    number voltage
-    number current
-    number cycleCount
+    number chargePower "UG, HSLU"
+    number dischargePower "UG, HSLU"
+    number chargeEnergy "UG, HSLU"
+    number dischargeEnergy "UG, HSLU"
+    number stateOfCharge "UG, HSLU"
+    number stateOfHealth "UG"
+    number temperature "UG"
+    number voltage "UG"
+    number current "UG"
+    number cycleCount "UG"
   }
-  PvSystem ["PvSystem (UG) --> Asset?"] {
+  PvSystem ["PvSystem (UG, HSLU) --> Asset?"] {
     UUID id
-    number power
-    number current
-    number voltage
-    number energyYield
-    number energyYieldYesterday
-    number mppEnergy
+    number power "UG, HSLU"
+    number current "UG"
+    number voltage "UG"
+    number energyYield "UG"
+    number energyYieldYesterday "UG"
+    number mppEnergy "UG"
   }
-  Grid ["Grid (UG)"] {
+  Grid ["Grid (UG, HSLU)"] {
     UUID id
-    number power
-    number reactivePower
-    number current
-    number voltage
-    number frequency
-    number importEnergy
-    number exportEnergy
+    number power "UG"
+    number powerIn "HSLU"
+    number powerOut "HSLU"
+    number reactivePower "UG"
+    number current "UG"
+    number voltage "UG"
+    number frequency "UG"
+    number importEnergy "UG"
+    number exportEnergy "UG"
   }
   Load ["Load (UG)"] {
     UUID id
@@ -292,5 +294,16 @@ erDiagram
     number current
     number voltage
     number frequency
+  }
+  GridBuilding ["GridBuilding (HSLU)"] {
+    UUID id
+    number powerIn
+    number powerOut
+  }
+  HydroPowerPlant ["HydroPowerPlant (HSLU)"] {
+    number power
+  }
+  EVChargingStation ["EVChargingStation (HSLU)"] {
+    number power
   }
 ```
