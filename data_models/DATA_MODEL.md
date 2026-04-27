@@ -49,6 +49,17 @@ erDiagram
   GridParameter ||--o{ TransfPara : "records"
   GridParameter ||--o{ GridTopology : "records"
 
+  Trade ||--o{ Tariff : "has"
+  Member ||--|| Actor: "is an"
+  Actor ||--|{ Address: "has"
+  Address }o--o{ Invoice: "locates"
+  Address }o--o{ Stripe: "locates"
+  Actor ||--|{ ContactDetails: "has"
+  Invoice ||--o{ Stripe: "has"
+  Billing ||--|{ Invoice: "has"
+  Payment ||--|{ Stripe: "has type"
+  Payment ||--|{ Invoice: "has"
+
   Community ["Community (R2M)"] {
     UUID communityId
     String communityName
@@ -64,7 +75,7 @@ erDiagram
     timestamp validUntil
     string name
     string role
-    string address_address1
+    string address_address1 "address can use BLOOO's address format"
     string address_address2
     string address_city
     string address_province
@@ -112,19 +123,19 @@ erDiagram
     timestamp deliveryEndTime
     string marketType
   }
-  Trade ["Trade (R2M, GSY, UoC, TUM)"] {
-    UUID tradeId "id - R2M | tradeId - GSY, UoC, TUM"
+  Trade ["Trade (R2M, GSY, UoC, TUM, BLOOO)"] {
+    UUID tradeId "id - R2M | tradeId - GSY, UoC, TUM, BLOOO"
     UUID bidId "R2M, GSY, UoC, TUM"
-    UUID buyerId "buyerId - R2M | buyer - GSY, UoC, TUM"
+    UUID buyerId "buyerId - R2M | buyer - GSY, UoC, TUM, BLOOO"
     UUID offerId "R2M, GSY, UoC, TUM"
-    UUID sellerId "sellerId - R2M | seller - GSY, UoC, TUM"
+    UUID sellerId "sellerId - R2M | seller - GSY, UoC, TUM, BLOOO"
     UUID marketId "R2M, GSY, UoC, TUM"
     UUID residualBid "residualBid - R2M | residualBidId - GSY, UoC, TUM"
     UUID residualOffer "residualOffer - R2M | residualOfferId - GSY, UoC, TUM"
     string status "status - R2M | tradeStatus - GSY, UoC, TUM"
-    number quantity "quantity - R2M | tradeQuantity - GSY, UoC, TUM"
-    number price "price - R2M | tradePrice - GSY, UoC, TUM"
-    timestamp timestamp "timestamp - R2M | tradeTimestamp - GSY, UoC, TUM"
+    number quantity "quantity - R2M | tradeQuantity - GSY, UoC, TUM, BLOOO"
+    number price "price - R2M | tradePrice - GSY, UoC, TUM, BLOOO"
+    timestamp timestamp "timestamp - R2M | tradeTimestamp - GSY, UoC, TUM, BLOOO"
   }
   Production ["Production (R2M)"] {
     UUID productionId
@@ -144,19 +155,21 @@ erDiagram
     string unit
     timestamp timestamp
   }
-  Billing ["Billing (R2M)"] {
-    UUID billingId
-    UUID memberId
-    UUID siteId
-    string invoiceNumber
-    string status
-    number invoiceTotal
-    number outstandingAmount
-    timestamp billingPeriodFrom
-    timestamp billingPeriodUntil
-    timestamp issueDate
-    timestamp overdueDate
-    TBD issuingParty
+  Billing ["Billing (R2M, BLOOO)"] {
+    UUID billingId "R2M"
+    UUID memberId "R2M"
+    UUID siteId "R2M"
+    string invoiceNumber "R2M"
+    string status "R2M"
+    number invoiceTotal "R2M"
+    number outstandingAmount "R2M"
+    timestamp billingPeriodFrom "R2M"
+    timestamp billingPeriodUntil "R2M"
+    timestamp issueDate "R2M"
+    timestamp overdueDate "R2M"
+    TBD issuingParty "R2M"
+    number numberOfTrades "BLOOO"
+    timestamp calculationTimestamp "BLOOO"
   }
   Payment ["Payment (R2M)"] {
     UUID paymentId
@@ -328,5 +341,84 @@ erDiagram
     number tempCoolSetpointC
     number tempWaterHeaterSetpointC
     timestamp timeStep
+  }
+  Tariff ["Tariff (BLOOO)"] {
+    UUID tariffId
+    UUID buyerId
+    UUID sellerId
+    string tariffName
+    number energyPrice
+    number gridFee
+    number taxes
+    string currency
+    UUID tradeId
+    number tradeQuantity
+    number tradePrice
+    timestamp tradeTimestamp
+  }
+  Actor ["Actor (BLOOO)"] {
+    string actorName
+    string actorType
+    string legalEntity
+    ContactDetails contactDetails
+    string billingAddress
+    string taxId
+    date dateOfBirth
+    ContactDetails businessAddress
+    TBD ownershipInformation
+  }
+  ContactDetails ["ContactDetails (BLOOO)"] {
+    string email
+    string phoneNumber
+    string mobileNumber
+  }
+  Address ["Address (BLOOO)"] {
+    string line1
+    string line2
+    string city
+    string postalCode
+    string country
+    string state
+  }
+  Invoice ["Invoice (BLOOO)"] {
+    string invoiceId
+    string invoiceStatus
+    timestamp invoiceIssueDate
+    timestamp invoiceDueDate
+    string billingPeriod
+    UUID actorId
+    number energyAmountEur
+    number gridFeeAmountEur
+    number taxAmountEur
+    number totalAmountEur
+    number numberOfTrades
+    timestamp calculationTimestamp
+  }
+  Stripe ["Stripe (BLOOO)"] {
+    string customerFullName
+    string customerEmail
+    string customerPhone
+    Address billingAddress
+    string stripeInvoiceId "Is this different than the invoiceId above?"
+    string stripeInvoiceStatus
+    number stripeInvoiceAmountDue
+    string stripeInvoiceCurrency
+    number chargeAmount
+    string billingCurrency
+    string stripePaymentIntentId
+    string paymentStatus
+    string receiptDeliveryStatus
+    string billingEmail
+    string transactionDescription
+    string paymentMethodTypes
+    timestamp createdAt
+    timestamp updatedAt
+    number latestCharge
+    string failureReason
+    string legalEntityName
+    string actorType
+    string taxId
+    Address businessAddress
+    TBD ownershipInformation
   }
 ```
