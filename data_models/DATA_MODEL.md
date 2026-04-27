@@ -31,33 +31,45 @@ erDiagram
   Trade }o--|| Market : "belongs to"
   Trade }o--|| Member : "buys"
   Trade }o--|| Member : "offers"
+  Bid ||--|| Order : "equals"
+  Area ||--o{ AssetMeasurement : "records"
+  Order }o--|| Area : "is located in"
+  Community ||--o{ MarketSlotInfo : "records"
+  Community ||--o{ AssetMeasurement : "records"
+  MarketSlotInfo }o--|| Market : "is recorded in"
   Billing ||--o| Payment : "has"
-  TimeGrid ||--o{ AcceptedVolumes : "has"
   TimeGrid ||--o{ ClearingPrices : "has"
-  PilotTelemetryUpdate ||--|| InputTimeseriesPoint : "has"
-  TelemetryPayload ||--o{ TelemetryPowers : "has"
-  TelemetryPayload ||--o{ TelemetryState : "has"
-  InputTimeseriesResponse ||--o{ InputTimeseriesItem : "has"
-  InputTimeseriesItem ||--o{ InputTimeseriesPoint : "has"
-  MarketWindow }o--|| Market : "has"
+  Market ||--o{ MarketWindow : "belongs to"
   Tenant ||--o{ MarketOutcomeEvent : "participates in"
   Prosumer ||--o{ MarketOutcomeEvent : "participates in"
   Cycle ||--o{ MarketOutcomeEvent : "has"
-  Bid ||--o{ MarketOutcomeEvent : "has"
-  MarketOutcomeEvent }o--|| MarketWindow : "logs for"
+  MarketOutcomeEvent ||--o{ Bid : "has"
+  MarketWindow ||--|{ MarketOutcomeEvent : "results to"
   MarketOutcomeEvent ||--o{ AcceptedVolumes : "has"
   MarketOutcomeEvent ||--o{ ClearingPrices : "has"
+  AcceptedVolumes }o--|| TimeGrid : "is recorded in"
+  ClearingResult ||--|| ClearingPrices : "equals?"
+
+  PilotTelemetryUpdate ||--|| InputTimeseriesPoint : "has"
+  TelemetryPayload ||--o{ TelemetryPowers : "has"
+  TelemetryPayload ||--o{ TelemetryState : "has"
+  InputTimeseriesItem ||--o{ InputTimeseriesResponse : "belongs to"
+  InputTimeseriesItem ||--o{ InputTimeseriesPoint : "has"
+
+  GridParameter ||--o{ FeederPara : "records"
+  GridParameter ||--o{ TransfPara : "records"
+  GridParameter ||--o{ GridTopology : "records"
 
   Community ["Community (R2M)"] {
-    UUID id
+    UUID communityId
     String communityName
   }
   Site ["Site (R2M)"] {
-    UUID id
+    UUID siteId
     String name
   }
   Member ["Member (R2M)"] {
-    UUID id
+    UUID memberId
     UUID communityId
     timestamp validFrom
     timestamp validUntil
@@ -76,7 +88,7 @@ erDiagram
     string contact_emailAddress
   }
   Asset ["Asset (R2M)"] {
-    UUID id
+    UUID assetId
     UUID memberId
     UUID siteId
     string name
@@ -89,37 +101,43 @@ erDiagram
     Consumption[] consumptionList
   }
   AssetStatus ["AssetStatus (R2M)"] {
-    UUID id
+    UUID assetStatusId
     UUID assetId
     string code
     string message
     bool isHealthy
   }
   Bid ["Bid (R2M)"] {
-    UUID id
+    UUID bidId
   }
   Offer ["Offer (R2M)"] {
-    UUID id
-  }
-  Market ["Market (R2M)"] {
-    UUID id
-  }
-  Trade ["Trade (R2M)"] {
-    UUID id
-    UUID bidId
-    UUID buyerId
     UUID offerId
-    UUID sellerId
+  }
+  Market ["Market (GSY, UoC)"] {
     UUID marketId
-    TBD residualBid
-    TBD residualOffer
-    string status
-    number quantity
-    number price
-    timestamp timestamp
+    UUID communityId
+    timestamp openingTime
+    timestamp closingTime
+    timestamp deliveryStartTime
+    timestamp deliveryEndTime
+    string marketType
+  }
+  Trade ["Trade (R2M, GSY, UoC)"] {
+    UUID tradeId "id - R2M | tradeId - GSY, UoC"
+    UUID bidId "R2M, GSY, UoC"
+    UUID buyerId "buyerId - R2M | buyer - GSY, UoC"
+    UUID offerId "R2M, GSY, UoC"
+    UUID sellerId "sellerId - R2M | seller - GSY, UoC"
+    UUID marketId "R2M, GSY, UoC"
+    UUID residualBid "residualBid - R2M | residualBidId - GSY, UoC"
+    UUID residualOffer "residualOffer - R2M | residualOfferId - GSY, UoC"
+    string status "status - R2M | tradeStatus - GSY, UoC"
+    number quantity "quantity - R2M | tradeQuantity - GSY, UoC"
+    number price "price - R2M | tradePrice - GSY, UoC"
+    timestamp timestamp "timestamp - R2M | tradeTimestamp - GSY, UoC"
   }
   Production ["Production (R2M)"] {
-    UUID id
+    UUID productionId
     UUID assetId
     string aggregationPeriod
     string aggregationType
@@ -128,7 +146,7 @@ erDiagram
     timestamp timestamp
   }
   Consumption ["Consumption (R2M)"] {
-    UUID id
+    UUID consumptionId
     UUID assetId
     string aggregationPeriod
     string aggregationType
@@ -137,7 +155,7 @@ erDiagram
     timestamp timestamp
   }
   Billing ["Billing (R2M)"] {
-    UUID id
+    UUID billingId
     UUID memberId
     UUID siteId
     string invoiceNumber
@@ -151,7 +169,7 @@ erDiagram
     TBD issuingParty
   }
   Payment ["Payment (R2M)"] {
-    UUID id
+    UUID paymentId
     UUID invoiceId "(Same as Billing.id?)"
     timestamp date
     number amount
@@ -160,13 +178,13 @@ erDiagram
     string provider
   }
   TimeGrid ["TimeGrid (TUM)"] {
-    UUID id
+    UUID timeGridId
     timestamp startTime
     number stepS
     number nSteps
   }
   MarketWindow ["MarketWindow (TUM)"] {
-    UUID id
+    UUID marketWindowId
     string marketType "marketId?"
     string product
     string timezone
@@ -191,13 +209,13 @@ erDiagram
     string price_unit
   }
   Cycle ["Cycle (TUM)"] {
-    UUID id
+    UUID cycleId
   }
   Tenant ["Tenant (TUM)"] {
-    UUID id
+    UUID tenantId
   }
   Prosumer ["Prosumer (TUM)"] {
-    UUID id
+    UUID prosumerId
   }
   MarketOutcomeEvent ["MarketOutcomeEvent (TUM)"] {
     UUID tenantId "Is this a form of Member?"
@@ -255,7 +273,7 @@ erDiagram
     TelemetryPayload telemetry
   }
   Battery ["Battery (UG, HSLU) --> Asset?"] {
-    UUID id
+    UUID batteryId
     number chargePower "UG, HSLU"
     number dischargePower "UG, HSLU"
     number chargeEnergy "UG, HSLU"
@@ -268,7 +286,7 @@ erDiagram
     number cycleCount "UG"
   }
   PvSystem ["PvSystem (UG, HSLU) --> Asset?"] {
-    UUID id
+    UUID pvSystemId
     number power "UG, HSLU"
     number current "UG"
     number voltage "UG"
@@ -277,7 +295,7 @@ erDiagram
     number mppEnergy "UG"
   }
   Grid ["Grid (UG, HSLU)"] {
-    UUID id
+    UUID gridId
     number power "UG"
     number powerIn "HSLU"
     number powerOut "HSLU"
@@ -289,14 +307,14 @@ erDiagram
     number exportEnergy "UG"
   }
   Load ["Load (UG)"] {
-    UUID id
+    UUID loadId
     number power
     number current
     number voltage
     number frequency
   }
   GridBuilding ["GridBuilding (HSLU)"] {
-    UUID id
+    UUID gridBuildingId
     number powerIn
     number powerOut
   }
@@ -306,4 +324,60 @@ erDiagram
   EVChargingStation ["EVChargingStation (HSLU)"] {
     number power
   }
+  Order ["Order (GSY, UoC)"] {
+    string orderId
+    string orderType
+    string orderStatus
+    UUID createdBy
+    UUID areaUuid
+    UUID marketId
+    timestamp timeSlot
+    timestamp creationTime
+    number quantity
+    number priceLimit
+    string energySourcePreference
+    string energyType
+  }
+  ClearingResult ["ClearingResult (GSY, UoC, TUM)"]  {
+    UUID marketId
+    status clearingStatus
+    number clearingPrice
+    number totalSupply
+    number totalDemand
+    number tradeQuantity
+    number numTrades
+    string txHash
+    timestamp clearingTime
+  }
+  Area ["Area (GSY, UoC)"] {
+    UUID areaId "areaUuid - GSY, UoC"
+  }
+  AssetMeasurement ["AssetMeasurement (GSY, UoC)"] {
+    number value
+    UUID areaId "areaUuid - GSY, UoC"
+    UUID communityId
+    timestamp timestamp
+  }
+  MarketSlotInfo ["MarketSlotInfo (GSY, UoC)"] {
+    UUID communityId
+    UUID marketId
+    string marketType
+    timestamp openingTime
+    timestamp closingTime
+    timestamp deliveryStartTime
+    timestamp deliveryEndTime
+  }
+  GridParameter ["GridParameter (GSY, UoC)"] {
+
+  }
+  FeederPara ["FeederPara (GSY, UoC)"] {
+
+  }
+  TransfPara ["TransfPara (GSY, UoC)"] {
+
+  }
+  GridTopology ["GridTopology (GSY, UoC)"] {
+
+  }
+  
 ```
