@@ -61,10 +61,17 @@ EWAG also contributes to D3.2 (off-chain storage, led by GSY) and D3.4 / D3.6 (g
 - [Telegram](https://t.me/energyweb)
 
 ## Acknowledgement
- 
-This work is carried out in the context of the INTELLIGENT project, funded by the European Union under the Horizon Europe programme (Grant Agreement No. 101160678). Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or CINEA. Neither the European Union nor the granting authority can be held responsible for them.
- 
-![Funded by the European Union](./images/EU.webp)
+
+<table>
+  <tr>
+    <td valign="middle" width="100">
+      <img src="./images/EU.webp" alt="Funded by the European Union" width="80">
+    </td>
+    <td valign="middle">
+      This work is carried out in the context of the INTELLIGENT project, funded by the European Union under the Horizon Europe programme (Grant Agreement No. 101160678). Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or CINEA. Neither the European Union nor the granting authority can be held responsible for them.
+    </td>
+  </tr>
+</table>
 
 ## License
 
