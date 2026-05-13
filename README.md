@@ -51,7 +51,7 @@ This repository documents and version-controls EWAG's technical deliverables and
 |-------------|-------------|-----|--------|
 | D3.1 — EWDS 2.0 | Client gateway service for asset and device data integration (GitHub + docs) | M18 | In Progress |
 | D3.3 — OCN 2.0 | Service for EV charging data integration (GitHub + docs) | M18 | In Progress |
-| D3.5 — Green Proofs | Guarantee-of-origin service to track energy source and use in LECs (GitHub + docs) | M18 | In Progress |
+| D3.5 — Green Proofs | Guarantee-of-origin service to track energy source and use in LECs (GitHub + docs) | M24 | In Progress |
  
 EWAG also contributes to D3.2 (off-chain storage, led by GSY) and D3.4 / D3.6 (grid operator API, led by ERE).
 
