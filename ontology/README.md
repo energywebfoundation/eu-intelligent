@@ -49,7 +49,7 @@ The ontology covers the concepts required to semantically describe the INTELLIGE
 | **Metering** | MeteringPoint, SmartMeter, Feeder |
 | **Assets** | Asset, BatteryUnit, PhotovoltaicUnit, HeatPump, ElectricBoiler, EVChargingStation, HydroGeneratingUnit, EnergyConsumer |
 | **Observations and Actuation** | Observation, ObservableProperty, QuantityValue, Command, ActuatableProperty |
-| **Energy Markets** | Market, MarketSlotInfo, EnergyOrder, EnergyTrade, ClearingResult, Tariff |
+| **Energy Markets** | Market, MarketTimeSeries, EnergyOrder, EnergyTrade, ClearingResult, Tariff |
 | **Billing and Financial** | EnergyAccount, Invoice, Payment, StripePayment |
 | **Participants and Identity** | Participant, Actor, Address, ContactDetails, DecentralizedIdentity, IdentityCredential |
 
@@ -192,7 +192,7 @@ This domain is the semantic core of the measurement model.
 
 ### Energy Markets
 
-`Market` (`cim:Market`) is a time-bounded trading venue associated with a community. `EnergyOrder` (`cim:BidTimeSeries`) is a buy or sell intent submitted by a participant, with a direction property (`BID` or `OFFER`) replacing the earlier thin `Bid`/`Offer` wrapper classes. `EnergyTrade` (`cim:MarketAgreement`) is a matched and executed energy exchange. `ClearingResult` captures the aggregate outcome of a market clearing run. `Tariff` (`saref4ener:Tariff`) decomposes the financial components of a trade into individually itemised regulatory components: energy price, network tariff, levies, capacity charges, and tax.
+`Market` (`cim:Market`) is a time-bounded trading venue associated with a community. `EnergyOrder` (`cim:BidTimeSeries`) is a buy or sell intent submitted by a participant, with a direction property (`BID` or `OFFER`) replacing the earlier thin `Bid`/`Offer` wrapper classes. `EnergyTrade` (`cim:MarketAgreement`) is a matched and executed energy exchange. `ClearingResult` captures the aggregate outcome of a market clearing run. `Tariff` (`saref4ener:Tariff`) defines the price structure applicable within a community at a given point in time, decomposing the total energy cost into individually itemised components: energy price, network tariff, levies, and taxes.
 
 ### Billing and Financial
 

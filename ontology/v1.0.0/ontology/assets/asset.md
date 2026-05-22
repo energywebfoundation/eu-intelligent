@@ -33,7 +33,7 @@ The abstract base class for all energy devices in the INTELLIGENT platform. Carr
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasOwner | `int:hasOwner` | `int:Actor` | `owl:exactly 1` | Actor who owns this asset. |
+| hasOwner | `int:hasOwner` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor who owns this asset. |
 | locatedAtSite | `int:locatedAtSite` | [`int:Site`](../spatial/community.md#intsite) | `owl:exactly 1` | Site where this asset is physically installed. |
 | installedAtFacility | `int:installedAtFacility` | [`int:Facility`](../spatial/community.md#intfacility) | `owl:maxCardinality 1` | Facility within the site where this asset is installed. Optional when no facility sub-division exists. |
 | hasState | `int:hasState` | [`int:AssetState`](#intassetstate) | `owl:maxCardinality 1` | Current operational state snapshot for this asset. |

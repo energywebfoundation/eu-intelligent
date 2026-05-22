@@ -34,7 +34,7 @@ A buy or sell intent submitted by a participant to a `Market`. The `orderType` p
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
 | belongsToMarket | `int:belongsToMarket` | [`int:Market`](market.md#intmarket) | `owl:exactly 1` | Market this order is submitted to. |
-| createdBy | `int:createdBy` | `int:Actor` | `owl:exactly 1` | Actor who submitted this order. |
+| createdBy | `int:createdBy` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor who submitted this order. |
 
 ### Enumeration Values
 

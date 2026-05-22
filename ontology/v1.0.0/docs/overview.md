@@ -1,42 +1,49 @@
-# Ontology Overview
+# Ontology Overview — v1.0.0
 
 ## Purpose
 
-The INTELLIGENT ontology defines the canonical data model shared across all platform services. Its primary role is to enable the Energy Web Digital Spine (EWDS) to act as a semantically coherent integration layer: any service that pushes or pulls data through EWDS uses the classes and attributes defined here as the common language.
+The INTELLIGENT ontology establishes a shared semantic understanding of the domain across all project partners. Its purpose is not to impose a common database schema or dictate API field names. It defines what things *mean* — what an energy community is, what an asset is, what it means to observe a measurement, what a trade represents — so that all partners reason about the same concepts even when their own systems use different names or structures internally.
 
-Without a shared ontology, each bilateral integration between services (GSY DEX, FOS, Billing, Pilot monitoring) would require its own bespoke mapping. The ontology replaces that with a single, versioned, partner-agreed model.
+The ontology is the reference from which downstream technical artefacts — JSON Schema definitions for EWDS topics, RESTful API payload contracts, database schemas — are derived. Those artefacts implement the ontology; they are not equivalent to it.
 
 ## Scope
 
-The ontology covers five functional domains:
+Seven domains covering the full INTELLIGENT platform:
 
-| Domain | Key Classes | Primary Partners |
-|--------|------------|-----------------|
-| **Core** | Community, Site, Pilot, Member, Actor | R2M, BLOOO, TUM |
-| **Assets** | Asset, Battery, PvSystem, Grid, Load, EVChargingStation, HydroPowerPlant | R2M, TUM, UG, HSLU |
-| **Market** | Market, Order, Bid, Offer, Trade, ClearingResult, Tariff | R2M, GSY, UoC, TUM, BLOOO |
-| **Billing** | Billing, Payment, Invoice, Stripe | R2M, BLOOO |
-| **Optimisation** | PilotState, AssetState, ControlAssetCommand, HistoricalData, GridTopology | TUM, GSY, UoC |
-| **Measurement** | Production, Consumption, AssetMeasurement | R2M, GSY, UoC |
+| Domain | Core Classes |
+|--------|-------------|
+| **Spatial and Organisational** | EnergyCommUnit, Site, Facility, Pilot, SiteState, FacilityState, FacilityMeasurement |
+| **Metering** | MeteringPoint, SmartMeter, Feeder, MeteringPointMeasurement, CommunityMeasurement, FeederMeasurement |
+| **Assets** | Asset, BatteryUnit, PhotovoltaicUnit, HeatPump, ElectricBoiler, EVChargingStation, HydroGeneratingUnit, EnergyConsumer, AssetState |
+| **Observations and Actuation** | Observation, ObservableProperty, QuantityValue, Command, ActuatableProperty |
+| **Energy Markets** | Market, MarketTimeSeries, EnergyOrder, EnergyTrade, ClearingResult, Tariff |
+| **Billing and Financial** | Billing, Invoice, Payment, StripePayment |
+| **Participants and Identity** | Actor, Address, ContactDetails, DecentralizedIdentity, IdentityCredential, UserAccount, UserPreferences |
 
 ## Relationship to EWDS
 
-EWAG deploys a customised instance of the Energy Web Digital Spine (EWDS) as the interoperability backbone for the INTELLIGENT platform. EWDS is protocol and data-model agnostic, but the ontology defined here provides the semantic layer that makes data exchanged through EWDS interpretable by all consuming services.
+EWAG deploys the Energy Web Digital Spine (EWDS) as the interoperability backbone for the INTELLIGENT platform. The ontology provides the semantic layer that makes data exchanged through EWDS interpretable by all consuming services.
 
 Concretely:
-- FOS reads real-time `AssetMeasurement`, `AssetState`, and `PilotState` records from EWDS and writes back forecasts and `ControlAssetCommand` signals.
-- GSY DEX reads `Order`, `Bid`, `Offer`, and `Market` records and writes back `Trade` and `ClearingResult` records.
-- The Billing module reads consolidated `Trade` and `Tariff` records from EWDS and produces `Invoice` and `Payment` records.
-- Pilot operators push `Production`, `Consumption`, and device-level measurements through EWDS client gateways.
+- FOS (TUM) reads `Observation` records and `AssetState` snapshots from EWDS and writes back `Command` signals targeting controllable assets.
+- GSY DEX reads `EnergyOrder` records from EWDS and writes back `EnergyTrade` and `ClearingResult` records.
+- The BLOOO Billing module reads consolidated `EnergyTrade` and `Tariff` records from EWDS and produces `Invoice` and `Payment` records.
+- Pilot operators push device-level observations through EWDS client gateways, with `MeteringPoint` records anchoring measurements to the correct topological level.
 
-## Design Principles
+## Key Design Decisions
 
-1. **Partner traceability** - Every class and attribute is annotated with the partner(s) who specified it. This ensures accountability and simplifies conflict resolution.
-2. **Standards alignment** - Where a canonical class exists in IEC 61850, CIM, DLMS-COSEM, or SAREF, the INTELLIGENT class maps to it rather than reinventing it.
-3. **Open questions are explicit** - Rather than silently papering over ambiguities, unresolved questions (e.g. whether `Site` and `Pilot` are the same entity) are captured in `docs/design-decisions.md` and tracked as GitHub Issues.
-4. **Modularity** - Domains are independently navigable. A billing engineer need not read the optimisation module to understand `Invoice`.
-5. **FAIR compliance** - The ontology is published openly in line with the Horizon Europe FAIR data principles (Findable, Accessible, Interoperable, Reusable).
+**Measurements are Observations, not fields.** Every measurement — voltage, temperature, state of charge, power output — is a `sosa:Observation` instance with a `featureOfInterest` (the asset or location), an `observedProperty` (drawn from the `ObservableProperty` named individual vocabulary), and a `hasResult` (`QuantityValue`). No measurement field appears directly on an asset or location class.
+
+**The Grid class is removed.** It conflated community-level PCC metering, feeder-level SGIM metering, building-level metering, and apartment-level metering. These are now correctly represented as `MeteringPoint` instances at different topological levels, with `Feeder` as a separate grid topology class.
+
+**Spatial containment and grid topology are separate.** `EnergyCommUnit` → `Site` → `Facility` is the spatial hierarchy. `Feeder` is grid topology connecting transformer to sites. `MeteringPoint` bridges them.
+
+**AssetStatus is removed.** `AssetState` is the single class for asset condition, with per-asset-type state fields defined in each asset class file.
+
+**MarketSlotInfo is removed.** Each `Market` record is broadcast via EWDS directly; a mirroring class was unnecessary (May 2026 workshop decision with GSY and TUM).
+
+**Tariff is community-scoped and time-bounded.** A `Tariff` defines price and charge values applicable to all energy transactions within an `EnergyCommUnit` during a validity period. It is not attached to individual trades or billing records.
 
 ## Versioning
 
-The ontology uses semantic versioning (`MAJOR.MINOR.PATCH`). Breaking changes to existing classes increment MAJOR. New classes or attributes increment MINOR. Corrections and documentation updates increment PATCH. All changes are recorded in `CHANGELOG.md`.
+The ontology uses semantic versioning (`MAJOR.MINOR.PATCH`). Breaking changes to existing classes increment MAJOR. New classes or properties increment MINOR. Corrections and documentation updates increment PATCH. All changes are recorded in `CHANGELOG.md` at the repository root.

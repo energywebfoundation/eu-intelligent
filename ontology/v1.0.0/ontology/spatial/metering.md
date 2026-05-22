@@ -34,7 +34,7 @@ This class replaces the former `Grid` class, which conflated several distinct me
 | locatedAtSite | `int:locatedAtSite` | [`int:Site`](community.md#intsite) | `owl:maxCardinality 1` | Site (building) level metering point. Populated when `meterLevel = Site`. |
 | locatedAtFacility | `int:locatedAtFacility` | [`int:Facility`](community.md#intfacility) | `owl:maxCardinality 1` | Facility (apartment/unit) level metering point. Populated when `meterLevel = Facility`. |
 | locatedAtAsset | `int:locatedAtAsset` | [`int:Asset`](../assets/asset.md#intasset) | `owl:maxCardinality 1` | Asset-level sub-metering point. Populated when `meterLevel = Asset`. |
-| hasTariff | `int:hasTariff` | `int:Tariff` | `owl:maxCardinality 1` | Applicable tariff for this metering point. |
+| hasTariff | `int:hasTariff` | [`int:Tariff`](../market/tariff.md#inttariff) | `owl:maxCardinality 1` | Applicable tariff for this metering point. |
 | installedMeter | `int:installedMeter` | [`int:SmartMeter`](#intsmartmeter) | `owl:maxCardinality 1` | Physical meter device installed at this point. |
 
 ### Enumeration Values

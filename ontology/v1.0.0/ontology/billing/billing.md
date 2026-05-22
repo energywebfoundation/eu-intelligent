@@ -37,7 +37,7 @@ The aggregate billing record for an `Actor` over a defined billing period. One `
 |----------|-----|-------|-------------|-------------|
 | billedInCommunity | `int:billedInCommunity` | [`int:EnergyCommUnit`](../spatial/community.md#intenergycommunity) | `owl:exactly 1` | Community context for this billing record. |
 | billedInSite | `int:billedInSite` | [`int:Site`](../spatial/community.md#intsite) | `owl:maxCardinality 1` | Site context. Required when an Actor owns multiple sites and billing is site-specific. |
-| billedTo | `int:billedTo` | `int:Actor` | `owl:exactly 1` | Actor this billing record belongs to. |
+| billedTo | `int:billedTo` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor this billing record belongs to. |
 | hasIssuedInvoices | `int:hasIssuedInvoices` | [`int:Invoice`](invoice.md#intinvoice) | `owl:minCardinality 0` | Invoices issued within this billing period. |
 
 ### Enumeration Values

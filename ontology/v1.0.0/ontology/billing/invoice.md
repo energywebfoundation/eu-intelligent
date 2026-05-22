@@ -38,8 +38,8 @@ A formal payable document issued to an `Actor`, derived from a parent `Billing` 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
 | hasBilling | `int:hasBilling` | [`int:Billing`](billing.md#intbilling) | `owl:exactly 1` | Parent billing record. |
-| hasInvoiceIssuedTo | `int:hasInvoiceIssuedTo` | `int:Actor` | `owl:exactly 1` | Actor receiving this invoice. |
-| hasInvoiceIssuedBy | `int:hasInvoiceIssuedBy` | `int:Actor` | `owl:exactly 1` | Actor issuing this invoice. |
+| hasInvoiceIssuedTo | `int:hasInvoiceIssuedTo` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor receiving this invoice. |
+| hasInvoiceIssuedBy | `int:hasInvoiceIssuedBy` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor issuing this invoice. |
 | hasTrades | `int:hasTrades` | [`int:EnergyTrade`](../market/trade.md#intenergytrade) | `owl:minCardinality 0` | Trades covered in this invoice. |
 | hasPayments | `int:hasPayments` | [`int:Payment`](stripe.md#intpayment) | `owl:minCardinality 0` | Payments recorded against this invoice. |
 

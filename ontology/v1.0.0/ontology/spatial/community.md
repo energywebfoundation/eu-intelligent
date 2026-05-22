@@ -38,7 +38,7 @@ A Local Energy Community (LEC) — the top-level organisational and contractual 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
 | hasSite | `int:hasSite` | [`int:Site`](#intsite) | `owl:minCardinality 1` | Sites belonging to this community. |
-| hasOperator | `int:hasOperator` | `int:Actor` | `owl:maxCardinality 1` | Actor who acts as community manager or operator. |
+| hasOperator | `int:hasOperator` | [`int:Actor`](../participants/participant.md#intactor) | `owl:maxCardinality 1` | Actor who acts as community manager or operator. |
 
 ### Enumeration Values
 
@@ -97,8 +97,8 @@ A single physical building within an energy community. Confirmed by the May 2026
 |----------|-----|-------|-------------|-------------|
 | hasCommunity | `int:hasCommunity` | [`int:EnergyCommUnit`](#intenergycommunity) | `owl:exactly 1` | Community this site belongs to. |
 | hasFacility | `int:hasFacility` | [`int:Facility`](#intfacility) | `owl:minCardinality 0` | Facilities within this site. Absent when the site itself is the facility. |
-| hasOwner | `int:hasOwner` | `int:Actor` | `owl:minCardinality 0` | Actor(s) who own this site. Null if publicly or community owned. |
-| hasOperator | `int:hasOperator` | `int:Actor` | `owl:maxCardinality 1` | Actor who operates this site (e.g. household or prosumer). |
+| hasOwner | `int:hasOwner` | [`int:Actor`](../participants/participant.md#intactor) | `owl:minCardinality 0` | Actor(s) who own this site. Null if publicly or community owned. |
+| hasOperator | `int:hasOperator` | [`int:Actor`](../participants/participant.md#intactor) | `owl:maxCardinality 1` | Actor who operates this site (e.g. household or prosumer). |
 
 ### Enumeration Values
 
@@ -142,7 +142,7 @@ A single apartment, unit, or group of units within a `Site`. A `Facility` is the
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
 | isFacilityOf | `int:isFacilityOf` | [`int:Site`](#intsite) | `owl:maxCardinality 1` | Site this facility belongs to. Nullable for facilities not yet assigned to a site. |
-| hasOwner | `int:hasOwner` | `int:Actor` | `owl:minCardinality 0` | Actor(s) who own this facility. Null if publicly or community owned. |
+| hasOwner | `int:hasOwner` | [`int:Actor`](../participants/participant.md#intactor) | `owl:minCardinality 0` | Actor(s) who own this facility. Null if publicly or community owned. |
 | hasLoadModel | `int:hasLoadModel` | `cim:EnergyConsumer` | `owl:maxCardinality 1` | CIM load model representing this facility in the distribution network topology. |
 
 ### Enumeration Values

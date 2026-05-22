@@ -97,8 +97,8 @@ The Stripe-platform-level record for a payment transaction. Carries Stripe-speci
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
 | hasGenericPaymentDetails | `int:hasGenericPaymentDetails` | [`int:Payment`](#intpayment) | `owl:exactly 1` | Platform-level payment record this Stripe record belongs to. |
-| hasCustomer | `int:hasCustomer` | `int:Actor` | `owl:exactly 1` | Actor representing the customer. |
-| hasLegalEntity | `int:hasLegalEntity` | `int:Actor` | `owl:maxCardinality 1` | Actor representing the legal entity, if different from the customer. |
+| hasCustomer | `int:hasCustomer` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor representing the customer. |
+| hasLegalEntity | `int:hasLegalEntity` | [`int:Actor`](../participants/participant.md#intactor) | `owl:maxCardinality 1` | Actor representing the legal entity, if different from the customer. |
 
 ### Enumeration Values
 

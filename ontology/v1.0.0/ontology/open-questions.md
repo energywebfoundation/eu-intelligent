@@ -60,7 +60,7 @@ The original `ownershipInformation` free-text field on `int:Actor` has been remo
 - `int:isControlPerson` (`xsd:boolean`) — whether the actor exercises, directly or indirectly, significant authority, control, or management over a legal entity
 - `int:nationality` (`xsd:string`) — nationality of the actor, applicable when `type = NaturalPerson`
 
-These fields will be reflected in the `int:Actor` class definition when the participants domain files are written.
+These fields are defined on `int:Actor` in [`ontology/participants/participant.md`](../ontology/participants/participant.md).
 
 ---
 
@@ -68,7 +68,7 @@ These fields will be reflected in the `int:Actor` class definition when the part
 
 **Status:** Resolved
 
-`int:EnergyOrder` carries an `int:orderDirection` datatype property (`owl:oneOf`: `BID`, `OFFER`) to represent the domain concept that a buy intent and a sell intent are both orders distinguished by their direction. This is a semantic representation of the domain, not an API field or database column.
+`int:EnergyOrder` carries an `int:orderType` datatype property (`owl:oneOf`: `Bid`, `Offer`) to represent the domain concept that a buy intent and a sell intent are both orders distinguished by their direction. This is a semantic representation of the domain, not an API field or database column.
 
 The corresponding `orderType` field in the JSON Schema Definition for the `Order` class is the implementation-level expression of the same concept. The ontology and the schema operate at different levels of abstraction and there is no conflict between them. No action is required from GSY, UoC, or R2M.
 
@@ -111,4 +111,4 @@ The `assetType` enumeration includes `GridConnectionPoint` as a value, intended 
 
 **Status:** Resolved
 
-The tariff components must be individually itemised. A single `gridFee` field is not sufficient. `int:Tariff` will carry separate fields for each regulatory component: network tariff, levies, and capacity charges, in addition to the energy price and tax fields. The exact field set will be defined when the market domain files are written, incorporating the specific regulatory components applicable across the Swiss (LIC, CELL), Irish (Aran Islands), and Portuguese (Greenvolt) pilot jurisdictions.
+The tariff components are individually itemised in [`ontology/market/tariff.md`](../ontology/market/tariff.md): `energyPrice`, `networkTariff`, `levies`, and `taxes`. `capacityCharge` was considered but excluded as it is not a universal component across the Swiss, Irish, and Portuguese pilot jurisdictions at the ontology level of abstraction.

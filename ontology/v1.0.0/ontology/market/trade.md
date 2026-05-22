@@ -29,8 +29,8 @@ A matched and executed energy exchange between a buyer and a seller. `EnergyTrad
 | tradedOnMarket | `int:tradedOnMarket` | [`int:Market`](market.md#intmarket) | `owl:exactly 1` | Market in which this trade occurred. |
 | matchedBid | `int:matchedBid` | [`int:EnergyOrder`](order.md#intenergyorder) | `owl:exactly 1` | The buy-side order matched in this trade. |
 | matchedOffer | `int:matchedOffer` | [`int:EnergyOrder`](order.md#intenergyorder) | `owl:exactly 1` | The sell-side order matched in this trade. |
-| hasBuyer | `int:hasBuyer` | `int:Actor` | `owl:exactly 1` | Actor who bought energy in this trade. |
-| hasSeller | `int:hasSeller` | `int:Actor` | `owl:exactly 1` | Actor who sold energy in this trade. |
+| hasBuyer | `int:hasBuyer` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor who bought energy in this trade. |
+| hasSeller | `int:hasSeller` | [`int:Actor`](../participants/participant.md#intactor) | `owl:exactly 1` | Actor who sold energy in this trade. |
 | hasResidualBid | `int:hasResidualBid` | [`int:EnergyOrder`](order.md#intenergyorder) | `owl:maxCardinality 1` | Residual buy-side order after partial matching. NULL if fully matched. |
 | hasResidualOffer | `int:hasResidualOffer` | [`int:EnergyOrder`](order.md#intenergyorder) | `owl:maxCardinality 1` | Residual sell-side order after partial matching. NULL if fully matched. |
 
