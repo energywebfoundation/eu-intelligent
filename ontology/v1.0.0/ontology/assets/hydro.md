@@ -5,7 +5,9 @@
 ## int:HydroGeneratingUnit
 
 **IRI:** `int:HydroGeneratingUnit`
-**Subclass of:** `int:Asset`, `cim:HydroGeneratingUnit`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset), `cim:HydroGeneratingUnit`
+
 **Standard mapping:** `cim:HydroGeneratingUnit`, `IEC 62256:2017`
 
 A small hydroelectric generation unit. Inherits all properties of `int:Asset`. Present at the CELL pilot site (Lucerne, Switzerland, lead: HSLU) with a rated output of 85 kW.

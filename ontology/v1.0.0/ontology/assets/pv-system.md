@@ -5,7 +5,9 @@
 ## int:PhotovoltaicUnit
 
 **IRI:** `int:PhotovoltaicUnit`
-**Subclass of:** `int:Asset`, `cim:PhotovoltaicUnit`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset), `cim:PhotovoltaicUnit`
+
 **Standard mapping:** `cim:PhotovoltaicUnit`, `IEC 61850 MMXU`
 
 A photovoltaic solar generation system including panels and inverter. Inherits all properties of `int:Asset`. Carries static installation parameters as datatype properties. Dynamic measurements are expressed as `sosa:Observation` instances.

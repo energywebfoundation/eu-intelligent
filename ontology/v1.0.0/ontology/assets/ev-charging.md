@@ -5,7 +5,9 @@
 ## int:EVChargingStation
 
 **IRI:** `int:EVChargingStation`
-**Subclass of:** `int:Asset`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset)
+
 **Standard mapping:** `int:EVChargingStation`, `cim:PowerElectronicsUnit`, OCPP `ChargingStation`
 
 An electric vehicle charging station. Inherits all properties of `int:Asset`. Supports grid-to-vehicle (G2V) charging and optionally vehicle-to-grid (V2G) discharge. Present at LIC (Switzerland) and CELL (Switzerland) pilot sites.
@@ -25,7 +27,7 @@ An electric vehicle charging station. Inherits all properties of `int:Asset`. Su
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `evConnected` and `stateOfCharge`. |
+| hasState | `int:hasState` | [`int:AssetState`](asset.md#intassetstate) | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `evConnected` and `stateOfCharge`. |
 
 ### Enumeration Values
 

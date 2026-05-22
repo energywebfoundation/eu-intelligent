@@ -5,7 +5,9 @@
 ## int:Asset
 
 **IRI:** `int:Asset`
+
 **Subclass of:** `saref:Device`, `cim:Equipment`
+
 **Standard mapping:** `saref:Device`, `cim:Equipment`, `cim:PowerSystemResource`
 
 The abstract base class for all energy devices in the INTELLIGENT platform. Carries identity, type, lifecycle, and controllability. Carries no measurement fields — measurements are expressed as `sosa:Observation` instances with the asset as `featureOfInterest`. Specific device types are defined as subclasses.
@@ -32,9 +34,9 @@ The abstract base class for all energy devices in the INTELLIGENT platform. Carr
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
 | hasOwner | `int:hasOwner` | `int:Actor` | `owl:exactly 1` | Actor who owns this asset. |
-| locatedAtSite | `int:locatedAtSite` | `int:Site` | `owl:exactly 1` | Site where this asset is physically installed. |
-| installedAtFacility | `int:installedAtFacility` | `int:Facility` | `owl:maxCardinality 1` | Facility within the site where this asset is installed. Optional when no facility sub-division exists. |
-| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Current operational state snapshot for this asset. |
+| locatedAtSite | `int:locatedAtSite` | [`int:Site`](../spatial/community.md#intsite) | `owl:exactly 1` | Site where this asset is physically installed. |
+| installedAtFacility | `int:installedAtFacility` | [`int:Facility`](../spatial/community.md#intfacility) | `owl:maxCardinality 1` | Facility within the site where this asset is installed. Optional when no facility sub-division exists. |
+| hasState | `int:hasState` | [`int:AssetState`](#intassetstate) | `owl:maxCardinality 1` | Current operational state snapshot for this asset. |
 
 ### Enumeration Values
 
@@ -69,7 +71,9 @@ The abstract base class for all energy devices in the INTELLIGENT platform. Carr
 ## int:AssetState
 
 **IRI:** `int:AssetState`
+
 **Subclass of:** `owl:Thing`
+
 **Standard mapping:** `sosa:ObservationCollection`
 
 A time-stamped snapshot of the current operational condition of an asset. `AssetState` captures the *state* of an asset — what it is doing or its current condition — as distinct from raw instantaneous measurements, which are expressed as `sosa:Observation` instances. The specific state fields applicable depend on the asset subtype and are defined in the individual asset type class files.
@@ -86,4 +90,4 @@ A time-stamped snapshot of the current operational condition of an asset. `Asset
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| isAssetStateOf | `int:isAssetStateOf` | `int:Asset` | `owl:exactly 1` | Asset whose operational state this record describes. |
+| isAssetStateOf | `int:isAssetStateOf` | [`int:Asset`](#intasset) | `owl:exactly 1` | Asset whose operational state this record describes. |

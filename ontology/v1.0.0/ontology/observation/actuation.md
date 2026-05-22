@@ -5,7 +5,9 @@
 ## int:Command
 
 **IRI:** `int:Command`
+
 **Subclass of:** `owl:Thing`
+
 **Standard mapping:** `sosa:Actuation`, `IEC 61850 GGIO`
 
 A control signal issued to a controllable asset (`int:Asset` where `isControllable = true`). The `Command` class mirrors the `sosa:Observation` pattern: `commandType` points to an `int:ActuatableProperty` named individual identifying what aspect of the asset is being commanded, and `commandValue` carries the setpoint value. This replaces the former flat `ControlAssetCommand` class, which carried one field per controllable property type.
@@ -23,8 +25,8 @@ A control signal issued to a controllable asset (`int:Asset` where `isControllab
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasActuatableProperty | `sosa:actsOnProperty` | `sosa:ActuatableProperty` | `owl:exactly 1` | The actuatable property this command targets. Must be an instance from the named individual vocabulary. |
-| targetsAsset | `int:targetsAsset` | `int:Asset` | `owl:exactly 1` | The asset receiving this command. Must have `isControllable = true`. |
+| hasActuatableProperty | `sosa:actsOnProperty` | [`sosa:ActuatableProperty`](#sosaactuatableProperty) | `owl:exactly 1` | The actuatable property this command targets. Must be an instance from the named individual vocabulary. |
+| targetsAsset | `int:targetsAsset` | [`int:Asset`](../assets/asset.md#intasset) | `owl:exactly 1` | The asset receiving this command. Must have `isControllable = true`. |
 
 ### Enumeration Values
 
@@ -39,9 +41,10 @@ A control signal issued to a controllable asset (`int:Asset` where `isControllab
 
 ---
 
-## sosa:ActuatableProperty (used as int:ActuatableProperty)
+## sosa:ActuatableProperty
 
 **IRI:** `sosa:ActuatableProperty`
+
 **Standard mapping:** `sosa:ActuatableProperty`, `ssn:Property`
 
 An actuatable property is a quality of a feature of interest that can be controlled by issuing a command. In the INTELLIGENT ontology, actuatable properties are represented as `owl:NamedIndividual` instances of `sosa:ActuatableProperty`. The vocabulary below covers all command types required by the FOS trading module (TUM, D4.4).

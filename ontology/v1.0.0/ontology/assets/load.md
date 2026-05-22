@@ -5,7 +5,9 @@
 ## int:EnergyConsumer
 
 **IRI:** `int:EnergyConsumer`
-**Subclass of:** `int:Asset`, `cim:EnergyConsumer`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset), `cim:EnergyConsumer`
+
 **Standard mapping:** `cim:EnergyConsumer`, `cim:ConformLoad`, `cim:NonConformLoad`
 
 A generic measured electrical load — a consuming device or aggregate load that does not fall into a more specific asset subtype. Inherits all properties of `int:Asset`. Used at the Aran Islands pilot (UG) for measured residential loads, and at LIC for the 19 measured consumer households.

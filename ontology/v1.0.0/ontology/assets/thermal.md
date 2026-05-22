@@ -5,7 +5,9 @@
 ## int:HeatPump
 
 **IRI:** `int:HeatPump`
-**Subclass of:** `int:Asset`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset)
+
 **Standard mapping:** `int:HeatPump` (project-specific; no direct CIM equivalent)
 
 A heat pump asset (air source, ground source, or water source). Inherits all properties of `int:Asset`. Used for space heating, cooling, and domestic hot water production. Present at LIC (Switzerland) and Aran Islands (Ireland) pilot sites.
@@ -23,7 +25,7 @@ A heat pump asset (air source, ground source, or water source). Inherits all pro
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `dhwEnabled`. |
+| hasState | `int:hasState` | [`int:AssetState`](asset.md#intassetstate) | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `dhwEnabled`. |
 
 ### Enumeration Values
 
@@ -67,7 +69,9 @@ A heat pump asset (air source, ground source, or water source). Inherits all pro
 ## int:ElectricBoiler
 
 **IRI:** `int:ElectricBoiler`
-**Subclass of:** `int:Asset`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset)
+
 **Standard mapping:** `int:ElectricBoiler` (project-specific; no direct CIM equivalent)
 
 An electric water heating boiler for domestic hot water (DHW) production. Inherits all properties of `int:Asset`. Present at LIC (Switzerland) and Greenvolt (Portugal) pilot sites.

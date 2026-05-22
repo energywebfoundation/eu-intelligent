@@ -5,7 +5,9 @@
 ## int:BatteryUnit
 
 **IRI:** `int:BatteryUnit`
-**Subclass of:** `int:Asset`, `cim:BatteryUnit`
+
+**Subclass of:** [`int:Asset`](asset.md#intasset), `cim:BatteryUnit`
+
 **Standard mapping:** `cim:BatteryUnit`, `IEC 61850 ZBAT`
 
 A battery energy storage system (BESS). Inherits all properties of `int:Asset`. Carries static capacity and technology parameters as datatype properties. Dynamic measurements (instantaneous power, voltage, current, temperature) are expressed as `sosa:Observation` instances. Dynamic state values (operating state, state of charge, state of health) are expressed in `int:AssetState`.
@@ -25,7 +27,7 @@ A battery energy storage system (BESS). Inherits all properties of `int:Asset`. 
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `batteryState`, `stateOfCharge`, `stateOfHealth`, `storedEnergy`. |
+| hasState | `int:hasState` | [`int:AssetState`](asset.md#intassetstate) | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `batteryState`, `stateOfCharge`, `stateOfHealth`, `storedEnergy`. |
 
 ### Enumeration Values
 
@@ -45,7 +47,7 @@ A battery energy storage system (BESS). Inherits all properties of `int:Asset`. 
 
 ## AssetState fields applicable to int:BatteryUnit
 
-The following fields are present on `int:AssetState` instances where `isAssetStateOf` references a `BatteryUnit`.
+The following fields are present on [`int:AssetState`](asset.md#intassetstate) instances where `isAssetStateOf` references a `BatteryUnit`.
 
 | Property | IRI | Range | Description |
 |----------|-----|-------|-------------|

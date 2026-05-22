@@ -5,7 +5,9 @@
 ## int:EnergyCommUnit
 
 **IRI:** `int:EnergyCommUnit`
+
 **Subclass of:** `cim:EnergyArea`
+
 **Standard mapping:** `cim:EnergyArea`
 
 A Local Energy Community (LEC) — the top-level organisational and contractual grouping of participants, sites, assets, and markets. All market activity, billing, and metering within the INTELLIGENT platform is scoped to an `EnergyCommUnit`. One community may span multiple sites.
@@ -35,7 +37,7 @@ A Local Energy Community (LEC) — the top-level organisational and contractual 
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasSite | `int:hasSite` | `int:Site` | `owl:minCardinality 1` | Sites belonging to this community. |
+| hasSite | `int:hasSite` | [`int:Site`](#intsite) | `owl:minCardinality 1` | Sites belonging to this community. |
 | hasOperator | `int:hasOperator` | `int:Actor` | `owl:maxCardinality 1` | Actor who acts as community manager or operator. |
 
 ### Enumeration Values
@@ -56,7 +58,9 @@ A Local Energy Community (LEC) — the top-level organisational and contractual 
 ## int:Site
 
 **IRI:** `int:Site`
+
 **Subclass of:** `cim:ServiceLocation`
+
 **Standard mapping:** `cim:ServiceLocation`
 
 A single physical building within an energy community. Confirmed by the May 2026 ontology workshop as the canonical building-level concept. A `Site` contains zero or more `Facility` instances; when a site has no sub-unit structure, it acts as its own facility. Sites are the primary location reference for asset installation and metering.
@@ -90,8 +94,8 @@ A single physical building within an energy community. Confirmed by the May 2026
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| hasCommunity | `int:hasCommunity` | `int:EnergyCommUnit` | `owl:exactly 1` | Community this site belongs to. |
-| hasFacility | `int:hasFacility` | `int:Facility` | `owl:minCardinality 0` | Facilities within this site. Absent when the site itself is the facility. |
+| hasCommunity | `int:hasCommunity` | [`int:EnergyCommUnit`](#intenergycommunity) | `owl:exactly 1` | Community this site belongs to. |
+| hasFacility | `int:hasFacility` | [`int:Facility`](#intfacility) | `owl:minCardinality 0` | Facilities within this site. Absent when the site itself is the facility. |
 | hasOwner | `int:hasOwner` | `int:Actor` | `owl:minCardinality 0` | Actor(s) who own this site. Null if publicly or community owned. |
 | hasOperator | `int:hasOperator` | `int:Actor` | `owl:maxCardinality 1` | Actor who operates this site (e.g. household or prosumer). |
 
@@ -112,7 +116,9 @@ A single physical building within an energy community. Confirmed by the May 2026
 ## int:Facility
 
 **IRI:** `int:Facility`
+
 **Subclass of:** `cim:EnergyConsumer`
+
 **Standard mapping:** `cim:EnergyConsumer`
 
 A single apartment, unit, or group of units within a `Site`. A `Facility` is the lowest level of the spatial hierarchy and the entity that directly owns or operates assets and participates in the energy market. `Facility` is optional within the hierarchy: when a site has no sub-unit structure (e.g. a single-building pilot), the site itself acts as the facility and no separate `Facility` instance is required.
@@ -134,7 +140,7 @@ A single apartment, unit, or group of units within a `Site`. A `Facility` is the
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| isFacilityOf | `int:isFacilityOf` | `int:Site` | `owl:maxCardinality 1` | Site this facility belongs to. Nullable for facilities not yet assigned to a site. |
+| isFacilityOf | `int:isFacilityOf` | [`int:Site`](#intsite) | `owl:maxCardinality 1` | Site this facility belongs to. Nullable for facilities not yet assigned to a site. |
 | hasOwner | `int:hasOwner` | `int:Actor` | `owl:minCardinality 0` | Actor(s) who own this facility. Null if publicly or community owned. |
 | hasLoadModel | `int:hasLoadModel` | `cim:EnergyConsumer` | `owl:maxCardinality 1` | CIM load model representing this facility in the distribution network topology. |
 
@@ -162,7 +168,9 @@ A single apartment, unit, or group of units within a `Site`. A `Facility` is the
 ## int:Pilot
 
 **IRI:** `int:Pilot`
+
 **Subclass of:** `owl:Thing`
+
 **Standard mapping:** None. INTELLIGENT project-specific concept.
 
 A project-level grouping of one or more `Site` instances representing one of the four INTELLIGENT demonstration sites. `Pilot` is used to scope FOS optimisation, historical data aggregation, and project reporting. It is not part of the spatial containment hierarchy (`EnergyCommUnit` → `Site` → `Facility`) and does not carry metering or market semantics.
@@ -179,14 +187,16 @@ A project-level grouping of one or more `Site` instances representing one of the
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| groupsSite | `int:groupsSite` | `int:Site` | `owl:minCardinality 1` | Sites grouped under this pilot for project-level scoping. |
+| groupsSite | `int:groupsSite` | [`int:Site`](#intsite) | `owl:minCardinality 1` | Sites grouped under this pilot for project-level scoping. |
 
 ---
 
 ## int:SiteState
 
 **IRI:** `int:SiteState`
+
 **Subclass of:** `owl:Thing`
+
 **Standard mapping:** `sosa:ObservationCollection`
 
 A time-stamped snapshot of aggregate measured conditions across a site, capturing environmental and electrical measurements at the site level. `SiteState` records are produced at regular intervals and consumed by FOS for site-level optimisation input.
@@ -210,14 +220,16 @@ A time-stamped snapshot of aggregate measured conditions across a site, capturin
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| measuresSite | `int:measuresSite` | `int:Site` | `owl:exactly 1` | Site whose aggregate conditions this record describes. |
+| measuresSite | `int:measuresSite` | [`int:Site`](#intsite) | `owl:exactly 1` | Site whose aggregate conditions this record describes. |
 
 ---
 
 ## int:FacilityState
 
 **IRI:** `int:FacilityState`
+
 **Subclass of:** `owl:Thing`
+
 **Standard mapping:** `sosa:ObservationCollection`
 
 A time-stamped snapshot of the operational state of a facility, capturing occupancy and operating mode at a point in time. Distinct from `FacilityMeasurement` which captures electrical measurements; `FacilityState` captures the condition of the facility itself.
@@ -234,7 +246,7 @@ A time-stamped snapshot of the operational state of a facility, capturing occupa
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| isFacilityStateOf | `int:isFacilityStateOf` | `int:Facility` | `owl:exactly 1` | Facility whose state this record describes. |
+| isFacilityStateOf | `int:isFacilityStateOf` | [`int:Facility`](#intfacility) | `owl:exactly 1` | Facility whose state this record describes. |
 
 ### Enumeration Values
 
@@ -252,7 +264,9 @@ A time-stamped snapshot of the operational state of a facility, capturing occupa
 ## int:FacilityMeasurement
 
 **IRI:** `int:FacilityMeasurement`
+
 **Subclass of:** `owl:Thing`
+
 **Standard mapping:** `sosa:ObservationCollection`
 
 A time-stamped collection of electrical and environmental measurements at a facility boundary. Captures the aggregate energy flows and environmental conditions at the metering point of a facility per interval.
@@ -276,4 +290,4 @@ A time-stamped collection of electrical and environmental measurements at a faci
 
 | Property | IRI | Range | Cardinality | Description |
 |----------|-----|-------|-------------|-------------|
-| measuresFacility | `int:measuresFacility` | `int:Facility` | `owl:exactly 1` | Facility whose boundary measurements this record captures. |
+| measuresFacility | `int:measuresFacility` | [`int:Facility`](#intfacility) | `owl:exactly 1` | Facility whose boundary measurements this record captures. |
