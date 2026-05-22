@@ -1,61 +1,83 @@
-# Assets: Battery
-
-## Overview
-
-The `Battery` class models a Battery Energy Storage System (BESS). It holds measurement attributes specific to battery operation. The corresponding `Asset` record holds identity, ownership, and lifecycle.
-
-**Partners:** UG (University of Galway), HSLU (Hochschule Luzern)
+# Assets Domain: BatteryUnit
 
 ---
 
-## Battery
+## int:BatteryUnit
 
-**Contributing partners:** UG, HSLU
-**Standard mappings:** IEC 61850 `ZBAT` (Battery logical node), CIM `BatteryUnit`, SAREF4ENER `Battery`
-**Relationship to Asset:** See ADR-004. Currently modelled as a companion class linked by `batteryId` = `Asset.assetId`.
+**IRI:** `int:BatteryUnit`
+**Subclass of:** `int:Asset`, `cim:BatteryUnit`
+**Standard mapping:** `cim:BatteryUnit`, `IEC 61850 ZBAT`
 
-### Attributes
+A battery energy storage system (BESS). Inherits all properties of `int:Asset`. Carries static capacity and technology parameters as datatype properties. Dynamic measurements (instantaneous power, voltage, current, temperature) are expressed as `sosa:Observation` instances. Dynamic state values (operating state, state of charge, state of health) are expressed in `int:AssetState`.
 
-| Attribute | Type | Unit | Required | Description | Contributing Partner | Standard Mapping |
-|-----------|------|------|----------|-------------|---------------------|-----------------|
-| `batteryId` | UUID | - | Yes | Unique identifier; matches `Asset.assetId` | UG, HSLU | CIM `IdentifiedObject.mRID` |
-| `chargePower` | number | kW | No | Instantaneous charge power (positive = charging) | UG, HSLU | IEC 61850 `ZBAT.ChaPwr` |
-| `dischargePower` | number | kW | No | Instantaneous discharge power (positive = discharging) | UG, HSLU | IEC 61850 `ZBAT.DisPwr` |
-| `chargeEnergy` | number | kWh | No | Cumulative energy charged since installation or reset | UG, HSLU | IEC 61850 `ZBAT.ChaWh` |
-| `dischargeEnergy` | number | kWh | No | Cumulative energy discharged since installation or reset | UG, HSLU | IEC 61850 `ZBAT.DisWh` |
-| `stateOfCharge` | number | % | No | State of charge (0-100%) | UG, HSLU | IEC 61850 `ZBAT.SoC` |
-| `stateOfHealth` | number | % | No | State of health; capacity relative to rated (0-100%) | UG | IEC 61850 `ZBAT.SoH` |
-| `temperature` | number | °C | No | Battery cell or pack temperature | UG | IEC 61850 `STMP.Tmp` |
-| `voltage` | number | V | No | Terminal voltage | UG | IEC 61850 `MMXU.PhV` |
-| `current` | number | A | No | Terminal current (positive = charging) | UG | IEC 61850 `MMXU.A` |
-| `cycleCount` | number | - | No | Full equivalent cycle count (degradation metric) | UG | IEC 61850 `ZBAT.NumCyc` |
+### Datatype Properties
 
-### Relationships
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| maxChargePower | `cim:maxChargePower` | `xsd:float` | Maximum charge power rating in watts. Maps to `ZBAT.MaxChaRte`. |
+| maxDischargePower | `cim:maxDischargePower` | `xsd:float` | Maximum discharge power rating in watts. Maps to `ZBAT.MaxDsRte`. |
+| ratedEnergy | `cim:ratedE` | `xsd:float` | Nominal energy storage capacity in kilowatt-hours (manufacturer datasheet value). Maps to `cim:BatteryUnit.ratedE`. |
+| minStateOfCharge | `int:minStateOfCharge` | `xsd:float` | Minimum allowable state of charge as a percentage (0–100). |
+| maxStateOfCharge | `int:maxStateOfCharge` | `xsd:float` | Maximum allowable state of charge as a percentage (0–100). |
+| batteryTechnology | `int:batteryTechnology` | `owl:oneOf` | Battery cell chemistry or technology type. |
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `extends` | Asset | 1 to 1 | Registry entry for this battery (identity, ownership, lifecycle) |
+### Object Properties
 
-### Validation Rules
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `batteryState`, `stateOfCharge`, `stateOfHealth`, `storedEnergy`. |
 
-- `batteryId` must reference an existing `Asset.assetId` with `assetType = battery`.
-- `stateOfCharge` must be in range [0, 100] when present.
-- `stateOfHealth` must be in range [0, 100] when present.
-- `temperature` is expected in the range [-40, 80] °C for lithium-ion cells; values outside this range should trigger an alert.
-- `chargePower` and `dischargePower` must be non-negative.
+### Enumeration Values
 
-### DLMS-COSEM Mapping
+#### int:batteryTechnology
 
-For batteries measured via smart meters or DLMS-enabled inverters:
+| Value | Description |
+|-------|-------------|
+| `Li-Ion` | Lithium-ion. |
+| `LiFePO4` | Lithium iron phosphate (LFP). |
+| `NaNiCl2` | Sodium nickel chloride (ZEBRA). |
+| `LeadAcid` | Lead-acid. |
+| `FlowBattery` | Flow battery (e.g. vanadium redox). |
+| `NiMH` | Nickel-metal hydride. |
+| `Other` | Other battery technology. |
 
-| Attribute | DLMS-COSEM Object |
-|-----------|------------------|
-| `chargeEnergy` | `1.0.1.8.0.255` (Import active energy, Total) |
-| `dischargeEnergy` | `1.0.2.8.0.255` (Export active energy, Total) |
-| `stateOfCharge` | Manufacturer-specific register |
+---
 
-### Notes
+## AssetState fields applicable to int:BatteryUnit
 
-- The distinction between `chargePower` and `dischargePower` as separate attributes (HSLU convention) vs. a single signed `power` value is a known divergence. The HSLU representation is adopted here for clarity; consuming services must handle the sign convention accordingly.
-- `cycleCount` is a long-term degradation metric. It is expected to be updated infrequently (daily or weekly) rather than in real-time.
-- BESS units present at INTELLIGENT pilot sites include a 70 kWh district-level BESS and two residential BESS units (24.5 kWh combined) at the LIC pilot (Switzerland).
+The following fields are present on `int:AssetState` instances where `isAssetStateOf` references a `BatteryUnit`.
+
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| batteryState | `cim:batteryState` | `owl:oneOf` | Current battery operating state per `cim:BatteryStateKind`. |
+| storedEnergy | `cim:storedE` | `xsd:float` | Energy currently stored in kilowatt-hours. Distinct from `ratedEnergy` and `stateOfCharge`. |
+| stateOfCharge | `int:stateOfCharge` | `xsd:float` | State of charge as a percentage (0–100). Maps to `ZBAT.SoC`. |
+| stateOfHealth | `int:stateOfHealth` | `xsd:float` | State of health as a percentage (0–100). Maps to `ZBAT.SoH`. |
+
+### Enumeration Values for cim:batteryState
+
+| Value | Description |
+|-------|-------------|
+| `chargingStored` | Stored energy is increasing. |
+| `discharging` | Stored energy is decreasing. |
+| `waiting` | Neither charging nor discharging; ready to do so. |
+| `full` | Unable to charge; not discharging. |
+| `empty` | Unable to discharge; not charging. |
+| `unknown` | Battery state cannot be determined. |
+
+---
+
+## AssetMeasurement fields applicable to int:BatteryUnit
+
+The following `observedProperty` named individuals apply when the `featureOfInterest` of a `sosa:Observation` is a `BatteryUnit`.
+
+| Observable Property | IRI | Unit | Description |
+|--------------------|-----|------|-------------|
+| Power | `int:Power` | W | Instantaneous battery power (signed; positive = charging). |
+| ChargePower | `int:ChargePower` | W | Instantaneous power flowing into the battery. |
+| DischargePower | `int:DischargePower` | W | Instantaneous power flowing out of the battery. |
+| ChargeEnergy | `int:ChargeEnergy` | kWh | Cumulative energy charged into the battery. |
+| DischargeEnergy | `int:DischargeEnergy` | kWh | Cumulative energy discharged from the battery. |
+| Temperature | `int:Temperature` | °C | Battery cell or pack temperature. |
+| Voltage | `int:Voltage` | V | Battery terminal voltage. |
+| Current | `int:Current` | A | Battery terminal current. |

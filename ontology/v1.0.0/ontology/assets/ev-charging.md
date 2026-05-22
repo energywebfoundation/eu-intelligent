@@ -1,107 +1,78 @@
-# Assets: Load, EVChargingStation, HydroPowerPlant
-
-## Overview
-
-This module defines three additional asset measurement classes: generic electrical loads, EV charging stations, and hydroelectric generation. Each is a companion class to `Asset`.
+# Assets Domain: EVChargingStation
 
 ---
 
-## Load
+## int:EVChargingStation
 
-**Contributing partners:** UG (University of Galway)
-**Standard mappings:** CIM `EnergyConsumer`, IEC 61850 `MMXU`, SAREF4ENER `ElectricalLoad`
-**Relationship to Asset:** Companion class linked by `loadId` = `Asset.assetId`. See ADR-004.
+**IRI:** `int:EVChargingStation`
+**Subclass of:** `int:Asset`
+**Standard mapping:** `int:EVChargingStation`, `cim:PowerElectronicsUnit`, OCPP `ChargingStation`
 
-A generic measured electrical load. Used where a consuming device is monitored but does not fall into a more specific category (heat pump, water heater, etc.).
+An electric vehicle charging station. Inherits all properties of `int:Asset`. Supports grid-to-vehicle (G2V) charging and optionally vehicle-to-grid (V2G) discharge. Present at LIC (Switzerland) and CELL (Switzerland) pilot sites.
 
-### Attributes
+### Datatype Properties
 
-| Attribute | Type | Unit | Required | Description | Standard Mapping |
-|-----------|------|------|----------|-------------|-----------------|
-| `loadId` | UUID | - | Yes | Unique identifier; matches `Asset.assetId` | CIM `IdentifiedObject.mRID` |
-| `power` | number | kW | No | Instantaneous active power demand | IEC 61850 `MMXU.W` |
-| `current` | number | A | No | RMS current | IEC 61850 `MMXU.A` |
-| `voltage` | number | V | No | Voltage at load terminals | IEC 61850 `MMXU.PhV` |
-| `frequency` | number | Hz | No | Supply frequency | IEC 61850 `MMXU.Hz` |
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| maxChargePower | `cim:maxChargePower` | `xsd:float` | Maximum charge power in watts. |
+| maxDischargePower | `cim:maxDischargePower` | `xsd:float` | Maximum discharge power in watts (V2G capable units only). |
+| powerFlowCapability | `int:powerFlowCapability` | `owl:oneOf` | Whether the station supports G2V only or also V2G. |
+| connectorStandard | `int:connectorStandard` | `owl:oneOf` | Physical connector standard. |
+| chargingMode | `int:chargingMode` | `owl:oneOf` | AC or DC charging mode. |
+| numberOfConnectors | `int:numberOfConnectors` | `xsd:integer` | Number of physical connector outlets. |
 
-### Relationships
+### Object Properties
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `extends` | Asset | 1 to 1 | Registry entry for this load |
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Inherited from `int:Asset`. State includes `evConnected` and `stateOfCharge`. |
 
-### Validation Rules
+### Enumeration Values
 
-- `loadId` must reference an existing `Asset.assetId` with `assetType = load`.
-- `power` must be non-negative (loads consume energy).
-- `frequency` expected in range [47.5, 52.5] Hz for European grids.
+#### int:powerFlowCapability
 
-### Notes
+| Value | Description |
+|-------|-------------|
+| `G2V` | Grid-to-vehicle only. |
+| `V2G` | Bidirectional vehicle-to-grid capable. |
 
-- The LIC pilot has 19 measured loads (consumers). These are the primary `Load` instances in the current INTELLIGENT deployment.
+#### int:connectorStandard
 
----
+| Value | Description |
+|-------|-------------|
+| `Type2` | IEC 62196 Type 2 (Mennekes) AC connector. |
+| `CCS` | Combined Charging System CCS1. |
+| `CHAdeMO` | CHAdeMO DC fast charge connector. |
+| `CCS2` | Combined Charging System Type 2 (CCS2). EU standard. |
 
-## EVChargingStation
+#### int:chargingMode
 
-**Contributing partners:** HSLU (Hochschule Luzern)
-**Standard mappings:** CIM `PowerElectronicsUnit`, OCPP (Open Charge Point Protocol), OCN 2.0 (Open Charge Network)
-**Relationship to Asset:** Companion class linked by `evChargingStationId` = `Asset.assetId`. See ADR-004.
-
-An electric vehicle charging point. EWDS includes OCN 2.0 (Open Charge Network) integration for EV network communication, developed as part of T3.1.
-
-### Attributes
-
-| Attribute | Type | Unit | Required | Description | Standard Mapping |
-|-----------|------|------|----------|-------------|-----------------|
-| `evChargingStationId` | UUID | - | Yes | Unique identifier; matches `Asset.assetId` | CIM `IdentifiedObject.mRID` |
-| `power` | number | kW | No | Instantaneous active charging power | IEC 61850 `MMXU.W` |
-
-### Relationships
-
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `extends` | Asset | 1 to 1 | Registry entry for this EV charging station |
-
-### Validation Rules
-
-- `evChargingStationId` must reference an existing `Asset.assetId` with `assetType = ev_charging_station`.
-- `power` must be non-negative.
-
-### Notes
-
-- The LIC pilot (Switzerland) has 2 EV chargers rated at 11 kW each.
-- OCPP is the communication standard used between EVSE (Electric Vehicle Supply Equipment) and charge point management systems. EWDS integrates via OCN 2.0.
-- Extended attributes (session energy, connector status, OCPP transaction ID) are expected to be specified in a future ontology version as OCN 2.0 integration matures.
+| Value | Description |
+|-------|-------------|
+| `AC` | Alternating current charging. |
+| `DC` | Direct current fast charging. |
 
 ---
 
-## HydroPowerPlant
+## AssetState fields applicable to int:EVChargingStation
 
-**Contributing partners:** HSLU (Hochschule Luzern)
-**Standard mappings:** CIM `HydroGeneratingUnit`, IEC 61850 `MMXU`
-**Relationship to Asset:** Companion class linked by `hydroPowerPlantId` = `Asset.assetId`. See ADR-004.
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| evConnected | `int:evConnected` | `xsd:boolean` | True if an EV is currently physically connected. |
+| stateOfCharge | `int:stateOfCharge` | `xsd:float` | State of charge of the connected EV battery as a percentage (0–100). |
 
-A hydroelectric generation unit. Present at the HSLU Lucerne pilot site.
+---
 
-### Attributes
+## AssetMeasurement fields applicable to int:EVChargingStation
 
-| Attribute | Type | Unit | Required | Description | Standard Mapping |
-|-----------|------|------|----------|-------------|-----------------|
-| `hydroPowerPlantId` | UUID | - | Yes | Unique identifier; matches `Asset.assetId` | CIM `IdentifiedObject.mRID` |
-| `power` | number | kW | No | Instantaneous active power output | IEC 61850 `MMXU.W` |
-
-### Relationships
-
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `extends` | Asset | 1 to 1 | Registry entry for this hydro plant |
-
-### Validation Rules
-
-- `hydroPowerPlantId` must reference an existing `Asset.assetId` with `assetType = hydro_power_plant`.
-- `power` must be non-negative (generation only).
-
-### Notes
-
-- Further attributes (head, flow rate, efficiency, turbine type) are standard CIM `HydroGeneratingUnit` fields and may be added in a future version if HSLU requires them for FOS modelling.
+| Observable Property | IRI | Unit | Description |
+|--------------------|-----|------|-------------|
+| Power | `int:Power` | W | Instantaneous power in watts. Positive = G2V, negative = V2G. |
+| ImportEnergy | `int:ImportEnergy` | Wh | Cumulative energy delivered to EVs in watt-hours. |
+| ExportEnergy | `int:ExportEnergy` | Wh | Cumulative energy returned via V2G in watt-hours. |
+| Voltage | `int:Voltage` | V | Phase voltage at the station connection point. |
+| Current | `int:Current` | A | Current at the station connection point. |
+| Frequency | `int:Frequency` | Hz | AC supply frequency. |
+| ActivePower | `int:ActivePower` | W | Per-phase active power. |
+| ApparentPower | `int:ApparentPower` | VA | Per-phase apparent power. |
+| PowerFactor | `int:PowerFactor` | — | Per-phase power factor. |

@@ -1,160 +1,89 @@
-# Assets: Asset, AssetStatus, AssetState
-
-## Overview
-
-This module defines the core asset identity and status entities. `Asset` is the canonical registry entry for any energy device in the INTELLIGENT platform. `AssetStatus` captures operational health. `AssetState` (TUM) captures a real-time physical state snapshot used by the FOS optimisation module.
-
-**Partners:** R2M (Asset, AssetStatus), TUM (Asset.assetParam, AssetState)
+# Assets Domain: Asset, AssetState
 
 ---
 
-## Asset
+## int:Asset
 
-**Contributing partners:** R2M, TUM
-**Standard mappings:** CIM `Equipment`, SAREF `Device`, SEAS `System`
+**IRI:** `int:Asset`
+**Subclass of:** `saref:Device`, `cim:Equipment`
+**Standard mapping:** `saref:Device`, `cim:Equipment`, `cim:PowerSystemResource`
 
-The canonical identity and lifecycle record for an energy asset. Every physical device (battery, PV system, EV charger, etc.) has exactly one `Asset` record as its registry entry. Device-specific measurement attributes are held in specialised classes (`Battery`, `PvSystem`, etc.) linked by `assetId`.
+The abstract base class for all energy devices in the INTELLIGENT platform. Carries identity, type, lifecycle, and controllability. Carries no measurement fields — measurements are expressed as `sosa:Observation` instances with the asset as `featureOfInterest`. Specific device types are defined as subclasses.
 
-### Attributes
+### Datatype Properties
 
-| Attribute | Type | Required | Description | Contributing Partner | Standard Mapping |
-|-----------|------|----------|-------------|---------------------|-----------------|
-| `assetId` | UUID | Yes | Unique identifier | R2M, TUM | CIM `IdentifiedObject.mRID` |
-| `memberId` | UUID | Yes | Owner (Member) reference | R2M | CIM `IdentifiedObject.mRID` |
-| `siteId` | UUID | Yes | Site location reference | R2M | CIM `IdentifiedObject.mRID` |
-| `name` | string | Yes | Human-readable asset name | R2M | CIM `IdentifiedObject.name` |
-| `assetType` | string | Yes | Device type discriminator | R2M, TUM | CIM `Equipment.type`, SAREF `Device.type` |
-| `validFrom` | timestamp | Yes | Start of asset registration validity | R2M | OGC Time `hasBeginning` |
-| `validUntil` | timestamp | No | End of asset registration validity (null = active) | R2M | OGC Time `hasEnd` |
-| `isControlled` | bool | Yes | Whether FOS/TUM can send control signals to this asset | R2M | SAREF `isControlledByDevice` |
-| `category` | string | No | Grouping category for UI / aggregation | R2M | CIM `EquipmentContainer` |
-| `assetParam` | TBD | No | TUM-specific extended technical parameters | TUM | TBD (see ADR-011) |
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| assetId | `int:assetId` | `xsd:string` | Unique identifier. RFC 4122 UUID v4. |
+| assetName | `cim:name` | `xsd:string` | Human-readable name of the asset. Maps to `cim:IdentifiedObject.name`. |
+| assetType | `int:assetType` | `owl:oneOf` | Controlled enumeration identifying the asset subtype. The class hierarchy is the primary typing mechanism; this property supports queries without subclass traversal. |
+| validFrom | `int:validFrom` | `xsd:dateTime` | Start of the asset registration validity period. ISO 8601 with timezone. |
+| validUntil | `int:validUntil` | `xsd:dateTime` | End of the asset registration validity period. NULL if currently active. ISO 8601 with timezone. |
+| isControllable | `saref:isControllable` | `xsd:boolean` | True if the asset exposes an actuator interface that can receive `int:Command` instances. |
+| commissioningDate | `cim:commissionedDate` | `xsd:date` | Date the asset was commissioned. ISO 8601 date (YYYY-MM-DD). |
+| manufacturer | `cim:manufacturer` | `xsd:string` | Asset manufacturer name. |
+| model | `cim:model` | `xsd:string` | Asset model or product name. |
+| serialNumber | `cim:serialNumber` | `xsd:string` | Manufacturer serial number. |
+| nominalPower | `cim:nominalP` | `xsd:float` | Rated nominal active power capacity in watts. |
+| protocol | `int:communicationProtocol` | `owl:oneOf` | Communication protocol used by the asset. |
 
-### `assetType` Enumeration
+### Object Properties
 
-| Value | Device Class | Description |
-|-------|-------------|-------------|
-| `battery` | Battery | Battery energy storage system |
-| `pv_system` | PvSystem | Photovoltaic generation system |
-| `grid` | Grid | Grid connection point |
-| `load` | Load | Generic electrical load |
-| `ev_charging_station` | EVChargingStation | Electric vehicle charger |
-| `hydro_power_plant` | HydroPowerPlant | Hydroelectric generation |
-| `grid_building` | GridBuilding | Building-level grid aggregate |
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| hasOwner | `int:hasOwner` | `int:Actor` | `owl:exactly 1` | Actor who owns this asset. |
+| locatedAtSite | `int:locatedAtSite` | `int:Site` | `owl:exactly 1` | Site where this asset is physically installed. |
+| installedAtFacility | `int:installedAtFacility` | `int:Facility` | `owl:maxCardinality 1` | Facility within the site where this asset is installed. Optional when no facility sub-division exists. |
+| hasState | `int:hasState` | `int:AssetState` | `owl:maxCardinality 1` | Current operational state snapshot for this asset. |
 
-### Relationships
+### Enumeration Values
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `owned by` | Member | many to 1 | Member who owns this asset |
-| `located in` | Site | many to 1 | Physical site |
-| `governed by` | Pilot | many to 1 | TUM pilot scope |
-| `has` | AssetStatus | many to 1 | Current operational health |
-| `has` | AssetState | 1 to 1 | Current physical state snapshot (TUM) |
-| `has` | Production | 1 to many | Production measurement records |
-| `has` | Consumption | 1 to many | Consumption measurement records |
-| `records` | ControlAssetCommand | 1 to many | Commands sent to this asset |
+#### int:assetType
 
-### Validation Rules
+| Value | Description |
+|-------|-------------|
+| `BatteryUnit` | Battery energy storage system. |
+| `PhotovoltaicUnit` | Photovoltaic solar generation system. |
+| `GridConnectionPoint` | Smart meter or metering point (replaces the former `Grid` class). |
+| `EnergyConsumer` | Generic electrical load. |
+| `HydroGeneratingUnit` | Hydroelectric generation unit. |
+| `EVChargingStation` | Electric vehicle charging station. |
+| `HeatPump` | Heat pump (air, ground, or water source). |
+| `ElectricBoiler` | Electric water heating boiler. |
 
-- `assetId` must be a valid RFC 4122 UUID.
-- `memberId` must reference an existing `Member.memberId`.
-- `siteId` must reference an existing `Site.siteId`.
-- `assetType` must be one of the enumerated values above.
-- `validFrom` must be before `validUntil` if `validUntil` is set.
+#### int:communicationProtocol
 
-### Open Questions
-
-- ADR-004: Whether device classes (`Battery`, `PvSystem`, etc.) should be explicit subtypes or remain as associated measurement classes.
-- ADR-011: `assetParam` structure (TUM action).
-
----
-
-## AssetStatus
-
-**Contributing partners:** R2M
-**Standard mappings:** IEC 61850 `LLN0.Health`, CIM `OperationalLimitSet`
-
-An operational health record for an asset. Captures whether the asset is functional and any fault or warning codes. Updated by the asset management system as devices report their condition.
-
-### Attributes
-
-| Attribute | Type | Required | Description | Standard Mapping |
-|-----------|------|----------|-------------|-----------------|
-| `assetStatusId` | UUID | Yes | Unique identifier | CIM `IdentifiedObject.mRID` |
-| `assetId` | UUID | Yes | Asset this status belongs to | CIM `IdentifiedObject.mRID` |
-| `code` | string | Yes | Status / fault code | IEC 61850 `Health.stVal` |
-| `message` | string | No | Human-readable status message | IEC 61850 `Beh` (Behaviour) |
-| `isHealthy` | bool | Yes | Derived boolean: true if the asset is fully operational | IEC 61850 `Health.stVal` |
-
-### `code` Values (Recommended)
-
-Aligned with IEC 61850 `Health` data object values:
-
-| Code | `isHealthy` | Meaning |
-|------|-------------|---------|
-| `Ok` | true | Asset is fully operational |
-| `Warning` | false | Non-critical issue; asset may operate with limitations |
-| `Alarm` | false | Critical fault; asset is degraded or offline |
-| `Unknown` | false | Status cannot be determined |
-
-### Relationships
-
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `belongs to` | Asset | many to 1 | The asset this status describes |
-
-### Validation Rules
-
-- `assetStatusId` must be a valid RFC 4122 UUID.
-- `assetId` must reference an existing `Asset.assetId`.
-- `isHealthy` must be consistent with `code` (e.g. `isHealthy=true` only when `code=Ok`).
-
-### Open Questions
-
-- ADR-003: Relationship to `AssetState` — these are distinct classes with distinct purposes; the ER diagram's "the same?" annotation is recommended to be resolved as "no, they are different".
+| Value | Description |
+|-------|-------------|
+| `MQTT` | MQTT message broker protocol. |
+| `REST` | RESTful HTTP API. |
+| `RS485` | RS-485 serial communication. |
+| `Modbus` | Modbus protocol (RTU or TCP). |
+| `VE.Bus` | Victron Energy VE.Bus proprietary protocol. |
+| `OCPP` | Open Charge Point Protocol (EV chargers). |
+| `MBUS` | M-Bus wired metering protocol. |
+| `Proprietary` | Manufacturer-specific proprietary protocol. |
 
 ---
 
-## AssetState
+## int:AssetState
 
-**Contributing partners:** TUM
-**Standard mappings:** IEC 61850 logical node data objects, SEAS `Evaluation`
+**IRI:** `int:AssetState`
+**Subclass of:** `owl:Thing`
+**Standard mapping:** `sosa:ObservationCollection`
 
-A time-series snapshot of the physical state of an asset at a given point in time. Used by the FOS optimisation module (TUM) to build a real-time picture of community-wide energy state for scheduling and control decisions.
+A time-stamped snapshot of the current operational condition of an asset. `AssetState` captures the *state* of an asset — what it is doing or its current condition — as distinct from raw instantaneous measurements, which are expressed as `sosa:Observation` instances. The specific state fields applicable depend on the asset subtype and are defined in the individual asset type class files.
 
-`AssetState` is distinct from `AssetStatus`: `AssetStatus` models operational health; `AssetState` models physical measured quantities.
+`AssetState` is the single class for all asset condition information, replacing the former `AssetStatus` class which has been removed.
 
-### Attributes
+### Datatype Properties
 
-| Attribute | Type | Unit | Required | Description | Standard Mapping |
-|-----------|------|------|----------|-------------|-----------------|
-| `assetId` | UUID | - | Yes | Asset reference | CIM `IdentifiedObject.mRID` |
-| `assetType` | string | - | Yes | Asset type (mirrors `Asset.assetType`) | CIM `Equipment.type` |
-| `soeBESkwh` | number | kWh | No | State of energy, battery energy storage | IEC 61850 `ZBAT.Wh` |
-| `socBES` | number | 0-1 | No | State of charge, battery energy storage | IEC 61850 `ZBAT.SoC` |
-| `soeEVkwh` | number | kWh | No | State of energy, EV battery | IEC 61850 `ZBAT.Wh` (EV) |
-| `socEV` | number | 0-1 | No | State of charge, EV battery | IEC 61850 `ZBAT.SoC` (EV) |
-| `avgPvPower` | number | kW | No | Average PV active power over last interval | IEC 61850 `MMXU.W` |
-| `avgBES` | number | kW | No | Average BESS active power (positive=discharge) | IEC 61850 `MMXU.W` |
-| `avgEV` | number | kW | No | Average EV charging power | IEC 61850 `MMXU.W` |
-| `tDwhC` | number | °C | No | Domestic hot water temperature | IEC 61850 `STMP.Tmp` |
-| `avgHpPower` | number | kW | No | Average heat pump power | IEC 61850 `MMXU.W` |
-| `avgWhPower` | number | kW | No | Average water heater power | IEC 61850 `MMXU.W` |
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| timestamp | `int:timestamp` | `xsd:dateTime` | Timestamp when this state snapshot was recorded. ISO 8601 with timezone. |
 
-### Relationships
+### Object Properties
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `belongs to` | Asset | 1 to 1 | The asset this state describes |
-
-### Validation Rules
-
-- `socBES` and `socEV`, when present, must be in range [0, 1].
-- `tDwhC` and `avgHpPower` are only meaningful when the asset is a heat pump or water heater.
-- Null/absent fields indicate the measurement is not available for that asset type (e.g. `soeBESkwh` is irrelevant for a PV system).
-
-### Open Questions
-
-- ADR-003: The ER diagram annotates `AssetState ||--|| AssetStatus : "the same?"`. These are confirmed as distinct; the annotation should be resolved.
-- ADR-004: Whether `AssetState` should be a subtype of `Asset` or remain a separate associated class.
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| isAssetStateOf | `int:isAssetStateOf` | `int:Asset` | `owl:exactly 1` | Asset whose operational state this record describes. |
