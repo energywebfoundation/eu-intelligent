@@ -1,96 +1,138 @@
-# Billing: Stripe
-
-## Overview
-
-The `Stripe` class models the payment provider integration record for transactions processed via the Stripe platform. It captures Stripe-specific transaction identifiers, lifecycle status, and KYC-relevant actor data required by the payment service provider.
-
-**Partners:** BLOOO
+# Billing Domain: Payment, StripePayment
 
 ---
 
-## Stripe
+## int:Payment
 
-**Contributing partners:** BLOOO
-**Standard mappings:** No standard ontology mapping; Stripe is a commercial payment service provider (PSP) integration record.
+**IRI:** `int:Payment`
 
-`Stripe` represents the external payment transaction record as maintained by Stripe, augmented with the actor identity data required for Stripe's KYC and compliance checks. It is linked to `Payment` (the platform-level payment record) and `Invoice` (the payable document).
+**Subclass of:** `owl:Thing`
 
-### Attributes
+**Standard mapping:** None. Platform-level payment transaction record.
 
-| Attribute | Type | Required | Description | Notes |
-|-----------|------|----------|-------------|-------|
-| `customerFullName` | string | Yes | Full name of the customer as presented to Stripe | GDPR-sensitive |
-| `customerEmail` | string | Yes | Email address associated with the Stripe customer | GDPR-sensitive |
-| `customerPhone` | string | No | Phone number in E.164 format | GDPR-sensitive |
-| `billingAddress` | Address | Yes | Billing address for this transaction | References `Address` class |
-| `stripeInvoiceId` | string | Yes | Stripe's internal invoice identifier | Distinct from `Invoice.invoiceId`; see ADR-007 |
-| `stripeInvoiceStatus` | string | Yes | Invoice status per Stripe's lifecycle | Stripe-defined |
-| `stripeInvoiceAmountDue` | number | Yes | Amount due per Stripe (in smallest currency unit, e.g. cents) | |
-| `stripeInvoiceCurrency` | string | Yes | ISO 4217 currency code | e.g. `eur` (Stripe uses lowercase) |
-| `chargeAmount` | number | No | Amount actually charged in this transaction | |
-| `billingCurrency` | string | No | Currency of the charge (may differ from invoice currency in rare cases) | ISO 4217 |
-| `stripePaymentIntentId` | string | No | Stripe PaymentIntent reference for tracking the charge lifecycle | |
-| `paymentStatus` | string | Yes | Status of the payment per Stripe | Stripe-defined |
-| `receiptDeliveryStatus` | string | No | Whether a receipt was sent to the customer | |
-| `billingEmail` | string | No | Email address receipts are sent to (may differ from `customerEmail`) | GDPR-sensitive |
-| `transactionDescription` | string | No | Human-readable transaction description shown on the receipt | |
-| `paymentMethodTypes` | string | No | Payment method(s) allowed for this transaction | e.g. `card`, `sepa_debit` |
-| `createdAt` | timestamp | Yes | Timestamp when the Stripe record was created | OGC Time `Instant` |
-| `updatedAt` | timestamp | Yes | Timestamp of last update to this Stripe record | OGC Time `Instant` |
-| `latestCharge` | number | No | Amount of the most recent charge attempt | |
-| `failureReason` | string | No | Reason for payment failure if applicable | |
-| `legalEntityName` | string | No | Legal entity name for invoice / KYC purposes | GDPR-sensitive |
-| `actorType` | string | No | Actor type (individual or organisation) passed to Stripe | Mirrors `Actor.actorType` |
-| `taxId` | string | No | Tax identification number for Stripe's tax compliance | GDPR-sensitive |
-| `businessAddress` | Address | No | Business address for organisations | References `Address` class |
-| `ownershipInformation` | TBD | No | Ultimate beneficial ownership data required by Stripe | GDPR-sensitive; see ADR-013 |
+A financial transaction that (partially or fully) settles an `Invoice`. Stripe-specific fields that were previously embedded on `Payment` have been removed and moved to `int:StripePayment`, which `Payment` references via `hasStripePayments`. The `residual` field has been removed — outstanding balance after a payment is applied belongs on `Invoice.outstandingAmount`.
 
-### `stripeInvoiceStatus` Values (Stripe-defined)
+### Datatype Properties
+
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| paymentId | `int:paymentId` | `xsd:string` | Unique identifier. RFC 4122 UUID v4. |
+| paymentDate | `int:paymentDate` | `xsd:dateTime` | Date and time the payment was made. ISO 8601 with timezone. |
+| paymentAmount | `int:paymentAmount` | `xsd:float` | Amount paid in this transaction. |
+| currency | `int:currency` | `xsd:string` | ISO 4217 currency code. |
+| paymentMethod | `int:paymentMethod` | `owl:oneOf` | Payment method used. |
+| paymentProvider | `int:paymentProvider` | `owl:oneOf` | Payment service provider. |
+| paymentStatus | `int:paymentStatus` | `owl:oneOf` | Lifecycle status of the payment. |
+| createdAt | `int:createdAt` | `xsd:dateTime` | Timestamp when this record was created. ISO 8601 with timezone. |
+| updatedAt | `int:updatedAt` | `xsd:dateTime` | Timestamp when this record was last updated. ISO 8601 with timezone. |
+
+### Object Properties
+
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| hasInvoice | `int:hasInvoice` | [`int:Invoice`](invoice.md#intinvoice) | `owl:exactly 1` | Invoice being settled by this payment. |
+| hasStripePayments | `int:hasStripePayments` | [`int:StripePayment`](#intstripepayment) | `owl:minCardinality 0` | Stripe-level payment records for this transaction. |
+
+### Enumeration Values
+
+#### int:paymentMethod
 
 | Value | Description |
 |-------|-------------|
-| `draft` | Invoice created but not yet finalised |
-| `open` | Invoice finalised and awaiting payment |
-| `paid` | Invoice paid |
-| `uncollectible` | Payment could not be collected |
-| `void` | Invoice voided |
+| `bank_transfer` | Direct bank transfer. |
+| `card` | Credit or debit card. |
+| `sepa_debit` | SEPA direct debit. |
 
-### `paymentStatus` Values (Stripe-defined)
+#### int:paymentProvider
 
 | Value | Description |
 |-------|-------------|
-| `requires_payment_method` | No payment method attached |
-| `requires_confirmation` | Awaiting customer confirmation |
-| `requires_action` | 3D Secure or other action required |
-| `processing` | Payment being processed |
-| `succeeded` | Payment successful |
-| `canceled` | Payment intent cancelled |
+| `stripe` | Stripe payment platform. |
+| `crypto` | Cryptocurrency payment per Grant Agreement IP9. |
 
-### Relationships
+#### int:paymentStatus
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `settles` | Invoice | 0 to many | INTELLIGENT invoice(s) this Stripe record relates to |
-| `part of` | Payment | many to 1 | Platform-level payment record |
-| `billing address` | Address | 1 to 1 | Billing address for this transaction |
-| `business address` | Address | 0 to 1 | Business address (organisations) |
+| Value | Description |
+|-------|-------------|
+| `pending` | Payment initiated but not yet completed. |
+| `succeeded` | Payment successful. |
+| `failed` | Payment failed. |
+| `cancelled` | Payment cancelled. |
+| `refunded` | Payment refunded. |
 
-### Validation Rules
+---
 
-- `customerEmail` must conform to RFC 5321 format.
-- `customerPhone` must be in E.164 format when present.
-- `stripeInvoiceCurrency` and `billingCurrency` must be valid ISO 4217 codes in lowercase (Stripe convention).
-- `createdAt` must be before or equal to `updatedAt`.
-- `stripeInvoiceAmountDue` is in the smallest currency unit (e.g. cents for EUR); consuming services must divide by 100 for display.
+## int:StripePayment
 
-### GDPR Notes
+**IRI:** `int:StripePayment`
 
-`Stripe` records contain a high density of personal and sensitive data. Access must be restricted to the BLOOO Billing module only. Specifically:
-- `customerFullName`, `customerEmail`, `customerPhone`, `billingEmail`, `legalEntityName`, `taxId`, and `ownershipInformation` are personal data under GDPR Article 4.
-- These fields must not be transmitted through EWDS or exposed via any API unless explicitly required and consented by the data subject.
-- Retention periods must comply with EU financial regulation (minimum 5 years for payment records) and GDPR right-to-erasure provisions (personal data erasure upon request, subject to legal retention requirements).
+**Subclass of:** `owl:Thing`
 
-### Open Questions
+**Standard mapping:** None. Stripe payment provider integration record.
 
-- ADR-007: `stripeInvoiceId` is Stripe's internal reference and is explicitly distinct from `Invoice.invoiceId`. This is confirmed as by design.
-- ADR-013: `ownershipInformation` type and GDPR handling TBD (BLOOO action).
+The Stripe-platform-level record for a payment transaction. Carries Stripe-specific identifiers and lifecycle status. Personal identity fields (`customerFullName`, `customerEmail`, `customerPhone`, `billingAddress`, `businessAddress`, `legalEntityName`, `actorType`, `taxId`, `ownershipInformation`) have been removed — all are already available via the associated `Actor` record through `hasCustomer` and `hasLegalEntity`.
+
+### Datatype Properties
+
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| stripeInvoiceId | `int:stripeInvoiceId` | `xsd:string` | Stripe's internal invoice identifier. Distinct from `int:Invoice.invoiceId`. |
+| billingEmail | `int:billingEmail` | `xsd:string` | Email address to send payment receipt. |
+| stripePaymentIntentId | `int:stripePaymentIntentId` | `xsd:string` | Stripe PaymentIntent identifier. |
+| stripeInvoiceStatus | `int:stripeInvoiceStatus` | `owl:oneOf` | Stripe invoice lifecycle status. |
+| stripeInvoiceAmountDue | `int:stripeInvoiceAmountDue` | `xsd:float` | Amount due per Stripe, in smallest currency unit (e.g. cents). |
+| stripeInvoiceCurrency | `int:stripeInvoiceCurrency` | `xsd:string` | ISO 4217 currency code in lowercase (Stripe convention). |
+| chargeAmount | `int:chargeAmount` | `xsd:float` | Amount charged, in smallest currency unit. |
+| latestChargeId | `int:latestChargeId` | `xsd:string` | Stripe Charge identifier for the latest charge attempt. |
+| paymentMethodTypes | `int:paymentMethodTypes` | `owl:oneOf` | Supported payment method(s) configured for this transaction. |
+| paymentStatus | `int:paymentStatus` | `owl:oneOf` | Stripe payment lifecycle status. |
+| receiptDeliveryStatus | `int:receiptDeliveryStatus` | `owl:oneOf` | Status of receipt delivery to the customer. |
+| transactionDescription | `int:transactionDescription` | `xsd:string` | Free-text transaction description shown on the receipt. |
+| failureReason | `int:failureReason` | `xsd:string` | Simplified reason explaining why the payment failed. NULL on success. |
+| createdAt | `int:createdAt` | `xsd:dateTime` | Timestamp when the Stripe record was created. ISO 8601 with timezone. |
+| updatedAt | `int:updatedAt` | `xsd:dateTime` | Timestamp when this record was last updated. ISO 8601 with timezone. |
+
+### Object Properties
+
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| hasGenericPaymentDetails | `int:hasGenericPaymentDetails` | [`int:Payment`](#intpayment) | `owl:exactly 1` | Platform-level payment record this Stripe record belongs to. |
+| hasCustomer | `int:hasCustomer` | `int:Actor` | `owl:exactly 1` | Actor representing the customer. |
+| hasLegalEntity | `int:hasLegalEntity` | `int:Actor` | `owl:maxCardinality 1` | Actor representing the legal entity, if different from the customer. |
+
+### Enumeration Values
+
+#### int:stripeInvoiceStatus / int:paymentStatus
+
+| Value | Description |
+|-------|-------------|
+| `draft` | Not yet finalised. |
+| `open` | Awaiting payment. |
+| `paid` | Payment received. |
+| `void` | Voided. |
+| `uncollectible` | Could not be collected. |
+
+#### int:paymentMethodTypes
+
+| Value | Description |
+|-------|-------------|
+| `card` | Credit or debit card. |
+| `sepa_debit` | SEPA direct debit. |
+| `ideal` | iDEAL (Netherlands). |
+| `bancontact` | Bancontact (Belgium). |
+| `eps` | EPS (Austria). |
+| `giropay` | Giropay (Germany). |
+| `twint` | TWINT (Switzerland). |
+| `customer_balance` | Bank transfer via Stripe customer balance. |
+| `crypto` | Cryptocurrency per Grant Agreement IP9. |
+
+#### int:receiptDeliveryStatus
+
+| Value | Description |
+|-------|-------------|
+| `not_applicable` | Receipt not applicable for this transaction type. |
+| `pending` | Queued for delivery. |
+| `sent` | Sent to billing email. |
+| `delivered` | Confirmed delivered. |
+| `failed` | Delivery failed. |
+| `bounced` | Email bounced. |

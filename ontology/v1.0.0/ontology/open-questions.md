@@ -8,28 +8,26 @@ Items are removed from this file once resolved and the relevant class files are 
 
 ## OQ-001: Facility optionality and Site-as-Facility pattern
 
-**Affects:** `int:Site`, `int:Facility`
-**Responsible:** R2M, TUM, HSLU, UG
+**Status:** Resolved
 
-When a pilot site has no sub-unit structure (e.g. the Aran Islands pilot where individual buildings each represent a single participant), `Site` acts as its own facility. The current model expresses this as `owl:minCardinality 0` on `int:hasFacility`. Confirm whether a dedicated `isSingleFacilitySite` boolean flag on `int:Site` would improve query clarity, or whether the zero-cardinality relation is sufficient.
+`int:Site` now carries a dedicated `isSingleFacilitySite` boolean flag. When `true`, the site has no sub-unit structure and acts as its own facility; no `int:Facility` instances are expected under it. The `owl:minCardinality 0` on `int:hasFacility` remains in place to accommodate both cases at the ontology level, with `isSingleFacilitySite` providing explicit query clarity. The flag has been added to `int:Site` in `community.md`.
 
 ---
 
-## OQ-002: Pilot.buildingEnvelope structure
+## OQ-002: Pilot — additional attributes
 
 **Affects:** `int:Pilot`
 **Responsible:** TUM
 
-The `int:buildingEnvelope` datatype property on `int:Pilot` is defined as `xsd:string` pending TUM specification. TUM to define whether this represents simplified U-value parameters, an IFC geometry reference, ISO 13790 thermal model parameters, or a reference to an external building model.
+TUM to confirm whether any additional pilot-level attributes are required beyond `pilotId` and `pilotName` for the FOS optimisation use cases.
 
 ---
 
 ## OQ-003: AssetState — TUM original flat fields vs. per-asset-type pattern
 
-**Affects:** `int:AssetState`
-**Responsible:** TUM, GSY, UoC
+**Status:** Resolved
 
-TUM's original `AssetState` contained flat fields (`soeBESkwh`, `socBES`, `avgPvPower`, `tDwhC`, etc.) that mixed values from multiple asset types into a single record. The revised ontology distributes these into per-asset-type `AssetState` fields (defined in each asset class file). TUM, GSY, and UoC to confirm this restructuring is compatible with the FOS data interface described in D4.4.
+TUM's original flat `AssetState` fields (`soeBESkwh`, `socBES`, `avgPvPower`, `tDwhC`, etc.) are not used. `int:AssetState` carries only the common `timestamp` and `isAssetStateOf` properties. All state fields are defined per asset type, derived from the individual asset type sheets in the working spreadsheet. These are documented in the AssetState sections of each asset class file (`battery.md`, `ev-charging.md`, `thermal.md`).
 
 ---
 
@@ -53,37 +51,42 @@ TUM to confirm the complete set of `ActuatableProperty` named individuals requir
 
 ## OQ-006: Actor.ownershipInformation structure
 
-**Affects:** `int:Actor`
-**Responsible:** BLOOO
+**Status:** Resolved
 
-The `int:ownershipInformation` property on `int:Actor` is marked as removed in the working spreadsheet but `int:ownershipPercentage`, `int:isBeneficialOwner`, and `int:isControlPerson` were added as replacements. BLOOO to confirm the complete KYC ownership structure and whether additional fields are needed for EU AML compliance.
+The original `ownershipInformation` free-text field on `int:Actor` has been removed. BLOOO has confirmed the replacement structure with the following dedicated fields, all added to `int:Actor`:
+
+- `int:ownershipPercentage` (`xsd:float`, 0–100) — proportion of shares, voting rights, or capital an individual holds in a company
+- `int:isBeneficialOwner` (`xsd:boolean`) — whether the actor ultimately owns or controls a legal entity or account and reaps the financial benefits, even if not listed on official documents
+- `int:isControlPerson` (`xsd:boolean`) — whether the actor exercises, directly or indirectly, significant authority, control, or management over a legal entity
+- `int:nationality` (`xsd:string`) — nationality of the actor, applicable when `type = NaturalPerson`
+
+These fields will be reflected in the `int:Actor` class definition when the participants domain files are written.
 
 ---
 
 ## OQ-007: Market domain — EnergyOrder direction property
 
-**Affects:** `int:EnergyOrder`
-**Responsible:** GSY, UoC, R2M
+**Status:** Resolved
 
-The revised ontology replaces the thin `Bid` and `Offer` wrapper classes with a single `int:EnergyOrder` carrying an `int:orderDirection` property (`BID` or `OFFER`). GSY and R2M to confirm that no existing integration depends on the separate `Bid`/`Offer` class identity in a way that cannot be addressed by filtering on `orderDirection`.
+`int:EnergyOrder` carries an `int:orderDirection` datatype property (`owl:oneOf`: `BID`, `OFFER`) to represent the domain concept that a buy intent and a sell intent are both orders distinguished by their direction. This is a semantic representation of the domain, not an API field or database column.
+
+The corresponding `orderType` field in the JSON Schema Definition for the `Order` class is the implementation-level expression of the same concept. The ontology and the schema operate at different levels of abstraction and there is no conflict between them. No action is required from GSY, UoC, or R2M.
 
 ---
 
 ## OQ-008: FeederMeasurement — per-phase fields
 
-**Affects:** `int:FeederMeasurement`
-**Responsible:** AEM
+**Status:** Resolved
 
-AEM's SGIM at LIC captures per-phase measurements (Phase A, B, C power, voltage, current, power factor, frequency) in addition to total values. The current `int:FeederMeasurement` class defines aggregate fields. AEM to confirm whether per-phase values should be separate `sosa:Observation` instances (with `observedProperty` distinguishing phase, e.g. `int:PhaseAVoltage`) or additional datatype properties on `int:FeederMeasurement`.
+Per-phase measurements follow the same `sosa:Observation` pattern as all other measurements. No fields are added to `int:FeederMeasurement`. Instead, the `ObservableProperty` named individual vocabulary in `properties.md` is extended with per-phase variants (`int:PhaseAActivePower`, `int:PhaseAVoltage`, `int:PhaseACurrent`, `int:PhaseAPowerFactor`, etc. for phases A, B, and C). AEM's SGIM observations at LIC use these named individuals as their `observedProperty` with `featureOfInterest` pointing to the relevant `int:Feeder` instance. No structural changes to any class are required.
 
 ---
 
 ## OQ-009: CommunityMeasurement vs FeederMeasurement — AEM disambiguation
 
-**Affects:** `int:CommunityMeasurement`, `int:FeederMeasurement`, `int:MeteringPoint`
-**Responsible:** AEM, EWAG
+**Status:** Resolved
 
-At LIC, AEM has two distinct metering installations: the Landis+Gyr S650 at the PCC (community-level, net import/export) and the SGIM at the MV/LV transformer (feeder-level, per-phase grid topology). The ontology models these as separate `MeteringPoint` instances with `meterLevel = Community` and `meterLevel = Feeder` respectively. AEM to confirm this distinction correctly reflects their data architecture and that both metering points can be unambiguously identified in their REST API.
+AEM confirms that the distinction between `int:CommunityMeasurement` (Landis+Gyr S650 at the PCC, `meterLevel = Community`) and `int:FeederMeasurement` (SGIM at the MV/LV transformer, `meterLevel = Feeder`) correctly reflects their data architecture at the LIC pilot. Both metering points are unambiguously identifiable in AEM's REST API. No changes to the ontology are required.
 
 ---
 
@@ -98,16 +101,14 @@ The `assetType` enumeration includes `GridConnectionPoint` as a value, intended 
 
 ## OQ-011: HistoricalPilotData and HistoricalMarketData classes
 
-**Affects:** Optimisation domain
-**Responsible:** TUM
+**Status:** Resolved — both classes discarded
 
-The original ontology included `HistoricalPilotData` and `HistoricalMarketData` classes as TUM time-series containers for FOS model training. These have not yet been rewritten in the new ontology format. TUM to confirm whether these should be modelled as `dcat:Dataset` instances (following the DCAT vocabulary for dataset cataloguing) or as project-specific classes, and what their relationship to `int:Pilot` and `int:EnergyCommUnit` should be.
+`HistoricalMarketData` is superseded by `int:MarketTimeSeries`, which already captures historical market outcomes per slot. `HistoricalPilotData` is superseded by the existing measurement and state classes across the spatial and asset domains — historical pilot data is simply a time-bounded collection of `sosa:Observation` instances, `int:SiteState`, `int:FacilityState`, `int:FacilityMeasurement`, `int:MeteringPointMeasurement`, and per-asset-type `int:AssetState` records. No dedicated historical container classes are needed. Neither class will appear in the ontology.
 
 ---
 
 ## OQ-012: Tariff structure — grid fee and tax decomposition
 
-**Affects:** `int:Tariff`
-**Responsible:** BLOOO, ERE, AEM
+**Status:** Resolved
 
-The `int:Tariff` class decomposes trade price into `energyPrice`, `gridFee`, and `taxes`. Grid fee structures differ across pilots (Switzerland, Ireland, Portugal each have different regulatory frameworks). BLOOO and the pilot DSOs (AEM for LIC, ERE for Greenvolt) to confirm whether a single `gridFee` field is sufficient or whether regulatory components (network tariff, levies, capacity charges) need to be individually itemised.
+The tariff components must be individually itemised. A single `gridFee` field is not sufficient. `int:Tariff` will carry separate fields for each regulatory component: network tariff, levies, and capacity charges, in addition to the energy price and tax fields. The exact field set will be defined when the market domain files are written, incorporating the specific regulatory components applicable across the Swiss (LIC, CELL), Irish (Aran Islands), and Portuguese (Greenvolt) pilot jurisdictions.

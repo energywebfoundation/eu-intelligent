@@ -1,90 +1,87 @@
-# Market: Market, MarketSlotInfo
-
-## Overview
-
-This module defines the market structure entities. A `Market` is the time-bounded trading venue within a Community. `MarketSlotInfo` records the time windows for individual trading slots within a Market.
-
-**Partners:** GSY, UoC, TUM (Market), GSY, UoC (MarketSlotInfo)
+# Market Domain: Market, MarketTimeSeries
 
 ---
 
-## Market
+## int:Market
 
-**Contributing partners:** GSY, UoC, TUM
-**Standard mappings:** CIM `Market`, SAREF4ENER `EnergyMarket`, ENTSO-E `MarketDocument`
+**IRI:** `int:Market`
 
-A `Market` is a scoped trading venue associated with a `Community`, operating within defined time boundaries. The GSY DEX matching engine processes `Order` records submitted to a `Market` and produces `Trade` and `ClearingResult` records.
+**Subclass of:** `cim:Market`
 
-### Attributes
+**Standard mapping:** `cim:Market`, `saref4ener:EnergyMarket`
 
-| Attribute | Type | Required | Description | Standard Mapping |
-|-----------|------|----------|-------------|-----------------|
-| `marketId` | UUID | Yes | Unique identifier | CIM `IdentifiedObject.mRID` |
-| `communityId` | UUID | Yes | Community this market serves | CIM `IdentifiedObject.mRID` |
-| `openingTime` | timestamp | Yes | Time at which order submission opens | OGC Time `hasBeginning` |
-| `closingTime` | timestamp | Yes | Time at which order submission closes | OGC Time `hasEnd` |
-| `deliveryStartTime` | timestamp | Yes | Start of the energy delivery interval | OGC Time `hasBeginning` |
-| `deliveryEndTime` | timestamp | Yes | End of the energy delivery interval | OGC Time `hasEnd` |
-| `marketType` | string | Yes | Type of market | CIM `MarketType` |
+A time-bounded trading venue associated with an `EnergyCommUnit`. One `Market` record represents one delivery slot. Orders submitted within the `[openingTime, closingTime]` window are matched by the clearing algorithm and produce `EnergyTrade` and `ClearingResult` records.
 
-### `marketType` Values
+### Datatype Properties
+
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| marketId | `int:marketId` | `xsd:string` | Unique identifier. RFC 4122 UUID v4. |
+| openingTime | `int:openingTime` | `xsd:dateTime` | Datetime at which the market opens for order submission. ISO 8601 with timezone. |
+| closingTime | `int:closingTime` | `xsd:dateTime` | Datetime at which the market closes. After this time the matching algorithm is invoked. ISO 8601 with timezone. |
+| deliveryStartTime | `int:deliveryStartTime` | `xsd:dateTime` | Start of the energy delivery period. ISO 8601 with timezone. |
+| deliveryEndTime | `int:deliveryEndTime` | `xsd:dateTime` | End of the energy delivery period. ISO 8601 with timezone. |
+| marketType | `int:marketType` | `owl:oneOf` | Type of market. |
+| matchingAlgorithm | `int:matchingAlgorithm` | `owl:oneOf` | The clearing algorithm applied to this market slot. |
+| createdAt | `int:createdAt` | `xsd:dateTime` | Timestamp when this record was created. ISO 8601 with timezone. |
+
+### Object Properties
+
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| belongsToCommunity | `int:belongsToCommunity` | [`int:EnergyCommUnit`](../spatial/community.md#intenergycommunity) | `owl:exactly 1` | Community this market is associated with. |
+
+### Enumeration Values
+
+#### int:marketType
 
 | Value | Description |
 |-------|-------------|
-| `spot` | Intraday spot energy trading |
-| `day_ahead` | Day-ahead energy trading |
-| `flexibility` | Flexibility / balancing market |
-| `intraday` | Intraday continuous trading |
+| `local_spot` | Intra-community P2P spot trading. |
+| `flex` | Flexibility market for congestion management. |
+| `local_settlement` | Settlement market. Included for forward compatibility per D4.4 M18 Table 7. |
 
-### Relationships
+#### int:matchingAlgorithm
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `belongs to` | Community | many to 1 | Community in which this market operates |
-| `is divided into` | MarketSlotInfo | 1 to many | Time-slot metadata records |
-| `contains` | Trade | 1 to many | Trades executed in this market |
-| `contains` | Order | 1 to many | Orders submitted to this market |
-
-### Validation Rules
-
-- `marketId` must be a valid RFC 4122 UUID.
-- `communityId` must reference an existing `Community.communityId`.
-- `openingTime` must be before `closingTime`.
-- `deliveryStartTime` must be after `closingTime` (delivery follows trading).
-- `deliveryStartTime` must be before `deliveryEndTime`.
-- `marketType` must be one of the enumerated values above.
+| Value | Description |
+|-------|-------------|
+| `PayAsBid` | Each matched trade settles at its individual bid price. Default. |
+| `PayAsClear` | All trades in the slot settle at the uniform clearing price. |
+| `AMM` | Automated Market Maker algorithm led by UoC per the Grant Agreement. |
 
 ---
 
-## MarketSlotInfo
+## int:MarketTimeSeries
 
-**Contributing partners:** GSY, UoC
-**Standard mappings:** OGC Time `Interval`, CIM `MarketDocument` time windows
+**IRI:** `int:MarketTimeSeries`
 
-`MarketSlotInfo` records metadata for a single time slot within a `Market`. A market may be divided into multiple slots (e.g. 15-minute or 30-minute slots). Both `Community` and `Market` can independently record slot information.
+**Subclass of:** `owl:Thing`
 
-### Attributes
+**Standard mapping:** `sosa:ObservationCollection`
 
-| Attribute | Type | Required | Description | Standard Mapping |
-|-----------|------|----------|-------------|-----------------|
-| `communityId` | UUID | Yes | Community scope | CIM `IdentifiedObject.mRID` |
-| `marketId` | UUID | Yes | Market this slot belongs to | CIM `IdentifiedObject.mRID` |
-| `marketType` | string | Yes | Market type (mirrors `Market.marketType`) | CIM `MarketType` |
-| `openingTime` | timestamp | Yes | Order submission opens for this slot | OGC Time `hasBeginning` |
-| `closingTime` | timestamp | Yes | Order submission closes for this slot | OGC Time `hasEnd` |
-| `deliveryStartTime` | timestamp | Yes | Energy delivery start for this slot | OGC Time `hasBeginning` |
-| `deliveryEndTime` | timestamp | Yes | Energy delivery end for this slot | OGC Time `hasEnd` |
+A header record aggregating a sequence of `Market` slot records for a community over a defined historical period. Used by TUM's FOS module for retrospective market analysis. Replaces the discarded `HistoricalMarketData` class.
 
-### Relationships
+### Datatype Properties
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `part of` | Market | many to 1 | The market this slot is part of |
-| `scoped to` | Community | many to 1 | Community scope |
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| periodFrom | `int:periodFrom` | `xsd:dateTime` | Start of the historical period. ISO 8601 with timezone. |
+| periodUntil | `int:periodUntil` | `xsd:dateTime` | End of the historical period. ISO 8601 with timezone. |
+| granularity | `int:granularity` | `owl:oneOf` | Time resolution of the child market slot records. |
 
-### Validation Rules
+### Object Properties
 
-- `communityId` must reference an existing `Community.communityId`.
-- `marketId` must reference an existing `Market.marketId`.
-- Time window constraints identical to `Market`.
-- Slot delivery windows must not overlap within the same `marketId`.
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| hasCommunity | `int:hasCommunity` | [`int:EnergyCommUnit`](../spatial/community.md#intenergycommunity) | `owl:exactly 1` | Community whose market history this covers. |
+| hasMarkets | `int:hasMarkets` | [`int:Market`](#intmarket) | `owl:minCardinality 0` | Market slot records included in this time series. |
+
+### Enumeration Values
+
+#### int:granularity
+
+| Value | Description |
+|-------|-------------|
+| `15min` | 15-minute slot resolution. |
+| `1h` | 1-hour slot resolution. |
+| `1d` | Daily resolution. |

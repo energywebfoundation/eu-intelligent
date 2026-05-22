@@ -14,11 +14,10 @@
 5. [Methodology](#methodology)
 6. [Ontology Design Principles](#ontology-design-principles)
 7. [Domain Overview](#domain-overview)
-8. [Repository Structure](#repository-structure)
-9. [Contributing Partners](#contributing-partners)
-10. [Standards Referenced](#standards-referenced)
-11. [How to Navigate](#how-to-navigate)
-12. [Licence](#licence)
+8. [Contributing Partners](#contributing-partners)
+9. [Standards Referenced](#standards-referenced)
+10. [How to Navigate](#how-to-navigate)
+11. [Licence](#licence)
 
 ---
 
@@ -54,6 +53,13 @@ The ontology covers the concepts required to semantically describe the INTELLIGE
 | **Billing and Financial** | EnergyAccount, Invoice, Payment, StripePayment |
 | **Participants and Identity** | Participant, Actor, Address, ContactDetails, DecentralizedIdentity, IdentityCredential |
 
+The ontology covers all four pilot sites and the full range of asset types, measurement types, and market mechanisms present across them:
+
+- **Pilot 1 — LIC (Lugaggia Innovation Community, Switzerland, lead: AEM):** PV systems, BESS (district and residential), heat pumps, electric boilers, EV chargers, smart meters at community (PCC) and feeder (SGIM) levels.
+- **Pilot 2 — CELL (Collaborative Energy Living Lab, Lucerne, Switzerland, lead: HSLU):** PV systems, BESS, hydropower, EV chargers, smart meters at building and apartment levels.
+- **Pilot 3 — Greenvolt Comunidades (Portugal, leads: GV, ERE):** PV systems, BESS, EV chargers, electric boilers, smart meters at facility level.
+- **Pilot 4 — Aran Islands (Ireland, leads: UG, CFA):** PV systems, BESS, heat pumps, measured loads, smart meters at household level.
+
 ---
 
 ## What This Ontology Is Not
@@ -82,7 +88,7 @@ This ontology does not specify table names, primary key constraints, index defin
 
 ### Not a Final or Frozen Specification
 
-This ontology is under active development. Several domains and class relationships are still being resolved with partners. The spatial and metering domains reflect confirmed workshop decisions. Other domains carry open questions documented in `docs/design-decisions.md`. Nothing in `Pending` status should be treated as stable for implementation.
+This ontology is under active development. Several domains and class relationships are still being resolved with partners. The spatial and metering domains reflect confirmed workshop decisions. Other domains carry open questions documented in `v1.0.0/docs/design-decisions.md`. Nothing in `Pending` status should be treated as stable for implementation.
 
 ---
 
@@ -108,7 +114,7 @@ Each technical partner provided their data model in a separate working spreadshe
 
 ### Step 2: Consolidation and inventory
 
-EWAG compiled all partner inputs into the shared working file. During this step, overlapping classes were identified (R2M's `Member` and BLOOO's `Actor` both describe a platform participant; TUM's `AssetState` and R2M's `AssetStatus` describe overlapping concepts), fields with different names but the same meaning were flagged, and misunderstandings were surfaced. A key example: the `Grid` class appeared in multiple partner files but meant different things to different partners — a grid connection point, a feeder measurement, a building-level meter, and a community-level meter. Consolidation made this ambiguity visible.
+EWAG compiled all partner inputs into the shared working file. During this step, overlapping classes were identified (R2M's `Member` and BLOOO's `Actor` both describe a platform participant), fields with different names but the same meaning were flagged, and misunderstandings were surfaced. A key example: the `Grid` class appeared in multiple partner files but meant different things to different partners — a grid connection point, a feeder measurement, a building-level meter, and a community-level meter. Consolidation made this ambiguity visible. Another example: R2M's `AssetStatus` class (operational health flags) was removed after clarification that `AssetState` — which captures the current operational condition of each asset type — is the correct and sufficient concept.
 
 ### Step 3: Ontological analysis
 
@@ -124,7 +130,7 @@ Every class and property is mapped to the closest applicable standard. CIM provi
 
 ### Step 6: Documentation and open question tracking
 
-Confirmed classes are documented in the markdown files under `ontology/`. Open questions and unresolved design decisions are documented as ADRs in `docs/design-decisions.md` and tracked as GitHub Issues. No concept is silently left ambiguous — every known uncertainty is made explicit and assigned to the partner responsible for resolution.
+Confirmed classes are documented in the markdown files under `{version}/ontology/`. Open questions and unresolved design decisions are documented as ADRs in `{version}/docs/design-decisions.md` and tracked as GitHub Issues. No concept is silently left ambiguous — every known uncertainty is made explicit and assigned to the partner responsible for resolution.
 
 ---
 
@@ -158,7 +164,7 @@ The spatial domain defines the physical and organisational structure of an energ
 
 `Facility` (mapped to `cim:EnergyConsumer`) is a single apartment, unit, or group of units within a site. It is the lowest level of the spatial hierarchy and the entity that owns or operates assets and participates in the market. `Facility` is optional: when a site has no sub-unit structure, the site itself acts as the facility.
 
-`Pilot` is an INTELLIGENT-project-specific concept representing one of the four demonstration sites as a whole. It groups one or more sites for project-level scoping, FOS optimisation, and historical data aggregation. It is not part of the spatial containment hierarchy and has no standard equivalent (`int:Pilot`).
+`Pilot` is an INTELLIGENT-project-specific concept representing one of the four demonstration sites as a whole. It groups one or more sites for project-level scoping and FOS optimisation. It is not part of the spatial containment hierarchy and has no standard equivalent (`int:Pilot`).
 
 ### Metering
 
@@ -186,7 +192,7 @@ This domain is the semantic core of the measurement model.
 
 ### Energy Markets
 
-`Market` (`cim:Market`) is a time-bounded trading venue associated with a community. `EnergyOrder` (`cim:BidTimeSeries`) is a buy or sell intent submitted by a participant, with a direction property (`BID` or `OFFER`) replacing the earlier thin `Bid`/`Offer` wrapper classes. `EnergyTrade` (`cim:MarketAgreement`) is a matched and executed energy exchange. `ClearingResult` captures the aggregate outcome of a market clearing run. `Tariff` (`saref4ener:Tariff`) decomposes the financial components of a trade into energy price, grid fee, and tax.
+`Market` (`cim:Market`) is a time-bounded trading venue associated with a community. `EnergyOrder` (`cim:BidTimeSeries`) is a buy or sell intent submitted by a participant, with a direction property (`BID` or `OFFER`) replacing the earlier thin `Bid`/`Offer` wrapper classes. `EnergyTrade` (`cim:MarketAgreement`) is a matched and executed energy exchange. `ClearingResult` captures the aggregate outcome of a market clearing run. `Tariff` (`saref4ener:Tariff`) decomposes the financial components of a trade into individually itemised regulatory components: energy price, network tariff, levies, capacity charges, and tax.
 
 ### Billing and Financial
 
@@ -197,7 +203,6 @@ This domain is the semantic core of the measurement model.
 `Participant` (`foaf:Agent`) is the community member concept — a person or organisation participating in the LEC. `Actor` is their legal identity for KYC and billing purposes. `DecentralizedIdentity` (W3C DID Core) is their cryptographic identity for EWDS messaging and credential issuance. `IdentityCredential` (W3C VC Data Model v2.0) is a verifiable credential held by an actor, used for KYC verification and Green Proof issuance. `Address` and `ContactDetails` are supporting classes for the Actor.
 
 ---
-
 
 ## Contributing Partners
 
@@ -238,22 +243,22 @@ The following partners have direct contributions to the ontology, either as serv
 | W3C DID Core 1.0 | W3C Decentralised Identifier specification | `DecentralizedIdentity` class; cryptographic identity anchors for EWDS |
 | W3C VC Data Model v2.0 | W3C Verifiable Credentials specification | `IdentityCredential` class; KYC verification and Green Proof credential structure |
 | OCPP | Open Charge Point Protocol (OCA) | Communication protocol context for `EVChargingStation` |
-| DCAT | Data Catalog Vocabulary (W3C) | Dataset and data service descriptions for FOS historical data |
+| DCAT | Data Catalog Vocabulary (W3C) | Dataset and data service descriptions for market and measurement data collections |
 | IDSA / GAIA-X | International Data Spaces / GAIA-X federation | Data space interoperability layer informing EWDS connector architecture |
 | ISO 4217 | Currency codes | Currency values in `Tariff`, `Invoice`, `StripePayment` |
 | ISO 3166-1 / 3166-2 | Country and subdivision codes | `Address.country`, `Address.state` |
 | vCard (RFC 6350) | vCard ontology | `Address` and `ContactDetails` property names |
 | E.164 | International telephone numbering plan | `ContactDetails.phoneNumber`, `ContactDetails.mobileNumber` |
 
-Full class-by-property standard cross-reference: see [`docs/standard-mappings.md`](docs/standard-mappings.md).
+Full class-by-property standard cross-reference: see [`v1.0.0/docs/standard-mappings.md`](v1.0.0/docs/standard-mappings.md).
 
 ---
 
 ## How to Navigate
 
-- New to the ontology? Start with `docs/overview.md` then `docs/er-diagram.md`.
-- Looking for a specific class? The `ontology/` directory is organised by domain. The domain overview above maps concepts to their files.
-- Unsure about an open design question or a structural decision? See `docs/design-decisions.md`.
+- New to the ontology? Start with `{version}/docs/overview.md` then `{version}/docs/er-diagram.md`.
+- Looking for a specific class? The `{version}/ontology/` directory is organised by domain. The domain overview above maps concepts to their files.
+- Unsure about an open design question or a structural decision? See `{version}/docs/design-decisions.md` and `{version}/ontology/open-questions.md`.
 - Want to propose a change? Use the GitHub Issue templates under `.github/ISSUE_TEMPLATE/`.
 - Looking for field-level implementation detail (data types, storage types, validation rules, enum values)? The authoritative source for that level of detail is the shared `.xlsx` working file. This repository contains the semantic ontology; the spreadsheet contains the implementation inventory.
 

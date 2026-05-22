@@ -89,6 +89,7 @@ A single physical building within an energy community. Confirmed by the May 2026
 | lineId | `int:lineId` | `xsd:string` | Identifier of the line segment connecting two nodes within the site network. |
 | createdAt | `int:createdAt` | `xsd:dateTime` | Timestamp when the record was created. ISO 8601 with timezone. |
 | updatedAt | `int:updatedAt` | `xsd:dateTime` | Timestamp when the record was last updated. ISO 8601 with timezone. |
+| isSingleFacilitySite | `int:isSingleFacilitySite` | `xsd:boolean` | True if this site has no sub-unit structure and acts as its own facility. When true, no `int:Facility` instances are expected under this site. |
 
 ### Object Properties
 
@@ -173,7 +174,7 @@ A single apartment, unit, or group of units within a `Site`. A `Facility` is the
 
 **Standard mapping:** None. INTELLIGENT project-specific concept.
 
-A project-level grouping of one or more `Site` instances representing one of the four INTELLIGENT demonstration sites. `Pilot` is used to scope FOS optimisation, historical data aggregation, and project reporting. It is not part of the spatial containment hierarchy (`EnergyCommUnit` → `Site` → `Facility`) and does not carry metering or market semantics.
+A project-level grouping of one or more `Site` instances representing one of the four INTELLIGENT demonstration sites. `Pilot` is used to scope FOS optimisation and project reporting. It is not part of the spatial containment hierarchy (`EnergyCommUnit` → `Site` → `Facility`) and does not carry metering or market semantics.
 
 ### Datatype Properties
 
@@ -181,7 +182,6 @@ A project-level grouping of one or more `Site` instances representing one of the
 |----------|-----|-------|-------------|
 | pilotId | `int:pilotId` | `xsd:string` | Unique identifier. RFC 4122 UUID v4. |
 | pilotName | `int:pilotName` | `xsd:string` | Human-readable name of the pilot (e.g. "LIC", "CELL", "Greenvolt Comunidades", "Aran Islands"). |
-| buildingEnvelope | `int:buildingEnvelope` | `xsd:string` | Building thermal envelope parameters used by FOS for heating and cooling optimisation. Structure TBD. |
 
 ### Object Properties
 

@@ -1,118 +1,54 @@
-# Billing: Billing, Payment
-
-## Overview
-
-This module defines the billing account and payment records. `Billing` is the aggregate financial record for a Member over a billing period. `Payment` records individual financial transactions settling an Invoice.
-
-**Partners:** R2M (Billing, Payment), BLOOO (Billing extension attributes)
+# Billing Domain: Billing
 
 ---
 
-## Billing
+## int:Billing
 
-**Contributing partners:** R2M (primary), BLOOO (extension)
-**Standard mappings:** CIM `Customer` financial model, SAREF4ENER billing model
+**IRI:** `int:Billing`
 
-A `Billing` record represents the aggregate financial account for a `Member` over a defined period. It is the top-level billing entity from which one or more `Invoice` records are generated. The Billing module receives consolidated `Trade` and `Tariff` data from EWDS and uses it to calculate the amounts owed.
+**Subclass of:** `owl:Thing`
 
-### Attributes
+**Standard mapping:** `cim:CustomerAccount`
 
-| Attribute | Type | Required | Description | Contributing Partner | Standard Mapping |
-|-----------|------|----------|-------------|---------------------|-----------------|
-| `billingId` | UUID | Yes | Unique identifier | R2M | CIM `IdentifiedObject.mRID` |
-| `memberId` | UUID | Yes | Member this billing record belongs to | R2M | CIM `IdentifiedObject.mRID` |
-| `siteId` | UUID | Yes | Site context | R2M | CIM `IdentifiedObject.mRID` |
-| `invoiceNumber` | string | Yes | Human-readable invoice reference number | R2M | - |
-| `status` | string | Yes | Billing record lifecycle status | R2M | - |
-| `invoiceTotal` | number (EUR) | Yes | Total amount due for this billing period | R2M | - |
-| `outstandingAmount` | number (EUR) | Yes | Remaining unpaid amount | R2M | - |
-| `billingPeriodFrom` | timestamp | Yes | Start of billing period | R2M | OGC Time `hasBeginning` |
-| `billingPeriodUntil` | timestamp | Yes | End of billing period | R2M | OGC Time `hasEnd` |
-| `issueDate` | timestamp | Yes | Date the billing record was issued | R2M | OGC Time `Instant` |
-| `overdueDate` | timestamp | No | Date after which the invoice is considered overdue | R2M | OGC Time `Instant` |
-| `issuingParty` | TBD | No | Organisation issuing the invoice | R2M | CIM `Organisation` |
-| `numberOfTrades` | number | No | Total number of trades in this billing period | BLOOO | - |
-| `calculationTimestamp` | timestamp | No | Timestamp when the billing calculation was last run | BLOOO | OGC Time `Instant` |
+The aggregate billing record for an `Actor` over a defined billing period. One `Billing` record groups all `Invoice` instances issued within that period. Fields originally placed on `Billing` that belong semantically to `Invoice` (`invoiceNumber`, `invoiceTotal`, `issueDate`, `issuingParty`, `numberOfTrades`, `calculationTimestamp`) have been moved to `int:Invoice`.
 
-### `status` Values
+### Datatype Properties
 
-| Value | Description |
-|-------|-------------|
-| `draft` | Billing calculated but not yet issued |
-| `issued` | Invoice issued to the member |
-| `paid` | Invoice fully settled |
-| `overdue` | Payment not received by `overdueDate` |
-| `disputed` | Member has raised a dispute |
+| Property | IRI | Range | Description |
+|----------|-----|-------|-------------|
+| billingId | `int:billingId` | `xsd:string` | Unique identifier. RFC 4122 UUID v4. |
+| billingPeriodFrom | `int:billingPeriodFrom` | `xsd:date` | Start of the billing period. ISO 8601 date (YYYY-MM-DD). |
+| billingPeriodUntil | `int:billingPeriodUntil` | `xsd:date` | End of the billing period. ISO 8601 date (YYYY-MM-DD). |
+| billingStatus | `int:billingStatus` | `owl:oneOf` | Billing-record-level lifecycle status across all invoices for the period. |
+| overdueDate | `int:overdueDate` | `xsd:date` | Final settlement deadline. ISO 8601 date (YYYY-MM-DD). |
+| totalAmountDue | `int:totalAmountDue` | `xsd:float` | Total gross amount charged for the period across all invoices, before any payments applied. |
+| totalAmountPaid | `int:totalAmountPaid` | `xsd:float` | Cumulative amount paid. `totalAmountDue` minus `totalAmountPaid` equals `outstandingAmount`. |
+| outstandingAmount | `int:outstandingAmount` | `xsd:float` | Remaining unpaid amount. |
+| totalEnergyAmount | `int:totalEnergyAmount` | `xsd:float` | Cumulative energy component across all invoices in the period. |
+| totalGridFeeAmount | `int:totalGridFeeAmount` | `xsd:float` | Cumulative grid fee component across all invoices in the period. |
+| totalTaxAmount | `int:totalTaxAmount` | `xsd:float` | Cumulative tax component across all invoices in the period. |
+| currency | `int:currency` | `xsd:string` | ISO 4217 currency code. One billing record has one currency. |
+| createdAt | `int:createdAt` | `xsd:dateTime` | Timestamp when this record was created. ISO 8601 with timezone. |
+| updatedAt | `int:updatedAt` | `xsd:dateTime` | Timestamp when this record was last updated. ISO 8601 with timezone. |
 
-### Relationships
+### Object Properties
 
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `belongs to` | Member | many to 1 | Member this billing record covers |
-| `has` | Invoice | 1 to many | Invoices issued for this billing period |
-| `has` | Payment | 1 to 0..1 | Payment record if settled |
+| Property | IRI | Range | Cardinality | Description |
+|----------|-----|-------|-------------|-------------|
+| billedInCommunity | `int:billedInCommunity` | [`int:EnergyCommUnit`](../spatial/community.md#intenergycommunity) | `owl:exactly 1` | Community context for this billing record. |
+| billedInSite | `int:billedInSite` | [`int:Site`](../spatial/community.md#intsite) | `owl:maxCardinality 1` | Site context. Required when an Actor owns multiple sites and billing is site-specific. |
+| billedTo | `int:billedTo` | `int:Actor` | `owl:exactly 1` | Actor this billing record belongs to. |
+| hasIssuedInvoices | `int:hasIssuedInvoices` | [`int:Invoice`](invoice.md#intinvoice) | `owl:minCardinality 0` | Invoices issued within this billing period. |
 
-### Validation Rules
+### Enumeration Values
 
-- `billingId` must be a valid RFC 4122 UUID.
-- `memberId` must reference an existing `Member.memberId`.
-- `siteId` must reference an existing `Site.siteId`.
-- `billingPeriodFrom` must be before `billingPeriodUntil`.
-- `issueDate` must be on or after `billingPeriodUntil`.
-- `outstandingAmount` must be in range [0, `invoiceTotal`].
-- `status` must be one of the enumerated values above.
-
-### Open Questions
-
-- ADR-006: `issuingParty` type TBD (R2M action).
-- ADR-006: Clarify the hierarchy between `Billing.billingId`, `Billing.invoiceNumber`, and `Invoice.invoiceId`.
-
----
-
-## Payment
-
-**Contributing partners:** R2M
-**Standard mappings:** No direct CIM equivalent; maps to generic financial transaction record.
-
-A `Payment` records an individual financial transaction that (partially or fully) settles an `Invoice`. A `Billing` record may have zero payments (if unpaid) or one or more (if settled in instalments or with adjustments).
-
-### Attributes
-
-| Attribute | Type | Required | Description | Standard Mapping |
-|-----------|------|----------|-------------|-----------------|
-| `paymentId` | UUID | Yes | Unique identifier | CIM `IdentifiedObject.mRID` |
-| `invoiceId` | UUID | Yes | Invoice being settled by this payment | CIM `IdentifiedObject.mRID` |
-| `date` | timestamp | Yes | Date and time the payment was made | OGC Time `Instant` |
-| `amount` | number (EUR) | Yes | Amount paid in this transaction | - |
-| `residual` | number (EUR) | Yes | Remaining unpaid balance after this payment | - |
-| `paymentMethod` | string | Yes | Method used for this payment | - |
-| `provider` | string | No | Payment service provider name | - |
-
-### `paymentMethod` Values
+#### int:billingStatus
 
 | Value | Description |
 |-------|-------------|
-| `stripe` | Stripe payment (card or SEPA) |
-| `bank_transfer` | Direct bank transfer |
-| `direct_debit` | SEPA direct debit |
-| `manual` | Manually recorded payment |
-
-### Relationships
-
-| Relationship | Target | Cardinality | Description |
-|-------------|--------|-------------|-------------|
-| `settles` | Invoice | many to 1 | Invoice being paid |
-| `has type` | Stripe | 1 to many | Stripe payment provider record(s) |
-
-### Validation Rules
-
-- `paymentId` must be a valid RFC 4122 UUID.
-- `invoiceId` must reference an existing `Invoice.invoiceId`.
-- `amount` must be greater than 0.
-- `residual` must be non-negative and less than or equal to the `Invoice.totalAmountEur`.
-- `paymentMethod` must be one of the enumerated values above.
-- `residual` must equal `Invoice.totalAmountEur` minus the sum of all `Payment.amount` records for that invoice.
-
-### Open Questions
-
-- ADR-006: `Payment.invoiceId` may need to reference `Billing.billingId` in some R2M implementations. The recommended resolution is that it always references `Invoice.invoiceId`.
+| `Open` | Billing period in progress or invoices outstanding. |
+| `PartiallyPaid` | Some invoices paid but balance remains. |
+| `Paid` | All invoices settled. |
+| `Overdue` | Payment not received by `overdueDate`. |
+| `Void` | Billing record voided. |
+| `Disputed` | Actor has raised a dispute. |

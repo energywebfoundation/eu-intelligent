@@ -61,6 +61,28 @@ The vocabulary is derived from the measurement fields defined across all asset t
 | StateOfCharge | `int:StateOfCharge` | % | BatteryUnit, EVChargingStation | `IEC 61850 ZBAT.SoC` |
 | StateOfHealth | `int:StateOfHealth` | % | BatteryUnit | `IEC 61850 ZBAT.SoH` |
 
+## Per-Phase Electrical (Feeder and MeteringPoint)
+
+These named individuals are used primarily by `int:FeederMeasurement` observations (e.g. AEM SGIM at LIC) where per-phase values are available. They follow the same `sosa:Observation` pattern as all other measurements; no structural changes to any class are required.
+
+| Individual | IRI | Unit | Applicable To | Standard Mapping |
+|-----------|-----|------|---------------|-----------------|
+| PhaseAActivePower | `int:PhaseAActivePower` | W | Feeder, MeteringPoint | `IEC 61850 MMXU.W.phsA` |
+| PhaseBActivePower | `int:PhaseBActivePower` | W | Feeder, MeteringPoint | `IEC 61850 MMXU.W.phsB` |
+| PhaseCActivePower | `int:PhaseCActivePower` | W | Feeder, MeteringPoint | `IEC 61850 MMXU.W.phsC` |
+| PhaseAVoltage | `int:PhaseAVoltage` | V | Feeder, MeteringPoint | `IEC 61850 MMXU.PhV.phsA` |
+| PhaseBVoltage | `int:PhaseBVoltage` | V | Feeder, MeteringPoint | `IEC 61850 MMXU.PhV.phsB` |
+| PhaseCVoltage | `int:PhaseCVoltage` | V | Feeder, MeteringPoint | `IEC 61850 MMXU.PhV.phsC` |
+| PhaseACurrent | `int:PhaseACurrent` | A | Feeder, MeteringPoint | `IEC 61850 MMXU.A.phsA` |
+| PhaseBCurrent | `int:PhaseBCurrent` | A | Feeder, MeteringPoint | `IEC 61850 MMXU.A.phsB` |
+| PhaseCCurrent | `int:PhaseCCurrent` | A | Feeder, MeteringPoint | `IEC 61850 MMXU.A.phsC` |
+| PhaseAPowerFactor | `int:PhaseAPowerFactor` | — | Feeder, MeteringPoint | `IEC 61850 MMXU.PF.phsA` |
+| PhaseBPowerFactor | `int:PhaseBPowerFactor` | — | Feeder, MeteringPoint | `IEC 61850 MMXU.PF.phsB` |
+| PhaseCPowerFactor | `int:PhaseCPowerFactor` | — | Feeder, MeteringPoint | `IEC 61850 MMXU.PF.phsC` |
+| PhaseAFrequency | `int:PhaseAFrequency` | Hz | Feeder, MeteringPoint | `IEC 61850 MMXU.Hz.phsA` |
+| PhaseBFrequency | `int:PhaseBFrequency` | Hz | Feeder, MeteringPoint | `IEC 61850 MMXU.Hz.phsB` |
+| PhaseCFrequency | `int:PhaseCFrequency` | Hz | Feeder, MeteringPoint | `IEC 61850 MMXU.Hz.phsC` |
+
 ## Environmental
 
 | Individual | IRI | Unit | Applicable To | Standard Mapping |
