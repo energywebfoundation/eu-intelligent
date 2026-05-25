@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/PhotoVoltaicUnit",
+  "title": "int:PhotovoltaicUnit",
+  "description": "Photovoltaic solar generation system. Subclass of int:Asset, cim:PhotovoltaicUnit.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "peakPower": {
+      "description": "Installed peak power in kWp. IRI: cim:maxP. Unit: kWp. Must be > 0.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "orientation": {
+      "description": "Panel azimuth angle in decimal degrees from north (0-360). IRI: int:panelAzimuth.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 360,
+      "default": null
+    },
+    "tiltAngle": {
+      "description": "Panel tilt angle in decimal degrees from horizontal (0-90). IRI: int:tiltAngle.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 90,
+      "default": null
+    },
+    "altitude": {
+      "description": "Installation altitude in metres above sea level. IRI: int:altitude. Unit: m.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "mountingType": {
+      "description": "Panel mounting configuration. IRI: int:mountingType.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Fixed",
+        "SingleAxisTracker",
+        "DualAxisTracker",
+        null
+      ],
+      "default": null
+    },
+    "inverterType": {
+      "description": "Inverter make/model string. IRI: int:inverterType.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 255,
+      "default": null
+    },
+    "numberOfMPPTs": {
+      "description": "Number of MPPT channels on the inverter. IRI: int:numberOfMPPTs. Min: 1, Max: 32.",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 32,
+      "default": null
+    }
+  },
+  "required": [
+    "peakPower"
+  ],
+  "additionalProperties": false
+}

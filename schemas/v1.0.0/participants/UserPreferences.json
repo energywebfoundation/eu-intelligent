@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/participants/UserPreferences",
+  "title": "int:UserPreferences",
+  "description": "Actor-level UI, notification, and FOS trading preferences. One-to-one with UserAccount.",
+  "type": "object",
+  "properties": {
+    "accountId": {
+      "description": "FK to UserAccount (primary key). IRI: foaf:accountId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "language": {
+      "description": "Preferred UI language. IRI: int:language. IETF BCP 47 tag.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 2,
+      "maxLength": 5,
+      "default": null
+    },
+    "timezone": {
+      "description": "Preferred timezone. IRI: int:timezone. IANA TZ database name.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 50,
+      "default": null
+    },
+    "currencyDisplay": {
+      "description": "Preferred display currency. IRI: int:currencyDisplay. ISO 4217.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 3,
+      "default": "EUR"
+    },
+    "dashboardLayout": {
+      "description": "Preferred dashboard layout mode. IRI: int:dashboardLayout.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Overview",
+        "Detailed",
+        "Compact",
+        null
+      ],
+      "default": "Overview"
+    },
+    "notificationsEnabled": {
+      "description": "Master notification opt-in. GDPR consent flag. IRI: int:notificationsEnabled.",
+      "type": "boolean",
+      "default": true
+    },
+    "notificationChannel": {
+      "description": "Preferred notification channel. IRI: int:notificationChannel.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Email",
+        "InApp",
+        "Push",
+        "SMS",
+        null
+      ],
+      "default": "Email"
+    },
+    "tradeAlerts": {
+      "description": "Receive alerts on trade match/settlement. IRI: int:tradeAlerts.",
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "default": null
+    },
+    "billingAlerts": {
+      "description": "Receive notifications for new invoices and payment due. IRI: int:billingAlerts.",
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "default": null
+    },
+    "FOSobjective": {
+      "description": "High-level FOS trading objective. IRI: int:FOSObjective.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "MinimiseCost",
+        "MaximiseGreenEnergy",
+        "MaximiseSelfConsumption",
+        "Balanced",
+        null
+      ],
+      "default": null
+    },
+    "dataShareConsent": {
+      "description": "GDPR consent to share data with research partners. Default FALSE. IRI: int:dataShareConsent.",
+      "type": "boolean",
+      "default": false
+    },
+    "comfortPriority": {
+      "description": "Thermal comfort vs. cost trade-off in FOS. IRI: int:comfortPriority.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        null
+      ],
+      "default": null
+    },
+    "riskAversion": {
+      "description": "Actor preference for trading risk under uncertainty. IRI: int:riskAversion.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        null
+      ],
+      "default": null
+    },
+    "energySourcePreference": {
+      "description": "Preferred energy generation sources for trades. IRI: int:energySourcePreference. Comma-separated.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "GREEN",
+        "PV",
+        "HYDRO",
+        "BIOMASS",
+        "BATTERY",
+        "GREY",
+        null
+      ],
+      "default": null
+    },
+    "tradingPartnerPreference": {
+      "description": "Preferred trading partner IDs. IRI: int:tradingPartnerPreference.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "default": null
+    },
+    "targetIndoorTemperature": {
+      "description": "Actor setpoint for ideal indoor temperature. IRI: int:targetIndoorTemperature. Unit: \u00b0C.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "maxIndoorTemperature": {
+      "description": "Maximum allowable indoor temperature for cost minimisation. IRI: int:maxIndoorTemperature. Unit: \u00b0C.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "minIndoorTemperature": {
+      "description": "Minimum allowable indoor temperature for cost minimisation. IRI: int:minIndoorTemperature. Unit: \u00b0C.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "targetDepartureEVSOC": {
+      "description": "Desired EV state of charge at departure time (0-1). IRI: int:targetDepartureEVSOC. Unit: %.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "default": null
+    },
+    "minimumEVSOC": {
+      "description": "Minimum EV SOC to maintain at all times (0-1). IRI: int:minimumEVSOC. Unit: %.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "default": null
+    },
+    "targetDepartureTime": {
+      "description": "Expected time of next EV departure. IRI: int:targetDepartureTime. ISO 8601 with timezone.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+    "updatedAt": {
+      "description": "Last update timestamp. IRI: int:updatedAt. ISO 8601 with timezone.",
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "accountId",
+    "notificationsEnabled",
+    "dataShareConsent",
+    "updatedAt"
+  ],
+  "additionalProperties": false
+}

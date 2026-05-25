@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/HydroGeneratingUnit",
+  "title": "int:HydroGeneratingUnit",
+  "description": "Hydroelectric generation unit. Subclass of int:Asset, cim:HydroGeneratingUnit. IEC 62256:2017 turbine classification.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "turbineType": {
+      "description": "Turbine type. IRI: cim:turbineType. Per IEC CIM 61970-301 and IEC 62256:2017.",
+      "type": "string",
+      "enum": [
+        "pelton",
+        "kaplan",
+        "francis",
+        "bulb",
+        "propeller",
+        "crossFlow",
+        "deriaz",
+        "turgo"
+      ]
+    }
+  },
+  "required": [
+    "turbineType"
+  ],
+  "additionalProperties": false
+}

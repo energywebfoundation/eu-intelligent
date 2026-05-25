@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/participants/ContactDetails",
+  "title": "int:ContactDetails",
+  "description": "Contact information record for an Actor. One Actor may have multiple contact records with different contactType values.",
+  "type": "object",
+  "properties": {
+    "contactDetailsId": {
+      "description": "Primary identifier. IRI: int:contactDetailsId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "actorId": {
+      "description": "FK to owning Actor. IRI: int:actorId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "email": {
+      "description": "Email address. IRI: int:email. RFC 5321 format.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "email",
+      "maxLength": 255,
+      "default": null
+    },
+    "phoneNumber": {
+      "description": "Landline telephone number. IRI: int:phoneNumber. E.164 format.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 20,
+      "default": null
+    },
+    "mobileNumber": {
+      "description": "Mobile phone number. IRI: int:mobileNumber. E.164 format.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 20,
+      "default": null
+    },
+    "contactType": {
+      "description": "Type of contact record. IRI: int:contactType.",
+      "type": "string",
+      "enum": [
+        "Primary",
+        "Business",
+        "Emergency"
+      ],
+      "default": "Primary"
+    }
+  },
+  "required": [
+    "contactDetailsId",
+    "actorId",
+    "contactType"
+  ],
+  "additionalProperties": false
+}

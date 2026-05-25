@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/spatial/Facility",
+  "title": "int:Facility",
+  "description": "An individual building participating in the pilot. Subclass of cim:EnergyConsumer.",
+  "type": "object",
+  "properties": {
+    "facilityId": {
+      "description": "Primary identifier. IRI: int:facilityId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "siteId": {
+      "description": "FK to Site. IRI: int:siteId. UUID v4. Nullable.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid",
+      "default": null
+    },
+    "ownerIds": {
+      "description": "FKs to owner Actors. Nullable if publicly/community owned. IRI: int:ownerIds.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "default": null
+    },
+    "loadModelId": {
+      "description": "FK to cim:EnergyConsumer load model. Nullable. IRI: int:loadModelId. UUID v4.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid",
+      "default": null
+    },
+    "name": {
+      "description": "Name of the building or facility. IRI: cim:name.",
+      "type": "string"
+    },
+    "p": {
+      "description": "Steady-state active power demand for load-flow calculations. IRI: cim:p. Unit: W. Planning value.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "q": {
+      "description": "Steady-state reactive power demand. IRI: cim:q. Unit: VAr. Planning value.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "phaseConnection": {
+      "description": "Load phase connection type. IRI: cim:phaseConnection. CIM PhaseShuntConnectionKind.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Y",
+        "Yn",
+        "D",
+        "Ii",
+        null
+      ],
+      "default": null
+    },
+    "numApartmentUnits": {
+      "description": "Number of apartment units in this facility. IRI: int:numApartmentUnits.",
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    }
+  },
+  "required": [
+    "facilityId",
+    "name",
+    "numApartmentUnits"
+  ],
+  "additionalProperties": false
+}

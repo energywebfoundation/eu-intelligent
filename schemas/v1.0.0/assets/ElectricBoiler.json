@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/ElectricBoiler",
+  "title": "int:ElectricBoiler",
+  "description": "Electric water heating boiler. Subclass of int:Asset.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "storageVolume": {
+      "description": "Hot water storage tank volume in litres. IRI: int:storageVolume. Unit: L.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "maxPowerRating": {
+      "description": "Maximum rated electrical power in watts. IRI: cim:maxP. Unit: W.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    }
+  },
+  "additionalProperties": false
+}

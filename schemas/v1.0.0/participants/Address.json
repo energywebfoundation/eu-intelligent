@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/participants/Address",
+  "title": "int:Address",
+  "description": "Physical mailing address belonging to an Actor. Used for billing, business, and residential purposes.",
+  "type": "object",
+  "properties": {
+    "addressId": {
+      "description": "Primary identifier. IRI: int:addressId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "actorId": {
+      "description": "FK to owning Actor. IRI: int:actorId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "line1": {
+      "description": "First line of the street address. IRI: int:line1.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "line2": {
+      "description": "Second line (apartment, suite, etc.). IRI: int:line2.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 255,
+      "default": null
+    },
+    "city": {
+      "description": "City name. IRI: int:city.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "postalCode": {
+      "description": "Postal or ZIP code. IRI: int:postalCode.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "country": {
+      "description": "ISO 3166-1 alpha-2 country code. IRI: int:country.",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2,
+      "pattern": "^[A-Z]{2}$"
+    },
+    "state": {
+      "description": "State, province, or region. IRI: int:state.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100,
+      "default": null
+    }
+  },
+  "required": [
+    "addressId",
+    "actorId",
+    "line1",
+    "city",
+    "postalCode",
+    "country"
+  ],
+  "additionalProperties": false
+}

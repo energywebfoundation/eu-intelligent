@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/BatteryUnit",
+  "title": "int:BatteryUnit",
+  "description": "Battery energy storage system (BESS). Subclass of int:Asset, cim:BatteryUnit, IEC 61850 ZBAT. Static parameters defined here; dynamic measurements and state expressed as sosa:Observation instances.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "pInBatMax": {
+      "description": "Maximum charge power rating in watts. IRI: cim:maxChargePower. Unit: W. Must be > 0 and <= nominalPower.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "pOutBatMax": {
+      "description": "Maximum discharge power rating in watts. IRI: cim:maxDischargePower. Unit: W. Must be > 0 and <= nominalPower.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "ratedE": {
+      "description": "Nominal energy storage capacity in kWh (manufacturer datasheet). IRI: cim:ratedE. Unit: kWh.",
+      "type": "number",
+      "minimum": 0
+    },
+    "batteryTechnology": {
+      "description": "Battery cell chemistry or technology type. IRI: int:batteryTechnology.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Li-Ion",
+        "LiFePO4",
+        "NaNiCl2",
+        "LeadAcid",
+        "FlowBattery",
+        "NiMH",
+        "Other",
+        null
+      ],
+      "default": null
+    },
+    "socMin": {
+      "description": "Minimum allowable state of charge as a percentage (0-100). IRI: int:minStateOfCharge. Must be < socMax.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "socMax": {
+      "description": "Maximum allowable state of charge as a percentage (0-100). IRI: int:maxStateOfCharge. Must be > socMin.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": [
+    "pInBatMax",
+    "pOutBatMax",
+    "ratedE",
+    "socMin",
+    "socMax"
+  ],
+  "additionalProperties": false
+}

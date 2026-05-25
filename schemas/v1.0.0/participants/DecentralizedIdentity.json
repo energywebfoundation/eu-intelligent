@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/participants/DecentralizedIdentity",
+  "title": "int:DecentralizedIdentity",
+  "description": "W3C DID Core 1.0 decentralised identity for EWDS integration. Required for D6.1 Phase 3 User Onboarding and Credential Issuance.",
+  "type": "object",
+  "properties": {
+    "did": {
+      "description": "W3C DID identifier. IRI: int:decentralizedId. Format: did:method:identifier.",
+      "type": "string",
+      "maxLength": 255
+    },
+    "actorId": {
+      "description": "FK to owning Actor. IRI: int:actorId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "credentialIds": {
+      "description": "FKs to IdentityCredentials issued to this DID. IRI: int:credentialIds. Nullable.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "default": null
+    }
+  },
+  "required": [
+    "did",
+    "actorId"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/HeatPump",
+  "title": "int:HeatPump",
+  "description": "Heat pump asset (air, ground, or water source). Subclass of int:Asset. Used for space heating, cooling, and domestic hot water production.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "heatSourceType": {
+      "description": "Heat source type. IRI: int:heatSourceType.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "AirSource",
+        "GroundSource",
+        "WaterSource",
+        null
+      ],
+      "default": null
+    },
+    "operatingMode": {
+      "description": "Heating and cooling capability. IRI: int:operatingMode.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "HeatingOnly",
+        "CoolingOnly",
+        "HeatingAndCooling",
+        null
+      ],
+      "default": null
+    },
+    "maxPowerRating": {
+      "description": "Maximum rated electrical power input in watts. IRI: cim:maxP. Unit: W.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "thermalStorageVolume": {
+      "description": "Volume of associated thermal storage tank in litres. IRI: int:thermalStorageVolume. Unit: L.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    }
+  },
+  "additionalProperties": false
+}

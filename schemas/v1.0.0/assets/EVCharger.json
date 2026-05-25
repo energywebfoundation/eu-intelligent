@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/EVCharger",
+  "title": "int:EVChargingStation",
+  "description": "Electric vehicle charging station. Subclass of int:Asset. OCPP-compliant.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "maxChargePower": {
+      "description": "Maximum charge power in watts. IRI: cim:maxChargePower. Unit: W.",
+      "type": "number",
+      "minimum": 0
+    },
+    "maxDischargePower": {
+      "description": "Maximum discharge power in watts (V2G). IRI: cim:maxDischargePower. Unit: W.",
+      "type": "number",
+      "minimum": 0
+    },
+    "powerFlowCapability": {
+      "description": "G2V only or V2G capable. IRI: int:powerFlowCapability.",
+      "type": "string",
+      "enum": [
+        "G2V",
+        "V2G"
+      ]
+    },
+    "connectorStandard": {
+      "description": "Connector type standard. IRI: int:connectorStandard.",
+      "type": "string",
+      "enum": [
+        "Type2",
+        "CCS",
+        "CHAdeMO",
+        "CCS2"
+      ]
+    },
+    "chargingMode": {
+      "description": "AC or DC charging mode. IRI: int:chargingMode.",
+      "type": "string",
+      "enum": [
+        "AC",
+        "DC"
+      ]
+    },
+    "numberOfConnectors": {
+      "description": "Number of physical connectors. IRI: int:numberOfConnectors. Whole number, min 1.",
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "maxChargePower",
+    "maxDischargePower",
+    "powerFlowCapability",
+    "connectorStandard",
+    "chargingMode",
+    "numberOfConnectors"
+  ],
+  "additionalProperties": false
+}

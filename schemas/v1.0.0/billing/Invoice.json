@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/billing/Invoice",
+  "title": "int:Invoice",
+  "description": "Individual invoice issued to an Actor for energy services within a billing period. Child of Billing.",
+  "type": "object",
+  "properties": {
+    "invoiceId": {
+      "description": "Primary identifier. IRI: int:invoiceId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "billingId": {
+      "description": "FK to parent Billing record. IRI: int:billingId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "invoiceStatus": {
+      "description": "Invoice lifecycle status. IRI: int:invoiceStatus.",
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Open",
+        "PartiallyPaid",
+        "Paid",
+        "Overdue",
+        "Void",
+        "Disputed"
+      ]
+    },
+    "invoiceIssueDate": {
+      "description": "Date the invoice was issued. IRI: int:invoiceIssueDate. ISO 8601 with timezone.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "invoiceIssuedTo": {
+      "description": "FK to Actor the invoice is issued to. IRI: int:invoiceIssuedTo. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "invoiceIssuedBy": {
+      "description": "FK to issuing party Actor (community operator or BLOOO). IRI: int:invoiceIssuedBy. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "invoiceDueDate": {
+      "description": "Payment due date. IRI: int:invoiceDueDate. Format: YYYY-MM-DD.",
+      "type": "string",
+      "format": "date"
+    },
+    "totalAmount": {
+      "description": "Total invoice amount (energy + grid fee + tax). IRI: int:totalAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "outstandingAmount": {
+      "description": "Remaining unpaid amount. IRI: int:outstandingAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "energyAmount": {
+      "description": "Energy cost component. IRI: int:energyAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "gridFeeAmount": {
+      "description": "Grid fee component. IRI: int:gridFeeAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "taxAmount": {
+      "description": "Tax component. IRI: int:taxAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "totalTaxAmount": {
+      "description": "Cumulative tax amount. IRI: int:totalTaxAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "currency": {
+      "description": "ISO 4217 currency code. One invoice has one currency. IRI: int:currency.",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3,
+      "pattern": "^[A-Z]{3}$"
+    },
+    "createdAt": {
+      "description": "Invoice creation timestamp. IRI: int:createdAt. ISO 8601 with timezone.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "description": "Invoice last updated timestamp. IRI: int:updatedAt. ISO 8601 with timezone.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "tradeIds": {
+      "description": "FKs to Trades covered by this invoice. IRI: int:tradeIds. UUID v4 array.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "default": null
+    },
+    "paymentIds": {
+      "description": "FKs to Payments for this invoice. IRI: int:paymentIds. UUID v4 array.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "default": null
+    }
+  },
+  "required": [
+    "invoiceId",
+    "billingId",
+    "invoiceStatus",
+    "invoiceIssueDate",
+    "invoiceIssuedTo",
+    "invoiceIssuedBy",
+    "invoiceDueDate",
+    "totalAmount",
+    "outstandingAmount",
+    "energyAmount",
+    "gridFeeAmount",
+    "taxAmount",
+    "totalTaxAmount",
+    "currency",
+    "createdAt",
+    "updatedAt"
+  ],
+  "additionalProperties": false
+}

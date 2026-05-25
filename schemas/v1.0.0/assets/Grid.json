@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/Grid",
+  "title": "int:GridConnectionPoint",
+  "description": "Smart meter or metering point at the PCC. Subclass of int:Asset, cim:UsagePoint, IEC 61968-9 EndDevice.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "Asset.json"
+    }
+  ],
+  "properties": {
+    "phaseConfiguration": {
+      "description": "Phase configuration at the PCC. IRI: int:phaseConfiguration.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "SinglePhase",
+        "ThreePhase",
+        null
+      ],
+      "default": null
+    },
+    "connectionVoltageLevel": {
+      "description": "Nominal connection voltage in volts. IRI: cim:BaseVoltage. Unit: V.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "mRID": {
+      "description": "Physical smart meter EndDevice mRID. IRI: cim:mRID.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "tariffId": {
+      "description": "FK to applicable Tariff. IRI: int:hasTariff. UUID v4.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid",
+      "default": null
+    },
+    "deviceType": {
+      "description": "Device subtype. IRI: int:deviceType.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "GridMeter",
+        "SmartMeter",
+        null
+      ],
+      "default": null
+    },
+    "basePower": {
+      "description": "Base apparent power (Sbase) in VA for per-unit normalisation. IRI: cim:BasePower. Unit: VA.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    }
+  },
+  "additionalProperties": false
+}

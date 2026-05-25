@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/billing/Billing",
+  "title": "int:Billing",
+  "description": "Billing record aggregating all invoices for an Actor within a billing period at a Community/Site. Subclass of cim:MarketDocument.",
+  "type": "object",
+  "properties": {
+    "billingId": {
+      "description": "Primary identifier. IRI: int:billingId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "communityId": {
+      "description": "FK to Community. IRI: int:communityId. UUID v4.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "siteId": {
+      "description": "FK to Site. Optional \u2014 required when actor owns multiple sites. IRI: int:siteId. UUID v4.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid",
+      "default": null
+    },
+    "memberId": {
+      "description": "FK to Actor being billed. IRI: int:memberId. UUID v4.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid",
+      "default": null
+    },
+    "billingPeriodFrom": {
+      "description": "Start of the billing period. IRI: int:billingPeriodFrom. Format: YYYY-MM-DD.",
+      "type": "string",
+      "format": "date"
+    },
+    "billingPeriodUntil": {
+      "description": "End of the billing period. IRI: int:billingPeriodUntil. Format: YYYY-MM-DD.",
+      "type": "string",
+      "format": "date"
+    },
+    "billingStatus": {
+      "description": "Billing-record-level lifecycle status. IRI: int:billingStatus.",
+      "type": "string",
+      "enum": [
+        "Open",
+        "PartiallyPaid",
+        "Paid",
+        "Overdue",
+        "Void",
+        "Disputed"
+      ],
+      "default": "Open"
+    },
+    "overdueDate": {
+      "description": "Final settlement deadline. IRI: int:overdueDate. Format: YYYY-MM-DD.",
+      "type": "string",
+      "format": "date"
+    },
+    "totalAmountDue": {
+      "description": "Total gross amount charged before any payments applied. IRI: int:totalAmountDue.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "totalAmountPaid": {
+      "description": "Cumulative amount paid. IRI: int:totalAmountPaid.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "outstandingAmount": {
+      "description": "Remaining unpaid amount. IRI: int:outstandingAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "totalEnergyAmount": {
+      "description": "Cumulative energy cost component. IRI: int:totalEnergyAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "totalGridFeeAmount": {
+      "description": "Cumulative grid fee component. IRI: int:totalGridFeeAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "totalTaxAmount": {
+      "description": "Cumulative tax component. IRI: int:totalTaxAmount.",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "currency": {
+      "description": "ISO 4217 currency code. IRI: int:currency.",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3,
+      "pattern": "^[A-Z]{3}$"
+    },
+    "createdAt": {
+      "description": "Record creation timestamp. IRI: int:createdAt. ISO 8601 with timezone.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "description": "Record last updated timestamp. IRI: int:updatedAt. ISO 8601 with timezone.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "invoiceIds": {
+      "description": "FKs to Invoices issued in this billing period. IRI: int:invoiceIds. UUID v4 array.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "default": null
+    }
+  },
+  "required": [
+    "billingId",
+    "communityId",
+    "billingPeriodFrom",
+    "billingPeriodUntil",
+    "billingStatus",
+    "overdueDate",
+    "totalAmountDue",
+    "totalAmountPaid",
+    "outstandingAmount",
+    "totalEnergyAmount",
+    "totalGridFeeAmount",
+    "totalTaxAmount",
+    "currency",
+    "createdAt",
+    "updatedAt"
+  ],
+  "additionalProperties": false
+}
