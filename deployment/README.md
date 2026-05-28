@@ -2,7 +2,7 @@
 
 This folder contains deployment artefacts for the **EW Digital Spine (EWDS) Client Gateway** across all INTELLIGENT project partners. It holds per-partner configuration, deployment notes, integration evidence, and version-specific files used to operate each Client Gateway instance.
 
-The Client Gateway is the partner-side component of EWDS. Each INTELLIGENT partner runs its own instance to publish and subscribe to topics on the shared Message Broker, using EW DIDs and Verifiable Credentials for authentication and authorisation.
+The Client Gateway is the partner-side component of EWDS. Each INTELLIGENT partner runs its own instance to publish and subscribe to channels on the shared Message Broker, using EW DIDs and Verifiable Credentials for authentication and authorisation.
 
 ## Reference Documentation
 
@@ -11,7 +11,7 @@ Before standing up a partner instance, follow the canonical Energy Web deploymen
 - **Client Gateway Deployment Guide (canonical):** https://docs.energyweb.org/energy-solutions/digital-spine-by-energy-web/component-guides/ddhub-client-gateway/deployment-guide
 - **Inbound and Outbound Connections (firewall, ports, networking):** https://docs-launchpad.energyweb.org/energy-solutions/digital-spine-by-energy-web/component-guides/ddhub-client-gateway/deployment-guide/preparing-to-set-up-a-client-gateway/inbound-and-outbound-connections
 
-Note: the upstream docs use the AEMO naming convention (`ddhub-client-gateway`) in URLs and headings. Inside the INTELLIGENT project, the same component is referred to as the **EW Digital Spine Client Gateway**. The product and code are identical.
+Note: upstream docs use the legacy naming convention (ddhub-client-gateway) in URLs and headings. Energy Web Digital Spine was formerly known as Energy Web Data Hub (DDHub). The product and code are identical.
 
 ## Project Partners and Client Gateway Deployment Status
 
