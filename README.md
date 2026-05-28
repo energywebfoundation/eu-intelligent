@@ -1,6 +1,9 @@
-<p align="center">
-  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
-</p>
+<table align="center">
+  <tr>
+    <td><a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a></td>
+    <td><a href="https://intelligent-project.eu/" target="blank"><img src="./images/INTELLIGENT.webp" height="120" alt="EU INTELLIGENT Project Logo" /></a></td>
+  </tr>
+</table>
 
 
 # INTELLIGENT Project — Energy Web AG (EWAG) Repository
