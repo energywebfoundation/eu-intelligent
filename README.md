@@ -8,7 +8,7 @@
 
 > EU Horizon Project | Grant Agreement No. 101160678 | Work Package 3 (Lead: EWAG)
 
-This repository is maintained by **Energy Web AG (EWAG)** as the lead beneficiary of **WP3 — Data Integration and Interoperability Infrastructure** in the INTELLIGENT project. It serves as the central documentation and artefact store for EWAG's technical contributions, including the common data ontology, JSON Schema definitions, Digital Spine architecture and design documents, and deployment materials.
+This repository is maintained by **Energy Web AG (EWAG)** as the lead beneficiary of **WP3 — Data Integration and Interoperability Infrastructure** in the INTELLIGENT project. It serves as the central documentation and artefact store for EWAG's technical contributions, including the common data ontology, JSON Schema definitions, Energy Web Digital Spine customizations, and deployment materials. It is termed **INTELLIGENT EWDS 2.0** and published under GNU GPL v3 License.
 
 ## About the INTELLIGENT Project
  
@@ -25,36 +25,15 @@ Four pilot sites demonstrate the platform in real-world conditions:
 | Pilot 3 | Greenvolt Comunidades, Portugal | GV / ERE |
 | Pilot 4 | Inis Mór, Aran Islands, Ireland | UG / CFA |
 
-## EWAG's Role and Scope
- 
-EWAG participates as an **Associated Partner (AP)** and acts as the **WP3 Lead Beneficiary**. EWAG's core responsibilities in the project are:
- 
-- **T3.1** (Lead): Design, develop and deploy the **Energy Web Digital Spine 2.0 (EWDS 2.0)** — an interoperable, blockchain-based data exchange platform.
-- **T3.2** (Participant): Customise the Off-Chain Storage worker to handle asset-level measurement storage, trades storage and order book storage, serving as an API gateway between off-chain data and on-chain processes.
-- **T3.3** (Participant): Support ERE in middleware development for grid operator data exchange, ensuring seamless interconnection with the EWDS.
-- **T3.4** (Lead): Deploy the **Green Proofs** open-source guarantee-of-origin solution to track and match renewable electricity generation and consumption at 30-minute granularity (24/7 renewables matching).
-- **T3.5** (Lead): Develop **OCN 2.0** — an EV charging data integration service as an add-on to EWDS.
-- **Cross-cutting**: Develop and maintain the **common data ontology** used across all INTELLIGENT platform services, and support API development for partner integrations.
-
 ## Repository Purpose
  
 This repository documents and version-controls EWAG's technical deliverables and related artefacts. Specifically, it contains:
  
 1. **Ontology documentation** — the final, versioned common ontology developed for the INTELLIGENT platform, covering all entity classes, attributes, validation rules, and standard mappings.
 2. **JSON Schema definitions** — machine-readable schemas derived from the ontology, used for data validation and interoperability across services.
-3. **Digital Spine architecture and design documents** — system architecture, integration patterns, and API specifications for EWDS 2.0.
-4. **Deployment manuals** — step-by-step guides for deploying and configuring EWDS, Green Proofs, and OCN 2.0 components.
-5. **Supporting documents** — working materials such as the ER diagram, ontology mapping references, and task tracking references.
-
-## Key Deliverables (EWAG-led)
- 
-| Deliverable | Description | Due | Status |
-|-------------|-------------|-----|--------|
-| D3.1 — EWDS 2.0 | Client gateway service for asset and device data integration (GitHub + docs) | M18 | In Progress |
-| D3.3 — OCN 2.0 | Service for EV charging data integration (GitHub + docs) | M18 | In Progress |
-| D3.5 — Green Proofs | Guarantee-of-origin service to track energy source and use in LECs (GitHub + docs) | M24 | In Progress |
- 
-EWAG also contributes to D3.2 (off-chain storage, led by GSY) and D3.4 / D3.6 (grid operator API, led by ERE).
+3. **Energy Web Digital Spine customizations** — system architecture, integration patterns, and API specifications for INTELLIGENT EWDS 2.0.
+4. **Deployment manuals** — step-by-step guides for deploying and configuring EWDS, Energy Web Green Proofs, and Energy Web OCN 2.0 components.
+5. **Supporting documents** — working materials such as the Entity Relationship (ER) diagram, ontology mapping references, and task tracking references.
 
 ## Connect with Energy Web
 - [Twitter](https://twitter.com/energywebx)
