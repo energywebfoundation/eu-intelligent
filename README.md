@@ -51,6 +51,11 @@ This repository documents and version-controls EWAG's technical deliverables and
       This work is carried out in the context of the INTELLIGENT project, funded by the European Union under the Horizon Europe programme (Grant Agreement No. 101160678). Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or CINEA. Neither the European Union nor the granting authority can be held responsible for them.
     </td>
   </tr>
+  <tr>
+    <td valign="middle" align="center" colspan="2">
+      <img src="./images/SWISS.png" alt="Funded by Swiss State Secretariat for Education, Research and Innovation (SERI)" width="450">
+    </td>
+  </tr>
 </table>
 
 ## License
