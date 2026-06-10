@@ -53,6 +53,7 @@ This repository documents and version-controls EWAG's technical deliverables and
   </tr>
   <tr>
     <td valign="middle" align="center" colspan="2">
+      This work has received funding from the Swiss State Secretariat for Education, Research and Innovation (SERI).<br/><br/>
       <img src="./images/SWISS.png" alt="Funded by Swiss State Secretariat for Education, Research and Innovation (SERI)" width="450">
     </td>
   </tr>
