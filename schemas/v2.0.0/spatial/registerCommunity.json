@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.intelligent-project.eu/spatial/Community.schema.json",
+  "title": "Community",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Represents an INTELLIGENT energy community (int:Community). Closest CIM parent is cim:EnergyArea.",
+  "type": "object",
+  "properties": {
+    "communityId": {
+      "type": "string",
+      "description": "Primary unique identifier for the energy community. RFC 4122 UUID v4."
+    },
+    "communityName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Human-readable name of the energy community."
+    },
+    "communityType": {
+      "type": "string",
+      "enum": [
+        "CollectiveSelfConsumption",
+        "RenewableEnergyCommunity",
+        "CitizenEnergyCommunity",
+        "EnergyCooperative",
+        "VirtualNetMetering",
+        "Other"
+      ],
+      "maxLength": 50,
+      "description": "Legal organisational type per EU energy community legislation (EU Directive 2018/2001 RED II and 2019/944)."
+    },
+    "legalStructure": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Official legal structure of the community, e.g. ZEV (LIC/CELL Switzerland), CSC scheme (Greenvolt Portugal), RSC collective (Aran Islands Ireland)."
+    },
+    "communityOperatorId": {
+      "type": "string",
+      "description": "FK to the Actor who acts as community manager/operator. Contact and legal details are on the Actor record."
+    },
+    "country": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2,
+      "description": "ISO 3166-1 alpha-2 country code of the community location."
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90,
+      "description": "Anonymised representative latitude coordinate, decimal degrees, per D2.1 GDPR guidance."
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180,
+      "description": "Anonymised representative longitude coordinate, decimal degrees, per D2.1 GDPR guidance."
+    },
+    "gridConnectionVoltageLevel": {
+      "type": "number",
+      "description": "Nominal voltage at which the community connects to the distribution grid, in V. IEC CIM VoltageLevel. E.g. 400 V (LV), 20000 V (MV)."
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "ISO 4217 currency code for billing and trading within this community."
+    },
+    "marketMechanism": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Type of energy sharing or trading mechanism permitted, e.g. P2P trading, collective self-consumption, virtual net metering."
+    },
+    "co2EmissionFactor": {
+      "type": "number",
+      "default": null,
+      "description": "Grid CO2 emission factor for this community grid mix, in gCO2/kWh."
+    },
+    "yearEstablished": {
+      "type": "integer",
+      "description": "Year the community was formally established."
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of the community-site association. ISO 8601 with timezone."
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of the association, ISO 8601 with timezone. Populated when a community leaves a site."
+    },
+    "operationalRole": {
+      "type": "string",
+      "enum": [
+        "Primary",
+        "Secondary",
+        "Virtual"
+      ],
+      "default": "Primary",
+      "description": "Role of this community at this site. Primary = main operating community. Secondary = co-existing community. Virtual = virtual trading only, no physical presence."
+    }
+  },
+  "required": [
+    "communityId",
+    "communityName",
+    "communityType",
+    "country",
+    "currency",
+    "validFrom"
+  ],
+  "additionalProperties": false
+}

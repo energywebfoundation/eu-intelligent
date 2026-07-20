@@ -1,0 +1,58 @@
+{
+  "communityId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "siteList": [
+    {
+      "siteId": "a1b2c3d4-1234-4a5b-9c8d-1e2f3a4b5c6d",
+      "siteName": "Lugaggia Innovation Community (LIC)",
+      "description": "Residential building block within the LIC community pilot.",
+      "latitude": 46.0037,
+      "longitude": 8.9511,
+      "buildingType": "Residential",
+      "marketMechanism": "P2P trading",
+      "co2EmissionFactor": 128.5,
+      "fromNodeId": "b2c3d4e5-2345-4b6c-8d9e-2f3a4b5c6d7e",
+      "toNodeId": "c3d4e5f6-3456-4c7d-9e0f-3a4b5c6d7e8f",
+      "lineId": "d4e5f6a7-4567-4d8e-0f1a-4b5c6d7e8f90",
+      "operatorId": "e5f6a7b8-5678-4e9f-1a2b-5c6d7e8f9012",
+      "connectedNodeId": "f6a7b8c9-6789-4f0a-2b3c-6d7e8f901234",
+      "conductance": 0.015,
+      "lineSusceptance": 0.002,
+      "transformerReactance": 4.75,
+      "minNodeVoltage": 0.95,
+      "maxNodeVoltage": 1.05,
+      "maxLineFlow": 250000.0,
+      "phaseConfiguration": "ThreePhase",
+      "ownerIds": [
+        "a7b8c9d0-789a-4b1c-3d4e-7f8091a2b3c4"
+      ],
+      "createdAt": "2026-05-19T15:02:00+02:00",
+      "updatedAt": "2026-07-16T06:18:00+02:00"
+    },
+    {
+      "siteId": "b8c9d0e1-89ab-4c2d-4e5f-8091a2b3c4d5",
+      "siteName": "CELL Community Building 2",
+      "description": "Second building added to the CELL pilot under multi-building expansion.",
+      "latitude": 47.0502,
+      "longitude": 8.3093,
+      "buildingType": "Residential",
+      "marketMechanism": "Collective self-consumption",
+      "co2EmissionFactor": 96.2,
+      "fromNodeId": "c9d0e1f2-9abc-4d3e-5f60-91a2b3c4d5e6",
+      "toNodeId": "d0e1f2a3-abcd-4e4f-6071-a2b3c4d5e6f7",
+      "lineId": "e1f2a3b4-bcde-4f50-7182-b3c4d5e6f708",
+      "operatorId": "f2a3b4c5-cdef-4061-8293-c4d5e6f70819",
+      "connectedNodeId": "a3b4c5d6-def0-4172-9304-d5e6f708192a",
+      "conductance": 0.021,
+      "lineSusceptance": 0.003,
+      "transformerReactance": 3.2,
+      "minNodeVoltage": 0.95,
+      "maxNodeVoltage": 1.05,
+      "maxLineFlow": 200000.0,
+      "phaseConfiguration": "ThreePhase",
+      "ownerIds": [
+        "b4c5d6e7-ef01-4283-a415-e6f708192a3b"
+      ],
+      "createdAt": "2026-06-01T10:30:00+02:00"
+    }
+  ]
+}

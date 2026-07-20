@@ -1,0 +1,856 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.intelligent-project.eu/assets/Asset.schema.json",
+  "title": "AssetBatch",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Envelope for a batch of INTELLIGENT Assets (int:Asset and its subclasses), all belonging to the same Facility and/or Site. Every asset subtype inherits all base Asset fields (assetId, ownedBy, assetName, assetType, validFrom, validUntil, isControllable, commissioningDate, manufacturer, model, serialNumber, nominalPower, protocol). AssetState and AssetMeasurement fields (operational state and time-series readings) are out of scope for this schema and are covered by the separate AssetState and AssetMeasurement EWDS Topic schemas.",
+  "type": "object",
+  "properties": {
+    "facilityId": {
+      "type": "string",
+      "description": "FK to the Facility that all Assets in this batch are installed at. At least one of facilityId or siteId is required."
+    },
+    "siteId": {
+      "type": "string",
+      "description": "FK to the Site that all Assets in this batch are located at. At least one of facilityId or siteId is required."
+    },
+    "batteryUnits": {
+      "type": "array",
+      "items": {
+        "title": "BatteryUnit",
+        "type": "object",
+        "description": "int:BatteryUnit (renamed from Battery, cim:BatteryUnit / IEC 61850 ZBAT). Represents an electrical energy storage system (BESS). Inherits all base Asset fields. Excludes AssetState/AssetMeasurement fields, which belong to the separate AssetState/AssetMeasurement EWDS Topic schemas.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "Primary identifier of the asset."
+          },
+          "ownedBy": {
+            "type": "string",
+            "description": "FK to the owning Member, via Actor class."
+          },
+          "assetName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Human-readable name of the asset."
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Controlled AssetType enumeration value. Fixed per array (see const on each subtype).",
+            "const": "BatteryUnit"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the asset's validity/installation period. ISO 8601 with timezone."
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the asset's validity period, ISO 8601 with timezone. Omit if still active."
+          },
+          "isControllable": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the asset exposes an actuator interface. Actual control state is handled by ControlAssetCommand, not this field."
+          },
+          "commissioningDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the asset was commissioned, YYYY-MM-DD. Maps to CIM Asset.lifecycle.installationDate."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Asset manufacturer name. Maps to CIM Asset.AssetInfo.manufacturer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Asset model/product name. Maps to CIM Asset.AssetInfo.catalogAssetType."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "Manufacturer serial number. Maps to CIM Asset.serialNumber."
+          },
+          "nominalPower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated/nominal active power capacity, in W. Required by IEC CIM for any PowerSystemResource; overridden with more specific capacity fields in subclasses where applicable."
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "MQTT",
+              "REST",
+              "RS485",
+              "Modbus",
+              "VE.Bus",
+              "OCPP",
+              "MBUS",
+              "Proprietary"
+            ],
+            "description": "Communication protocol used by the asset. Required when isControllable is true."
+          },
+          "pInBatMax": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum charge power rating, in W. Must be > 0 and <= nominalPower. Maps to ZBAT.MaxChaRte."
+          },
+          "pOutBatMax": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum discharge power rating, in W. Must be > 0 and <= nominalPower. Maps to ZBAT.MaxDsRte."
+          },
+          "ratedE": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated energy storage capacity, in kWh. Mandatory CIM field for BatteryUnit."
+          },
+          "batteryTechnology": {
+            "type": "string",
+            "enum": [
+              "Li-Ion",
+              "LiFePO4",
+              "NaNiCl2",
+              "LeadAcid",
+              "FlowBattery",
+              "NiMH",
+              "Other"
+            ],
+            "description": "Battery chemistry/technology, from D2.1 pilot data."
+          },
+          "socMin": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Minimum allowable state of charge, percentage (0-100). Must be less than socMax."
+          },
+          "socMax": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Maximum allowable state of charge, percentage (0-100). Must be greater than socMin."
+          }
+        },
+        "required": [
+          "assetId",
+          "ownedBy",
+          "assetName",
+          "assetType",
+          "validFrom",
+          "isControllable",
+          "commissioningDate",
+          "nominalPower",
+          "pInBatMax",
+          "pOutBatMax",
+          "ratedE",
+          "socMin",
+          "socMax"
+        ],
+        "if": {
+          "properties": {
+            "isControllable": {
+              "const": true
+            }
+          },
+          "required": [
+            "isControllable"
+          ]
+        },
+        "then": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "photoVoltaicUnits": {
+      "type": "array",
+      "items": {
+        "title": "PhotovoltaicUnit",
+        "type": "object",
+        "description": "int:PhotovoltaicUnit (renamed from PvSystem, cim:PhotoVoltaicUnit). Represents a photovoltaic generation system including panels and inverter. Inherits all base Asset fields. Excludes AssetState/AssetMeasurement fields.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "Primary identifier of the asset."
+          },
+          "ownedBy": {
+            "type": "string",
+            "description": "FK to the owning Member, via Actor class."
+          },
+          "assetName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Human-readable name of the asset."
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Controlled AssetType enumeration value. Fixed per array (see const on each subtype).",
+            "const": "PhotovoltaicUnit"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the asset's validity/installation period. ISO 8601 with timezone."
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the asset's validity period, ISO 8601 with timezone. Omit if still active."
+          },
+          "isControllable": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the asset exposes an actuator interface. Actual control state is handled by ControlAssetCommand, not this field."
+          },
+          "commissioningDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the asset was commissioned, YYYY-MM-DD. Maps to CIM Asset.lifecycle.installationDate."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Asset manufacturer name. Maps to CIM Asset.AssetInfo.manufacturer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Asset model/product name. Maps to CIM Asset.AssetInfo.catalogAssetType."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "Manufacturer serial number. Maps to CIM Asset.serialNumber."
+          },
+          "nominalPower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated/nominal active power capacity, in W. Required by IEC CIM for any PowerSystemResource; overridden with more specific capacity fields in subclasses where applicable."
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "MQTT",
+              "REST",
+              "RS485",
+              "Modbus",
+              "VE.Bus",
+              "OCPP",
+              "MBUS",
+              "Proprietary"
+            ],
+            "description": "Communication protocol used by the asset. Required when isControllable is true."
+          },
+          "peakPower": {
+            "type": "number",
+            "minimum": 0.001,
+            "description": "Installed peak power, in kWp."
+          },
+          "orientation": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 360,
+            "description": "Panel azimuth angle in decimal degrees from north (0-360)."
+          },
+          "tiltAngle": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Panel tilt angle in decimal degrees from horizontal (0-90)."
+          },
+          "altitude": {
+            "type": "number",
+            "description": "Installation altitude in metres above sea level."
+          },
+          "mountingType": {
+            "type": "string",
+            "enum": [
+              "Fixed",
+              "SingleAxisTracker",
+              "DualAxisTracker"
+            ],
+            "description": "Panel mounting configuration, from D2.1 mounting configuration field."
+          },
+          "inverterType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Inverter make/model string."
+          },
+          "numberOfMPPTs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32,
+            "description": "Number of MPPT channels on the inverter."
+          }
+        },
+        "required": [
+          "assetId",
+          "ownedBy",
+          "assetName",
+          "assetType",
+          "validFrom",
+          "isControllable",
+          "commissioningDate",
+          "nominalPower",
+          "peakPower"
+        ],
+        "if": {
+          "properties": {
+            "isControllable": {
+              "const": true
+            }
+          },
+          "required": [
+            "isControllable"
+          ]
+        },
+        "then": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "hydroGeneratingUnits": {
+      "type": "array",
+      "items": {
+        "title": "HydroGeneratingUnit",
+        "type": "object",
+        "description": "int:HydroGeneratingUnit (renamed from HydroPowerPlant, cim:HydroGeneratingUnit / IEC 61970-301). Represents a small hydro generation unit, as present at the CELL pilot site (HSLU). Inherits all base Asset fields. Excludes AssetState/AssetMeasurement fields.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "Primary identifier of the asset."
+          },
+          "ownedBy": {
+            "type": "string",
+            "description": "FK to the owning Member, via Actor class."
+          },
+          "assetName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Human-readable name of the asset."
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Controlled AssetType enumeration value. Fixed per array (see const on each subtype).",
+            "const": "HydroGeneratingUnit"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the asset's validity/installation period. ISO 8601 with timezone."
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the asset's validity period, ISO 8601 with timezone. Omit if still active."
+          },
+          "isControllable": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the asset exposes an actuator interface. Actual control state is handled by ControlAssetCommand, not this field."
+          },
+          "commissioningDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the asset was commissioned, YYYY-MM-DD. Maps to CIM Asset.lifecycle.installationDate."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Asset manufacturer name. Maps to CIM Asset.AssetInfo.manufacturer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Asset model/product name. Maps to CIM Asset.AssetInfo.catalogAssetType."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "Manufacturer serial number. Maps to CIM Asset.serialNumber."
+          },
+          "nominalPower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated/nominal active power capacity, in W. Required by IEC CIM for any PowerSystemResource; overridden with more specific capacity fields in subclasses where applicable."
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "MQTT",
+              "REST",
+              "RS485",
+              "Modbus",
+              "VE.Bus",
+              "OCPP",
+              "MBUS",
+              "Proprietary"
+            ],
+            "description": "Communication protocol used by the asset. Required when isControllable is true."
+          },
+          "turbineType": {
+            "type": "string",
+            "enum": [
+              "pelton",
+              "kaplan",
+              "francis",
+              "bulb",
+              "propeller",
+              "crossFlow",
+              "deriaz",
+              "turgo"
+            ],
+            "description": "Turbine type enumeration per IEC 62256:2017 hydraulic turbine classification. NOTE: the ontology workbook leaves the Field Name column blank for this element; 'turbineType' is inferred from the int:turbineType IRI and should be confirmed before treating as stable."
+          }
+        },
+        "required": [
+          "assetId",
+          "ownedBy",
+          "assetName",
+          "assetType",
+          "validFrom",
+          "isControllable",
+          "commissioningDate",
+          "nominalPower",
+          "turbineType"
+        ],
+        "if": {
+          "properties": {
+            "isControllable": {
+              "const": true
+            }
+          },
+          "required": [
+            "isControllable"
+          ]
+        },
+        "then": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "evChargers": {
+      "type": "array",
+      "items": {
+        "title": "EVChargingStation",
+        "type": "object",
+        "description": "int:EVChargingStation. Corresponds to the CIM concept of an ElectricVehicleChargingStation and aligns with OCPP terminology. Inherits all base Asset fields. Excludes AssetState/AssetMeasurement fields.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "Primary identifier of the asset."
+          },
+          "ownedBy": {
+            "type": "string",
+            "description": "FK to the owning Member, via Actor class."
+          },
+          "assetName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Human-readable name of the asset."
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Controlled AssetType enumeration value. Fixed per array (see const on each subtype).",
+            "const": "EVChargingStation"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the asset's validity/installation period. ISO 8601 with timezone."
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the asset's validity period, ISO 8601 with timezone. Omit if still active."
+          },
+          "isControllable": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the asset exposes an actuator interface. Actual control state is handled by ControlAssetCommand, not this field."
+          },
+          "commissioningDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the asset was commissioned, YYYY-MM-DD. Maps to CIM Asset.lifecycle.installationDate."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Asset manufacturer name. Maps to CIM Asset.AssetInfo.manufacturer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Asset model/product name. Maps to CIM Asset.AssetInfo.catalogAssetType."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "Manufacturer serial number. Maps to CIM Asset.serialNumber."
+          },
+          "nominalPower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated/nominal active power capacity, in W. Required by IEC CIM for any PowerSystemResource; overridden with more specific capacity fields in subclasses where applicable."
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "MQTT",
+              "REST",
+              "RS485",
+              "Modbus",
+              "VE.Bus",
+              "OCPP",
+              "MBUS",
+              "Proprietary"
+            ],
+            "description": "Communication protocol used by the asset. Required when isControllable is true."
+          },
+          "maxChargePower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum charge power rating, in W."
+          },
+          "maxDischargePower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum discharge power rating (V2G), in W."
+          },
+          "powerFlowCapability": {
+            "type": "string",
+            "enum": [
+              "G2V",
+              "V2G"
+            ],
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Direction(s) of power flow the charger supports."
+          },
+          "connectorStandard": {
+            "type": "string",
+            "enum": [
+              "Type2",
+              "CCS",
+              "CHAdeMO",
+              "CCS2"
+            ],
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Charging connector standard, from D2.1 'Charging connector standard'."
+          },
+          "chargingMode": {
+            "type": "string",
+            "enum": [
+              "AC",
+              "DC"
+            ],
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "AC or DC charging."
+          },
+          "numberOfConnectors": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of physical connectors."
+          }
+        },
+        "required": [
+          "assetId",
+          "ownedBy",
+          "assetName",
+          "assetType",
+          "validFrom",
+          "isControllable",
+          "commissioningDate",
+          "nominalPower",
+          "maxChargePower",
+          "maxDischargePower",
+          "powerFlowCapability",
+          "connectorStandard",
+          "chargingMode",
+          "numberOfConnectors"
+        ],
+        "if": {
+          "properties": {
+            "isControllable": {
+              "const": true
+            }
+          },
+          "required": [
+            "isControllable"
+          ]
+        },
+        "then": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "heatPumps": {
+      "type": "array",
+      "items": {
+        "title": "HeatPump",
+        "type": "object",
+        "description": "int:HeatPump. Added: core Asset subtype at all INTELLIGENT pilot sites (LIC, CELL, Aran Islands), specified in D2.1 under 'Thermal Load - Heat Pump'. Inherits all base Asset fields. Excludes AssetState/AssetMeasurement fields.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "Primary identifier of the asset."
+          },
+          "ownedBy": {
+            "type": "string",
+            "description": "FK to the owning Member, via Actor class."
+          },
+          "assetName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Human-readable name of the asset."
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Controlled AssetType enumeration value. Fixed per array (see const on each subtype).",
+            "const": "HeatPump"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the asset's validity/installation period. ISO 8601 with timezone."
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the asset's validity period, ISO 8601 with timezone. Omit if still active."
+          },
+          "isControllable": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the asset exposes an actuator interface. Actual control state is handled by ControlAssetCommand, not this field."
+          },
+          "commissioningDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the asset was commissioned, YYYY-MM-DD. Maps to CIM Asset.lifecycle.installationDate."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Asset manufacturer name. Maps to CIM Asset.AssetInfo.manufacturer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Asset model/product name. Maps to CIM Asset.AssetInfo.catalogAssetType."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "Manufacturer serial number. Maps to CIM Asset.serialNumber."
+          },
+          "nominalPower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated/nominal active power capacity, in W. Required by IEC CIM for any PowerSystemResource; overridden with more specific capacity fields in subclasses where applicable."
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "MQTT",
+              "REST",
+              "RS485",
+              "Modbus",
+              "VE.Bus",
+              "OCPP",
+              "MBUS",
+              "Proprietary"
+            ],
+            "description": "Communication protocol used by the asset. Required when isControllable is true."
+          },
+          "heatSourceType": {
+            "type": "string",
+            "enum": [
+              "AirSource (ASHP)",
+              "GroundSource (GSHP)",
+              "WaterSource (WSHP)"
+            ],
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Heat pump source type."
+          },
+          "operatingMode": {
+            "type": "string",
+            "enum": [
+              "HeatingOnly",
+              "CoolingOnly",
+              "HeatingAndCooling"
+            ],
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Supported operating mode(s)."
+          },
+          "maxPowerRating": {
+            "type": "number",
+            "description": "Maximum rated electrical power, in W."
+          },
+          "thermalStorageVolume": {
+            "type": "number",
+            "description": "Volume of associated thermal storage tank in litres, if applicable."
+          }
+        },
+        "required": [
+          "assetId",
+          "ownedBy",
+          "assetName",
+          "assetType",
+          "validFrom",
+          "isControllable",
+          "commissioningDate",
+          "nominalPower"
+        ],
+        "if": {
+          "properties": {
+            "isControllable": {
+              "const": true
+            }
+          },
+          "required": [
+            "isControllable"
+          ]
+        },
+        "then": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "electricBoilers": {
+      "type": "array",
+      "items": {
+        "title": "ElectricBoiler",
+        "type": "object",
+        "description": "int:ElectricBoiler. Added: distinct 'Thermal Load' asset type present at LIC and CELL pilot sites, per D2.1. Inherits all base Asset fields. Excludes AssetState/AssetMeasurement fields.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "Primary identifier of the asset."
+          },
+          "ownedBy": {
+            "type": "string",
+            "description": "FK to the owning Member, via Actor class."
+          },
+          "assetName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Human-readable name of the asset."
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Controlled AssetType enumeration value. Fixed per array (see const on each subtype).",
+            "const": "ElectricBoiler"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the asset's validity/installation period. ISO 8601 with timezone."
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the asset's validity period, ISO 8601 with timezone. Omit if still active."
+          },
+          "isControllable": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the asset exposes an actuator interface. Actual control state is handled by ControlAssetCommand, not this field."
+          },
+          "commissioningDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the asset was commissioned, YYYY-MM-DD. Maps to CIM Asset.lifecycle.installationDate."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Asset manufacturer name. Maps to CIM Asset.AssetInfo.manufacturer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Asset model/product name. Maps to CIM Asset.AssetInfo.catalogAssetType."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "Manufacturer serial number. Maps to CIM Asset.serialNumber."
+          },
+          "nominalPower": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rated/nominal active power capacity, in W. Required by IEC CIM for any PowerSystemResource; overridden with more specific capacity fields in subclasses where applicable."
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "MQTT",
+              "REST",
+              "RS485",
+              "Modbus",
+              "VE.Bus",
+              "OCPP",
+              "MBUS",
+              "Proprietary"
+            ],
+            "description": "Communication protocol used by the asset. Required when isControllable is true."
+          },
+          "storageVolume": {
+            "type": "number",
+            "description": "Hot water storage tank volume in litres (e.g. 500 l, 420 l at LIC)."
+          }
+        },
+        "required": [
+          "assetId",
+          "ownedBy",
+          "assetName",
+          "assetType",
+          "validFrom",
+          "isControllable",
+          "commissioningDate",
+          "nominalPower"
+        ],
+        "if": {
+          "properties": {
+            "isControllable": {
+              "const": true
+            }
+          },
+          "required": [
+            "isControllable"
+          ]
+        },
+        "then": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "facilityId"
+      ]
+    },
+    {
+      "required": [
+        "siteId"
+      ]
+    }
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,29 @@
+{
+  "siteId": "a1b2c3d4-1234-4a5b-9c8d-1e2f3a4b5c6d",
+  "facilityList": [
+    {
+      "facilityId": "c5d6e7f8-f012-4394-b526-f708192a3b4c",
+      "ownerIds": [
+        "d6e7f8a9-0123-44a5-c637-08192a3b4c5d"
+      ],
+      "loadModelId": "e7f8a9b0-1234-45b6-d748-192a3b4c5d6e",
+      "name": "Building A - Unit 1",
+      "p": 3200.0,
+      "q": 450.0,
+      "phaseConnection": "Yn",
+      "facilityType": "Apartment",
+      "numApartmentUnits": 1
+    },
+    {
+      "facilityId": "f8a9b0c1-2345-46c7-e859-2a3b4c5d6e7f",
+      "ownerIds": [],
+      "loadModelId": "a9b0c1d2-3456-47d8-f960-3b4c5d6e7f80",
+      "name": "Building A - Common Area",
+      "p": 850.0,
+      "q": 120.0,
+      "phaseConnection": "Y",
+      "facilityType": "GroupOfUnits",
+      "numApartmentUnits": 6
+    }
+  ]
+}
