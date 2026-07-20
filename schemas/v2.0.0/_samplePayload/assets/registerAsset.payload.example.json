@@ -1,0 +1,121 @@
+{
+  "facilityId": "c5d6e7f8-f012-4394-b526-f708192a3b4c",
+  "batteryUnits": [
+    {
+      "assetId": "11111111-1111-4111-8111-111111111111",
+      "ownedBy": "d6e7f8a9-0123-44a5-c637-08192a3b4c5d",
+      "assetName": "LIC Battery Storage Unit 1",
+      "assetType": "BatteryUnit",
+      "validFrom": "2025-11-01T00:00:00+01:00",
+      "isControllable": true,
+      "protocol": "Modbus",
+      "commissioningDate": "2025-11-01",
+      "manufacturer": "BYD",
+      "model": "Battery-Box Premium HVS",
+      "serialNumber": "BYD-HVS-00123",
+      "nominalPower": 5000,
+      "pInBatMax": 5000,
+      "pOutBatMax": 5000,
+      "ratedE": 13.8,
+      "batteryTechnology": "Li-Ion",
+      "socMin": 10,
+      "socMax": 95
+    }
+  ],
+  "photoVoltaicUnits": [
+    {
+      "assetId": "22222222-2222-4222-8222-222222222222",
+      "ownedBy": "d6e7f8a9-0123-44a5-c637-08192a3b4c5d",
+      "assetName": "LIC Rooftop PV Array",
+      "assetType": "PhotovoltaicUnit",
+      "validFrom": "2025-09-15T00:00:00+02:00",
+      "isControllable": false,
+      "commissioningDate": "2025-09-15",
+      "manufacturer": "SolarEdge",
+      "model": "SE10K",
+      "serialNumber": "SE-10K-04471",
+      "nominalPower": 10000,
+      "peakPower": 10.2,
+      "orientation": 175.0,
+      "tiltAngle": 32.0,
+      "altitude": 273.0,
+      "mountingType": "Fixed",
+      "inverterType": "SolarEdge SE10K-RWS",
+      "numberOfMPPTs": 2
+    }
+  ],
+  "hydroGeneratingUnits": [
+    {
+      "assetId": "66666666-6666-4666-8666-666666666666",
+      "ownedBy": "d6e7f8a9-0123-44a5-c637-08192a3b4c5d",
+      "assetName": "CELL Small Hydro Unit 1",
+      "assetType": "HydroGeneratingUnit",
+      "validFrom": "2024-06-01T00:00:00+02:00",
+      "isControllable": false,
+      "commissioningDate": "2024-06-01",
+      "manufacturer": "Andritz Hydro",
+      "model": "Compact Kaplan CK-15",
+      "serialNumber": "AH-CK15-00456",
+      "nominalPower": 15000,
+      "turbineType": "kaplan"
+    }
+  ],
+  "evChargers": [
+    {
+      "assetId": "33333333-3333-4333-8333-333333333333",
+      "ownedBy": "d6e7f8a9-0123-44a5-c637-08192a3b4c5d",
+      "assetName": "LIC EV Charger - Carport 1",
+      "assetType": "EVChargingStation",
+      "validFrom": "2026-02-01T00:00:00+01:00",
+      "isControllable": true,
+      "protocol": "OCPP",
+      "commissioningDate": "2026-02-01",
+      "manufacturer": "ABB",
+      "model": "Terra AC Wallbox",
+      "serialNumber": "ABB-TAC-08832",
+      "nominalPower": 11000,
+      "maxChargePower": 11000,
+      "maxDischargePower": 0,
+      "powerFlowCapability": "G2V",
+      "connectorStandard": "Type2",
+      "chargingMode": "AC",
+      "numberOfConnectors": 1
+    }
+  ],
+  "heatPumps": [
+    {
+      "assetId": "44444444-4444-4444-8444-444444444444",
+      "ownedBy": "d6e7f8a9-0123-44a5-c637-08192a3b4c5d",
+      "assetName": "LIC Heat Pump - Building A",
+      "assetType": "HeatPump",
+      "validFrom": "2025-10-01T00:00:00+02:00",
+      "isControllable": true,
+      "protocol": "MQTT",
+      "commissioningDate": "2025-10-01",
+      "manufacturer": "Viessmann",
+      "model": "Vitocal 250-A",
+      "serialNumber": "VIT-250A-77281",
+      "nominalPower": 6000,
+      "heatSourceType": "AirSource (ASHP)",
+      "operatingMode": "HeatingAndCooling",
+      "maxPowerRating": 6000,
+      "thermalStorageVolume": 300
+    }
+  ],
+  "electricBoilers": [
+    {
+      "assetId": "55555555-5555-4555-8555-555555555555",
+      "ownedBy": "d6e7f8a9-0123-44a5-c637-08192a3b4c5d",
+      "assetName": "LIC Electric Boiler - Building A",
+      "assetType": "ElectricBoiler",
+      "validFrom": "2025-10-01T00:00:00+02:00",
+      "isControllable": false,
+      "commissioningDate": "2025-10-01",
+      "manufacturer": "Sunhelen",
+      "model": "EB-500L",
+      "serialNumber": "SH-EB500-33921",
+      "nominalPower": 9000,
+      "storageVolume": 500
+    }
+  ]
+}

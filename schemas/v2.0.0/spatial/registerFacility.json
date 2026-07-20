@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.intelligent-project.eu/spatial/Facility.schema.json",
+  "title": "FacilityBatch",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Envelope for a batch of Facility records (int:Facility, formerly GridBuilding) all belonging to the same Site. Each Facility is an apartment, unit, or group of apartments within the Site; it sits behind the metering and control boundary and owns or operates Assets. Maps to cim:EnergyConsumer (IEC CIM 61970-301 Wires package). State and time-series measurement fields (occupancy, operational mode, power/current/voltage/frequency readings) are out of scope for this schema and are covered by the separate FacilityState and FacilityMeasurement EWDS Topic schemas.",
+  "type": "object",
+  "properties": {
+    "siteId": {
+      "type": "string",
+      "description": "FK to the Site that all Facilities in facilityList belong to."
+    },
+    "facilityList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "Facility",
+        "type": "object",
+        "properties": {
+          "facilityId": {
+            "type": "string",
+            "description": "Primary identifier of the facility or building."
+          },
+          "ownerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "FKs to the owner(s) of the facility, via Actor. Empty if the facility is owned by the public/community."
+          },
+          "loadModelId": {
+            "type": "string",
+            "description": "FK to the cim:EnergyConsumer load model representing this facility in the distribution network topology. Not all facilities have a formal load model (e.g. Aran Islands has incomplete network data)."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Name of the building or facility."
+          },
+          "p": {
+            "type": "number",
+            "description": "Steady-state active power demand in W, used for network load-flow calculations. Planning value, not a real-time measurement. CIM attribute name is p (not power)."
+          },
+          "q": {
+            "type": "number",
+            "description": "Steady-state reactive power demand in VAr. Planning value. CIM attribute name is q."
+          },
+          "phaseConnection": {
+            "type": "string",
+            "enum": [
+              "Y",
+              "Yn",
+              "D",
+              "Ii"
+            ],
+            "description": "How the load phases are connected. CIM PhaseShuntConnectionKind enum: Y, Yn, D, Ii. Distinct from phaseConfiguration on Site/UsagePoint, which describes the grid connection point rather than the load connection."
+          },
+          "facilityType": {
+            "type": "string",
+            "description": "The type of facility: whether it is an apartment, a unit, or a group of apartments/units. Field name and enumeration are not yet finalised in the ontology workbook; verify against upcoming ontology updates before treating as stable."
+          },
+          "numApartmentUnits": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "The number of apartment units represented in this facility."
+          }
+        },
+        "required": [
+          "facilityId",
+          "name",
+          "numApartmentUnits"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "siteId",
+    "facilityList"
+  ],
+  "additionalProperties": false
+}
