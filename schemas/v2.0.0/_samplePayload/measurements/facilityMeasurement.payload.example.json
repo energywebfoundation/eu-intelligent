@@ -1,0 +1,27 @@
+{
+  "siteId": "a1b2c3d4-1234-4a5b-9c8d-1e2f3a4b5c6d",
+  "facilities": [
+    {
+      "facilityId": "c5d6e7f8-f012-4394-b526-f708192a3b4c",
+      "measurements": [
+        {
+          "timestamp": "2026-08-03T09:00:00+02:00",
+          "tIndoorC": 20.9,
+          "humidity": 44.0,
+          "powerIn": 1.3,
+          "voltage": 230.7
+        }
+      ]
+    },
+    {
+      "facilityId": "f8a9b0c1-2345-46c7-e859-2a3b4c5d6e7f",
+      "measurements": [
+        {
+          "timestamp": "2026-08-03T09:00:00+02:00",
+          "powerIn": 0.8,
+          "powerOut": 0.0
+        }
+      ]
+    }
+  ]
+}
