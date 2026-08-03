@@ -1,0 +1,23 @@
+{
+  "communityId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "measurements": [
+    {
+      "timestamp": "2026-08-03T09:00:00+02:00",
+      "powerIn": 42.7,
+      "powerOut": 18.3,
+      "energyIn": 10.68,
+      "energyOut": 4.58,
+      "voltage": 231.4,
+      "frequency": 50.01
+    },
+    {
+      "timestamp": "2026-08-03T09:15:00+02:00",
+      "powerIn": 39.2,
+      "powerOut": 21.0,
+      "energyIn": 9.8,
+      "energyOut": 5.25,
+      "voltage": 230.9,
+      "frequency": 49.99
+    }
+  ]
+}

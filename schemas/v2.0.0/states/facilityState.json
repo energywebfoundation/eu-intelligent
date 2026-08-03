@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.intelligent-project.eu/spatial/FacilityState.schema.json",
+  "title": "FacilityStateBatch",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Batch of state snapshots (int:FacilityState) for multiple Facilities, all belonging to the same Site, mirroring the FacilityMeasurement schema's hierarchy.",
+  "type": "object",
+  "properties": {
+    "siteId": {
+      "type": "string",
+      "description": "FK to the Site that all Facilities in this batch belong to."
+    },
+    "facilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "State snapshots for one Facility within the batch.",
+        "properties": {
+          "facilityId": {
+            "type": "string",
+            "description": "FK to the Facility these state snapshots belong to."
+          },
+          "states": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single state snapshot for a Facility (int:FacilityState).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the state is recorded. ISO 8601 with timezone."
+                },
+                "occupancy": {
+                  "type": "integer",
+                  "description": "The number of occupants in the facility/building.",
+                  "default": 0
+                },
+                "operationalMode": {
+                  "type": "string",
+                  "enum": [
+                    "Normal",
+                    "Away",
+                    "Setback",
+                    "Emergency"
+                  ],
+                  "description": "Operational mode of the facility. NOTE: pending TUM confirmation per the ontology workbook; not yet explicitly present in any partner file."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "facilityId",
+          "states"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "siteId",
+    "facilities"
+  ],
+  "additionalProperties": false
+}

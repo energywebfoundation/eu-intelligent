@@ -1,0 +1,369 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/AssetMeasurementBatch",
+  "title": "AssetMeasurementBatch",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Envelope for a batch of interval measurement readings (int:AssetMeasurement) for multiple Assets, all belonging to the same Site. Assets are grouped by subtype, mirroring the AssetBatch (registration) schema. Per the ontology workbook, the generic AssetMeasurement sheet is a cross-reference matrix only ('REFER TO EACH ASSET TYPE FOR FIELD DEFINITIONS'); field definitions here are taken from each asset subtype's own MEASUREMENT section, which supersedes the AssetMeasurement sheet. AssetState fields (operational/control state, e.g. stateOfCharge, evConnected, dhwEnabled) are out of scope and are covered by a separate AssetState EWDS Topic schema.",
+  "type": "object",
+  "properties": {
+    "siteId": {
+      "type": "string",
+      "description": "FK to the Site that all Assets in this batch are located at."
+    },
+    "batteryUnits": {
+      "type": "array",
+      "items": {
+        "title": "int:BatteryUnit",
+        "type": "object",
+        "description": "Measurement readings for one BatteryUnit within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for a BatteryUnit (int:AssetMeasurement, BatteryUnit-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurement is recorded. ISO 8601 with timezone."
+                },
+                "power": {
+                  "type": "number",
+                  "description": "Instantaneous battery power, in W."
+                },
+                "chargePower": {
+                  "type": "number",
+                  "description": "Instantaneous power flowing into the battery, in W."
+                },
+                "dischargePower": {
+                  "type": "number",
+                  "description": "Instantaneous power flowing out of the battery, in W."
+                },
+                "chargeEnergy": {
+                  "type": "number",
+                  "description": "Cumulative energy charged into the battery, in kWh.",
+                  "minimum": 0
+                },
+                "dischargeEnergy": {
+                  "type": "number",
+                  "description": "Cumulative energy discharged from the battery, in kWh.",
+                  "minimum": 0
+                },
+                "temperature": {
+                  "type": "number",
+                  "description": "Instantaneous battery cell/pack temperature, in \u00b0C.",
+                  "maximum": 80
+                },
+                "voltage": {
+                  "type": "number",
+                  "description": "Battery voltage, in V.",
+                  "minimum": 0,
+                  "maximum": 1000
+                },
+                "current": {
+                  "type": "number",
+                  "description": "Instantaneous battery current, in A.",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "photoVoltaicUnits": {
+      "type": "array",
+      "items": {
+        "title": "int:PhotovoltaicUnit",
+        "type": "object",
+        "description": "Measurement readings for one PhotovoltaicUnit within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for a PhotovoltaicUnit (int:AssetMeasurement, PhotovoltaicUnit-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurement is recorded. ISO 8601 with timezone."
+                },
+                "dcPower": {
+                  "type": "number",
+                  "description": "Instantaneous DC power generated by the PV system, in kW.",
+                  "minimum": 0
+                },
+                "dcVoltage": {
+                  "type": "number",
+                  "description": "Instantaneous DC voltage generated by the PV system, in V.",
+                  "minimum": 0
+                },
+                "dcCurrent": {
+                  "type": "number",
+                  "description": "Instantaneous DC current generated by the PV system, in A.",
+                  "minimum": 0
+                },
+                "mppEnergy": {
+                  "type": "number",
+                  "description": "Energy associated with maximum power point tracking, in kWh.",
+                  "minimum": 0
+                },
+                "mppPower": {
+                  "type": "number",
+                  "description": "Instantaneous power at maximum power point tracking. Should be <= the asset's peakPower, in kW.",
+                  "minimum": 0
+                },
+                "energyYield": {
+                  "type": "number",
+                  "description": "Cumulative or daily PV energy yield, in kWh.",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "hydroGeneratingUnits": {
+      "type": "array",
+      "items": {
+        "title": "int:HydroGeneratingUnit",
+        "type": "object",
+        "description": "Measurement readings for one HydroGeneratingUnit within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for a HydroGeneratingUnit (int:AssetMeasurement, HydroGeneratingUnit-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurement is recorded. ISO 8601 with timezone."
+                },
+                "power": {
+                  "type": "number",
+                  "description": "Instantaneous power output, in W.",
+                  "minimum": 0
+                },
+                "energyYield": {
+                  "type": "number",
+                  "description": "Cumulative or daily hydro energy yield, in kWh.",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "evChargers": {
+      "type": "array",
+      "items": {
+        "title": "int:EVChargingStation",
+        "type": "object",
+        "description": "Measurement readings for one EVChargingStation within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for an EVChargingStation (int:AssetMeasurement, EVChargingStation-specific fields). Excludes stateOfCharge and evConnected, which are AssetState fields, not measurements.",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurement is recorded. ISO 8601 with timezone."
+                },
+                "power": {
+                  "type": "number",
+                  "description": "Instantaneous charging/discharging power. Positive = G2V, negative = V2G, in W."
+                },
+                "importEnergy": {
+                  "type": "number",
+                  "description": "Cumulative energy delivered to connected EVs, in Wh.",
+                  "minimum": 0
+                },
+                "exportEnergy": {
+                  "type": "number",
+                  "description": "Cumulative energy returned from EVs (V2G), in Wh.",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "heatPumps": {
+      "type": "array",
+      "items": {
+        "title": "int:HeatPump",
+        "type": "object",
+        "description": "Measurement readings for one HeatPump within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for a HeatPump (int:AssetMeasurement, HeatPump-specific fields). Excludes dhwEnabled, which is an AssetState field, not a measurement.",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurement is recorded. ISO 8601 with timezone."
+                },
+                "power": {
+                  "type": "number",
+                  "description": "Instantaneous electrical power consumption, in W."
+                },
+                "supplyTemperature": {
+                  "type": "number",
+                  "description": "Hot water supply temperature, in \u00b0C."
+                },
+                "returnTemperature": {
+                  "type": "number",
+                  "description": "Return water temperature, in \u00b0C."
+                },
+                "cumulativeEnergyConsumed": {
+                  "type": "number",
+                  "description": "Cumulative electrical energy consumed, in Wh."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "electricBoilers": {
+      "type": "array",
+      "items": {
+        "title": "int:ElectricBoiler",
+        "type": "object",
+        "description": "Measurement readings for one ElectricBoiler within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for an ElectricBoiler (int:AssetMeasurement, ElectricBoiler-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurement is recorded. ISO 8601 with timezone."
+                },
+                "power": {
+                  "type": "number",
+                  "description": "Instantaneous electrical power consumption, in W."
+                },
+                "maxPowerRating": {
+                  "type": "number",
+                  "description": "Maximum rated electrical power (e.g. 9 kW, 10 kW, 3 kW at LIC sites). NOTE: the ontology workbook lists this under ElectricBoiler's MEASUREMENT section, but it reads as a static nameplate rating rather than a time-series reading; flagged for confirmation, in W."
+                },
+                "dhwTemperature": {
+                  "type": "number",
+                  "description": "Domestic hot water temperature, in \u00b0C."
+                },
+                "cumulativeEnergyConsumed": {
+                  "type": "number",
+                  "description": "Cumulative electrical energy consumed, in Wh."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "siteId"
+  ],
+  "additionalProperties": false
+}

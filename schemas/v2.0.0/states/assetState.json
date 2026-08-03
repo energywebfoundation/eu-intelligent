@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/AssetStateBatch",
+  "title": "AssetStateBatch",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Envelope for a batch of state snapshots (int:AssetState) for multiple Assets, all belonging to the same Site. Assets are grouped by subtype, mirroring the AssetMeasurement schema. Per the ontology workbook, the generic AssetState sheet is a cross-reference matrix only ('REFER TO EACH ASSET TYPE FOR FIELD DEFINITIONS'); field definitions here are taken from each asset subtype's own ASSET STATE section, which supersedes the AssetState sheet. Only BatteryUnit, EVChargingStation, and HeatPump have defined ASSET STATE fields in the workbook; PhotovoltaicUnit, HydroGeneratingUnit, and ElectricBoiler have none and are omitted from this schema.",
+  "type": "object",
+  "properties": {
+    "siteId": {
+      "type": "string",
+      "description": "FK to the Site that all Assets in this batch are located at."
+    },
+    "batteryUnits": {
+      "type": "array",
+      "items": {
+        "title": "int:BatteryUnit",
+        "type": "object",
+        "description": "State snapshots for one BatteryUnit within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these state snapshots belong to."
+          },
+          "states": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single state snapshot for a BatteryUnit (int:AssetState, BatteryUnit-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of this state snapshot. ISO 8601 with timezone."
+                },
+                "batteryState": {
+                  "type": "string",
+                  "enum": [
+                    "charging",
+                    "discharging",
+                    "waiting",
+                    "full",
+                    "empty",
+                    "unknown"
+                  ],
+                  "description": "Current battery operating state. Maps to IEC CIM BatteryStateKind. NOTE: the ontology workbook's enum cell has a formatting anomaly (first value appears as 'chargingStored'); values here are normalised to the standard CIM BatteryStateKind set (charging, discharging, waiting, full, empty, unknown) and should be confirmed against the source."
+                },
+                "stateOfCharge": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "State of charge as a percentage (0-100). Maps to ZBAT.SoC."
+                },
+                "stateOfHealth": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "State of health as a percentage (0-100). Maps to ZBAT.SoH."
+                },
+                "storedEnergy": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Energy currently stored, in kWh. CIM mandatory. Distinct from ratedE and stateOfCharge."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "states"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "evChargers": {
+      "type": "array",
+      "items": {
+        "title": "int:EVChargingStation",
+        "type": "object",
+        "description": "State snapshots for one EVChargingStation within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these state snapshots belong to."
+          },
+          "states": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single state snapshot for an EVChargingStation (int:AssetState, EVChargingStation-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of this state snapshot. ISO 8601 with timezone."
+                },
+                "stateOfCharge": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "State of charge of the connected EV battery as a percentage (0-100)."
+                },
+                "evConnected": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "True if an EV is currently connected."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "states"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "heatPumps": {
+      "type": "array",
+      "items": {
+        "title": "int:HeatPump",
+        "type": "object",
+        "description": "State snapshots for one HeatPump within the batch.",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "FK to the Asset these state snapshots belong to."
+          },
+          "states": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single state snapshot for a HeatPump (int:AssetState, HeatPump-specific fields).",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of this state snapshot. ISO 8601 with timezone."
+                },
+                "dhwEnabled": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "True if the heat pump is currently used for domestic hot water production."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "states"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "siteId"
+  ],
+  "additionalProperties": false
+}

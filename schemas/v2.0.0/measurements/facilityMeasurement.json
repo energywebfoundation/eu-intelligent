@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.intelligent-project.eu/spatial/FacilityMeasurement.schema.json",
+  "title": "FacilityMeasurementBatch",
+  "description": "EWDS Topic schema for Client Gateway payload validation. Batch of interval measurement readings (int:FacilityMeasurement) for multiple Facilities, all belonging to the same Site. All fields other than timestamp are optional since not every metering point captures every quantity. Note: avgLoad and avgGrid from the ontology workbook are marked Removed status and are excluded here.",
+  "type": "object",
+  "properties": {
+    "siteId": {
+      "type": "string",
+      "description": "FK to the Site that all Facilities in this batch belong to."
+    },
+    "facilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "Measurement readings for one Facility within the batch.",
+        "properties": {
+          "facilityId": {
+            "type": "string",
+            "description": "FK to the Facility these measurements belong to."
+          },
+          "measurements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "description": "A single interval measurement reading for a Facility (int:FacilityMeasurement).",
+              "properties": {
+                "tIndoorC": {
+                  "type": "number",
+                  "description": "Indoor air temperature of the facility in degrees Celsius. Only available where a temperature sensor is physically installed; not all INTELLIGENT pilot facilities have indoor sensors."
+                },
+                "humidity": {
+                  "type": "number",
+                  "description": "Average facility humidity per interval."
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the measurements are recorded. ISO 8601 with timezone."
+                },
+                "powerIn": {
+                  "type": "number",
+                  "description": "Average consumed power per interval."
+                },
+                "powerOut": {
+                  "type": "number",
+                  "description": "Average produced power per interval."
+                },
+                "current": {
+                  "type": "number",
+                  "description": "Average current per interval."
+                },
+                "energyIn": {
+                  "type": "number",
+                  "description": "Average amount of energy imported per interval."
+                },
+                "energyOut": {
+                  "type": "number",
+                  "description": "Average amount of energy exported per interval."
+                },
+                "voltage": {
+                  "type": "number",
+                  "description": "Instantaneous voltage."
+                },
+                "frequency": {
+                  "type": "number",
+                  "description": "AC frequency."
+                }
+              },
+              "required": [
+                "timestamp"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "facilityId",
+          "measurements"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "siteId",
+    "facilities"
+  ],
+  "additionalProperties": false
+}
