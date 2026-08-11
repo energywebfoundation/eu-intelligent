@@ -3,60 +3,69 @@
   "$id": "https://intelligent-project.eu/ontology/v1.0.0/assets/AssetControlCommand",
   "title": "AssetControlCommandBatch",
   "description": "EWDS Topic schema for Client Gateway payload validation. Batch of control commands (int:AssetControlCommand, subclass of sosa:Actuation) issued by the FOS Trading Module. Each command targets exactly one Asset via its own assetId; a single batch may dispatch commands to multiple different assets.",
-  "type": "array",
-  "minItems": 1,
-  "items": {
-    "title": "int:AssetControlCommand",
-    "type": "object",
-    "description": "Control command issued to a controllable asset by the FOS Trading Module. Subclass of sosa:Actuation.",
-    "properties": {
-      "assetId": {
-        "description": "FK to target Asset. IRI: int:assetId. UUID v4.",
-        "type": "string",
-        "format": "uuid"
-      },
-      "controlMode": {
-        "description": "Control mode for the asset. IRI: int:controlMode.",
-        "type": "string",
-        "maxLength": 25
-      },
-      "powerSetpointkw": {
-        "description": "Power setpoint in kilowatts. IRI: int:powerSetpointkw. Unit: kW.",
-        "type": "number"
-      },
-      "fracSetpoint": {
-        "description": "Fractional setpoint (0.0-1.0). IRI: int:fracSetpoint.",
-        "type": "number",
-        "minimum": 0,
-        "maximum": 1
-      },
-      "on": {
-        "description": "On/off command. IRI: int:on.",
-        "type": "boolean"
-      },
-      "tempHeatSetpointC": {
-        "description": "Heating temperature setpoint in degrees Celsius. IRI: int:tempHeatSetpointC. Unit: \u00b0C.",
-        "type": "number"
-      },
-      "tempCoolSetpointC": {
-        "description": "Cooling temperature setpoint in degrees Celsius. IRI: int:tempCoolSetpointC. Unit: \u00b0C.",
-        "type": "number"
-      },
-      "tempwaterheaterSetpointC": {
-        "description": "Water heater temperature setpoint in degrees Celsius. IRI: int:tempwaterheaterSetpointC. Unit: \u00b0C.",
-        "type": "number"
-      },
-      "timestamp": {
-        "description": "Command issue timestamp. IRI: int:timestamp. ISO 8601 with timezone.",
-        "type": "string",
-        "format": "date-time"
+  "type": "object",
+  "properties": {
+    "assetControlCommands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "int:AssetControlCommand",
+        "type": "object",
+        "description": "Control command issued to a controllable asset by the FOS Trading Module. Subclass of sosa:Actuation.",
+        "properties": {
+          "assetId": {
+            "description": "FK to target Asset. IRI: int:assetId. UUID v4.",
+            "type": "string",
+            "format": "uuid"
+          },
+          "controlMode": {
+            "description": "Control mode for the asset. IRI: int:controlMode.",
+            "type": "string",
+            "maxLength": 25
+          },
+          "powerSetpointkw": {
+            "description": "Power setpoint in kilowatts. IRI: int:powerSetpointkw. Unit: kW.",
+            "type": "number"
+          },
+          "fracSetpoint": {
+            "description": "Fractional setpoint (0.0-1.0). IRI: int:fracSetpoint.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "on": {
+            "description": "On/off command. IRI: int:on.",
+            "type": "boolean"
+          },
+          "tempHeatSetpointC": {
+            "description": "Heating temperature setpoint in degrees Celsius. IRI: int:tempHeatSetpointC. Unit: \u00b0C.",
+            "type": "number"
+          },
+          "tempCoolSetpointC": {
+            "description": "Cooling temperature setpoint in degrees Celsius. IRI: int:tempCoolSetpointC. Unit: \u00b0C.",
+            "type": "number"
+          },
+          "tempwaterheaterSetpointC": {
+            "description": "Water heater temperature setpoint in degrees Celsius. IRI: int:tempwaterheaterSetpointC. Unit: \u00b0C.",
+            "type": "number"
+          },
+          "timestamp": {
+            "description": "Command issue timestamp. IRI: int:timestamp. ISO 8601 with timezone.",
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "assetId",
+          "controlMode",
+          "timestamp"
+        ],
+        "additionalProperties": false
       }
-    },
-    "required": [
-      "assetId",
-      "controlMode",
-      "timestamp"
-    ],
-    "additionalProperties": false
-  }
+    }
+  },
+  "required": [
+    "assetControlCommands"
+  ],
+  "additionalProperties": false
 }
