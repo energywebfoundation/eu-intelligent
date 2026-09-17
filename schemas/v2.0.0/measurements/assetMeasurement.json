@@ -7,6 +7,7 @@
   "properties": {
     "siteId": {
       "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
       "description": "FK to the Site that all Assets in this batch are located at."
     },
     "batteryUnits": {
@@ -18,6 +19,7 @@
         "properties": {
           "assetId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Asset these measurements belong to."
           },
           "measurements": {
@@ -56,7 +58,7 @@
                 },
                 "temperature": {
                   "type": "number",
-                  "description": "Instantaneous battery cell/pack temperature, in \u00b0C.",
+                  "description": "Instantaneous battery cell/pack temperature, in °C.",
                   "maximum": 80
                 },
                 "voltage": {
@@ -94,6 +96,7 @@
         "properties": {
           "assetId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Asset these measurements belong to."
           },
           "measurements": {
@@ -162,6 +165,7 @@
         "properties": {
           "assetId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Asset these measurements belong to."
           },
           "measurements": {
@@ -210,6 +214,7 @@
         "properties": {
           "assetId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Asset these measurements belong to."
           },
           "measurements": {
@@ -262,6 +267,7 @@
         "properties": {
           "assetId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Asset these measurements belong to."
           },
           "measurements": {
@@ -282,11 +288,11 @@
                 },
                 "supplyTemperature": {
                   "type": "number",
-                  "description": "Hot water supply temperature, in \u00b0C."
+                  "description": "Hot water supply temperature, in °C."
                 },
                 "returnTemperature": {
                   "type": "number",
-                  "description": "Return water temperature, in \u00b0C."
+                  "description": "Return water temperature, in °C."
                 },
                 "cumulativeEnergyConsumed": {
                   "type": "number",
@@ -316,6 +322,7 @@
         "properties": {
           "assetId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Asset these measurements belong to."
           },
           "measurements": {
@@ -340,7 +347,7 @@
                 },
                 "dhwTemperature": {
                   "type": "number",
-                  "description": "Domestic hot water temperature, in \u00b0C."
+                  "description": "Domestic hot water temperature, in °C."
                 },
                 "cumulativeEnergyConsumed": {
                   "type": "number",
