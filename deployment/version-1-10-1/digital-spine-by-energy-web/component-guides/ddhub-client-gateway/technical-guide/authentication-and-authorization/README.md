@@ -14,7 +14,7 @@ For organizations choosing to implement user authentication, the Client Gateway 
    * Limited to sending, receiving, and processing messages through the Client Gateway.
    * Users with this scope can interact with defined message topics but do not have access to system configuration or administrative tasks.
 
-The Client Gateway uses a [**Self-Sovereign Identity (SSI)**](../../../self-sovereign-identities/ssi-hub.md) key called a [**DID (Decentralized Identifier)**](../../../../../../core-concepts/decentralized-identifiers-dids.md) to securely represent the gateway itself rather than individual users. Operational roles for the gateway are directly encoded in the DID.
+The Client Gateway uses a [**Self-Sovereign Identity (SSI)**](../../../self-sovereign-identities/ssi-hub.md) key called a [**DID (Decentralized Identifier)**](https://docs.energyweb.org/core-concepts/decentralized-identifiers-dids) to securely represent the gateway itself rather than individual users. Operational roles for the gateway are directly encoded in the DID.
 
 ***
 
