@@ -16,7 +16,7 @@
           "assetId": {
             "description": "FK to target Asset. IRI: int:assetId. UUID v4.",
             "type": "string",
-            "format": "uuid"
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
           },
           "controlMode": {
             "description": "Control mode for the asset. IRI: int:controlMode.",

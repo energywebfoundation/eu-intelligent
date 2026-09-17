@@ -14,10 +14,12 @@
         "properties": {
           "facilityId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Facility that all Assets in this batch are installed at. At least one of facilityId or siteId is required."
           },
           "siteId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Site that all Assets in this batch are located at. At least one of facilityId or siteId is required."
           },
           "batteryUnits": {
@@ -29,6 +31,7 @@
               "properties": {
                 "assetId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the asset."
                 },
                 "ownedBy": {
@@ -180,6 +183,7 @@
               "properties": {
                 "assetId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the asset."
                 },
                 "ownedBy": {
@@ -329,6 +333,7 @@
               "properties": {
                 "assetId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the asset."
                 },
                 "ownedBy": {
@@ -450,6 +455,7 @@
               "properties": {
                 "assetId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the asset."
                 },
                 "ownedBy": {
@@ -609,6 +615,7 @@
               "properties": {
                 "assetId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the asset."
                 },
                 "ownedBy": {
@@ -745,6 +752,7 @@
               "properties": {
                 "assetId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the asset."
                 },
                 "ownedBy": {
