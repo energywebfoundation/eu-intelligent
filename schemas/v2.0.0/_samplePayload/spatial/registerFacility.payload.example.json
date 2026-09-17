@@ -6,9 +6,9 @@
         {
           "facilityId": "c5d6e7f8-f012-4394-b526-f708192a3b4c",
           "ownerIds": [
-            "d6e7f8a9-0123-44a5-c637-08192a3b4c5d"
+            "d6e7f8a9-0123-44a5-8637-08192a3b4c5d"
           ],
-          "loadModelId": "e7f8a9b0-1234-45b6-d748-192a3b4c5d6e",
+          "loadModelId": "e7f8a9b0-1234-45b6-8748-192a3b4c5d6e",
           "name": "Building A - Unit 1",
           "p": 3200.0,
           "q": 450.0,
@@ -17,9 +17,9 @@
           "numApartmentUnits": 1
         },
         {
-          "facilityId": "f8a9b0c1-2345-46c7-e859-2a3b4c5d6e7f",
+          "facilityId": "f8a9b0c1-2345-46c7-8859-2a3b4c5d6e7f",
           "ownerIds": [],
-          "loadModelId": "a9b0c1d2-3456-47d8-f960-3b4c5d6e7f80",
+          "loadModelId": "a9b0c1d2-3456-47d8-8960-3b4c5d6e7f80",
           "name": "Building A - Common Area",
           "p": 850.0,
           "q": 120.0,
@@ -33,11 +33,11 @@
       "siteId": "b2c3d4e5-2345-4b6c-8d9e-2f3a4b5c6d7e",
       "facilityList": [
         {
-          "facilityId": "a0b1c2d3-3456-4405-c637-4a5b6c7d8e9f",
+          "facilityId": "a0b1c2d3-3456-4405-8637-4a5b6c7d8e9f",
           "ownerIds": [
-            "b1c2d3e4-4567-4516-d748-5b6c7d8e9f01"
+            "b1c2d3e4-4567-4516-8748-5b6c7d8e9f01"
           ],
-          "loadModelId": "c2d3e4f5-5678-4627-e859-6c7d8e9f0123",
+          "loadModelId": "c2d3e4f5-5678-4627-8859-6c7d8e9f0123",
           "name": "Building B - Unit 1",
           "p": 2800.0,
           "q": 380.0,

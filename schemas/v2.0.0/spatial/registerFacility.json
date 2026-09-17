@@ -14,6 +14,7 @@
         "properties": {
           "siteId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the Site that all Facilities in facilityList belong to."
           },
           "facilityList": {
@@ -25,17 +26,20 @@
               "properties": {
                 "facilityId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "Primary identifier of the facility or building."
                 },
                 "ownerIds": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
                   },
                   "description": "FKs to the owner(s) of the facility, via Actor. Empty if the facility is owned by the public/community."
                 },
                 "loadModelId": {
                   "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
                   "description": "FK to the cim:EnergyConsumer load model representing this facility in the distribution network topology. Not all facilities have a formal load model (e.g. Aran Islands has incomplete network data)."
                 },
                 "name": {

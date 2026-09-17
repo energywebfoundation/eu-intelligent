@@ -7,6 +7,7 @@
   "properties": {
     "communityId": {
       "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
       "description": "FK to the Community that all Sites in siteList belong to."
     },
     "siteList": {
@@ -18,6 +19,7 @@
         "properties": {
           "siteId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "Primary identifier for the Site (pilot deployment location)."
           },
           "siteName": {
@@ -64,22 +66,27 @@
           },
           "fromNodeId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "Reference to the originating connectivity node of a line segment within the site network topology. Used for power flow modelling and branch-node incidence representation."
           },
           "toNodeId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "Reference to the destination connectivity node of a line segment within the site network topology."
           },
           "lineId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "Unique identifier of the line segment connecting two nodes within the site network."
           },
           "operatorId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "FK to the market participant (household or prosumer, via Actor) that operates the site."
           },
           "connectedNodeId": {
             "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             "description": "Reference to the network connectivity node where the market participant is electrically connected within the site network."
           },
           "conductance": {
@@ -114,7 +121,8 @@
           "ownerIds": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
             },
             "description": "FKs to the owner(s) of the site, via Actor."
           },
