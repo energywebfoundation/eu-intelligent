@@ -143,7 +143,6 @@
               },
               "required": [
                 "assetId",
-                "ownedBy",
                 "assetName",
                 "assetType",
                 "validFrom",
@@ -297,7 +296,6 @@
               },
               "required": [
                 "assetId",
-                "ownedBy",
                 "assetName",
                 "assetType",
                 "validFrom",
@@ -419,7 +417,6 @@
               },
               "required": [
                 "assetId",
-                "ownedBy",
                 "assetName",
                 "assetType",
                 "validFrom",
@@ -574,7 +571,6 @@
               },
               "required": [
                 "assetId",
-                "ownedBy",
                 "assetName",
                 "assetType",
                 "validFrom",
@@ -717,7 +713,6 @@
               },
               "required": [
                 "assetId",
-                "ownedBy",
                 "assetName",
                 "assetType",
                 "validFrom",
@@ -828,7 +823,6 @@
               },
               "required": [
                 "assetId",
-                "ownedBy",
                 "assetName",
                 "assetType",
                 "validFrom",
