@@ -1,0 +1,43 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [develop, master]
+
+concurrency:
+  group: pr-check-${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  json-checks:
+    name: Validate JSON schemas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install check-jsonschema
+        run: pip install check-jsonschema
+
+      - name: Validate JSON syntax
+        run: |
+          set -euo pipefail
+          status=0
+          while IFS= read -r -d '' file; do
+            if ! python -m json.tool "$file" > /dev/null; then
+              echo "::error file=$file::Invalid JSON"
+              status=1
+            fi
+          done < <(find schemas -type f -name '*.json' -print0)
+          exit "$status"
+
+      - name: Validate schemas against their JSON Schema meta-schema
+        run: |
+          set -euo pipefail
+          mapfile -d '' schema_files < <(find schemas -type f -name '*.json' -not -path '*/_samplePayload/*' -print0)
+          check-jsonschema --check-metaschema "${schema_files[@]}"
