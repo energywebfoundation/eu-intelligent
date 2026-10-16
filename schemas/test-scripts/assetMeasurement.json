@@ -1,0 +1,19 @@
+{
+  "siteId": "your site id",
+  "photoVoltaicUnits": [
+    {
+      "assetId": "your asset id",
+      "measurements": [
+        {
+          "timestamp": "2026-08-03T09:00:00+02:00",
+          "dcPower": 0,
+          "dcVoltage": 0,
+          "dcCurrent": 0,
+          "mppEnergy": 0,
+          "mppPower": 0.3,
+          "energyYield": 1.2
+        }
+      ]
+    }
+  ]
+}
