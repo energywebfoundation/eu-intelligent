@@ -1,13 +1,10 @@
-import { inspect } from 'node:util';
+import { setTimeout } from 'node:timers/promises';
 
 import {
   ConfigFacade,
   prepareAnyError,
 } from '@energywebfoundation/generic-green-proofs-api';
-import {
-  type JSONValue,
-  retry,
-} from '@energywebfoundation/generic-green-proofs-common';
+import { type JSONValue } from '@energywebfoundation/generic-green-proofs-common';
 import { Logger } from '@energywebfoundation/generic-green-proofs-logger';
 import {
   Injectable,
@@ -21,8 +18,7 @@ export abstract class MessageBroker {
   abstract send(params: { payload: JSONValue; requestId: string }): Promise<void>;
   abstract readUntil<T>(params: {
     clientId: string;
-    /** Parse can throw an error - in that case a retry happens */
-    parse: (payloads: unknown[]) => T;
+    parse: (payloads: unknown[]) => ({ success: true; data: T } | { success: false; delay: number });
   }): Promise<T>;
 }
 
@@ -77,7 +73,7 @@ export class DigitalSpineMessageBroker extends MessageBroker implements OnApplic
   }
 
   /** We need to wait for requestId to appear in retrieved messages, or otherwise timeout waiting */
-  public async readUntil<T>({ clientId, parse }: { clientId: string; parse: (payloads: unknown[]) => T }): Promise<T> {
+  public async readUntil<T>({ clientId, parse }: { clientId: string; parse: (payloads: unknown[]) => ({ success: true; data: T } | { success: false; delay: number }) }): Promise<T> {
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': this.appConfig.config.dsClientGatewayApiKey,
@@ -90,33 +86,48 @@ export class DigitalSpineMessageBroker extends MessageBroker implements OnApplic
     url.searchParams.set('topicName', this.appConfig.config.dsClientGatewayTopicReadGsyData);
     url.searchParams.set('topicOwner', this.appConfig.config.dsClientGatewayTopicOwner);
     url.searchParams.set('clientId', clientId);
+    url.searchParams.set('amount', '5');
 
-    const localOriginRecords = await retry(async () => {
+    return await this.repeatUntilSuccess(async () => {
+      const messages = await this.fetchWithParser({
+        fetchPromise: fetch(url.href, {
+          method: 'GET',
+          headers,
+        }),
+        parser: DSGetLocalOriginRecordsResponse,
+        errorDescription: 'Error when reading messages from Digital Spine',
+      });
+
+      const filteredMessages = messages.filter(m => m.signatureValid === 'SUCCESS');
+
       try {
-        const messages = await this.fetchWithParser({
-          fetchPromise: fetch(url.href, {
-            method: 'GET',
-            headers,
-          }),
-          parser: DSGetLocalOriginRecordsResponse,
-          errorDescription: 'Error when reading messages from Digital Spine',
-        });
-
-        const filteredMessages = messages.filter(m => m.signatureValid === 'SUCCESS');
-
-        return parse(filteredMessages.map(m => m.payload));
+        const parseResult = parse(filteredMessages.map(m => m.payload));
+        return parseResult;
       } catch (error) {
-        this.loggerService.logInfo(`[DigitalSpineMessageBroker] failed reading message: ${inspect(error)}`);
-
+        this.loggerService.logError({ message: `Failed parsing messages: ${JSON.stringify(filteredMessages)}`, error });
         throw error;
       }
-    }, {
-      delay: 5_000, // 5 seconds
-      retries: 18, // 90 seconds total
-      signal: this.readLocalOriginRecordsAbortController.signal,
     });
+  }
 
-    return localOriginRecords;
+  private async repeatUntilSuccess<T>(fn: () => Promise<({ success: true; data: T } | { success: false; delay: number })>, retries = 0): Promise<T> {
+    const maxRetries = 25;
+    const result = await fn();
+
+    if (result.success === false) {
+      if (this.readLocalOriginRecordsAbortController.signal.aborted === true) {
+        throw new Error('Reading messages aborted!');
+      } else {
+        if (retries === maxRetries) {
+          throw new Error(`Failed reading messages after ${maxRetries} retries`);
+        } else {
+          await setTimeout(result.delay);
+          return this.repeatUntilSuccess(fn, retries + 1);
+        }
+      }
+    }
+
+    return result.data;
   }
 
   private async fetchWithParser<T extends z.ZodType>({

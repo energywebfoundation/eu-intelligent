@@ -51,10 +51,10 @@ export const UnitCertificate = z.object({
   issuance_timestamp: z.iso.datetime().describe('Digital Certificate issuance date - points at original production Digital Certificate issuance date'),
 
   // Other fields
-  claim_permitted: z.boolean(),
   attribute_mode: z.enum(['not_marketed', 'retired_official', 'sold_external']),
-  permitted_claim_text_id: z.string().describe('Reason for claim_permitted status'),
-  bundling_status: z.enum(['bundled', 'unbundled']).describe('Unbundled indicates that the attribute was transferred separately from the electricity'),
+  claim_permitted: z.boolean().optional(),
+  permitted_claim_text_id: z.string().describe('Reason for claim_permitted status').optional(),
+  bundling_status: z.enum(['bundled', 'unbundled']).describe('Unbundled indicates that the attribute was transferred separately from the electricity').optional(),
 
   content_hash: z.string().describe('SHA256 hash of certificate\'s canonicalized data'),
 });

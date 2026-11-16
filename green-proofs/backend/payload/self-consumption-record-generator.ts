@@ -76,8 +76,8 @@ function tradeAndDelivery(f: Faker, partial: Partial<DomainTypes.SelfConsumption
 
 function attributeProvenance(f: Faker, partial: Partial<DomainTypes.SelfConsumptionRecord['attribute_provenance']> = {}): DomainTypes.SelfConsumptionRecord['attribute_provenance'] {
   return defaultsDeep(partial, {
-    claim_permitted: true,
-    storage_mediated_flag: f.datatype.boolean(),
+    // These fields are not supplied from GSY
+    // claim_permitted: true,
   });
 }
 

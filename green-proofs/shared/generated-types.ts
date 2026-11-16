@@ -96,10 +96,10 @@ export namespace DomainTypes {
       support_scheme_status: SupportSchemeStatus.nullable(),
       storage_mediated_flag: z.boolean(),
       attribute_mode: AttributeMode.optional().default('not_marketed'),
-      bundling_status: BundlingStatus,
-      claim_permitted: z.boolean(),
-      permitted_claim_text_id: z.string(),
-      uniqueness_control_reference: z.string(),
+      bundling_status: BundlingStatus.optional(),
+      claim_permitted: z.boolean().optional(),
+      permitted_claim_text_id: z.string().optional(),
+      uniqueness_control_reference: z.string().optional(),
     }),
     beneficiary_and_claim: z.object({
       owner_id: z.string(),
@@ -155,7 +155,7 @@ export namespace DomainTypes {
       self_consumption_event_reference: z.string(),
     }),
     attribute_provenance: z.object({
-      claim_permitted: z.boolean(),
+      claim_permitted: z.boolean().optional(),
     }),
     beneficiary_and_claim: z.object({
       claim_holder_id: z.string(),

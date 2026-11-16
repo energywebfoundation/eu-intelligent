@@ -27,8 +27,6 @@ const configSchema = z.object({
   DS_CLIENT_GATEWAY_TOPIC_REQUEST_GSY_DATA: z.string(),
   /** Parameter for reading local origin records requested from GSY through Digital Spine */
   DS_CLIENT_GATEWAY_TOPIC_READ_GSY_DATA: z.string(),
-  /** Parameter for reading messages from Digital Spine */
-  DS_CLIENT_GATEWAY_TOPIC_SEND: z.string(),
   /** Parameter for requesting and reading local origin records from GSY through Digital Spine */
   DS_CLIENT_GATEWAY_TOPIC_OWNER: z.string(),
   /** Cron schedule of the task retrieving energy records */

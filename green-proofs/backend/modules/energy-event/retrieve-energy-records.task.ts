@@ -6,8 +6,12 @@ import {
   type ITask,
   RegisterTask,
 } from '@energywebfoundation/generic-green-proofs-api';
-import { orderBy } from '@energywebfoundation/generic-green-proofs-common';
+import {
+  get,
+  orderBy,
+} from '@energywebfoundation/generic-green-proofs-common';
 import { Logger } from '@energywebfoundation/generic-green-proofs-logger';
+import { isPlainObject } from '@nestjs/common/internal';
 import { DomainTypes } from '@shared/generated-types.js';
 import z from 'zod';
 
@@ -48,7 +52,7 @@ export class RetrieveEnergyRecordsTask implements ITask<Storage> {
   }
 
   public async run(logger: Logger, storage: Storage | null): Promise<Storage> {
-    const clientId = storage?.clientId ?? `gp-intelligent-client-id-${randomUUID()}`;
+    const clientId = storage?.clientId ?? `gpIntelligentClientId${randomUUID().split('-').toReversed()[0]}`; // /^[a-zA-Z0-9]+$/ max 247 chars
     let lastTimeRangeUpperBound = storage ? new Date(storage.lastTimeRangeUpperBound) : this.floorDateToRange(this.getInitialStartTime());
 
     const ranges = this.getTimeRanges(lastTimeRangeUpperBound);
@@ -58,10 +62,7 @@ export class RetrieveEnergyRecordsTask implements ITask<Storage> {
         const { requestId } = await this.sendMessageToGetEnergyRecords({ range, logger });
         const energyRecords = await this.readEnergyRecords({ requestId, clientId, logger });
 
-        if (energyRecords.length === 0 && !this.configFacade.isTest()) {
-          // Do not log 0 energy records in tests
-          logger.logInfo(`Retrieved ${energyRecords.length} energy records for range: ${range.start.toISOString()} -- ${range.end.toISOString()}`);
-        }
+        logger.logInfo(`Retrieved ${energyRecords.length} energy records for range: ${range.start.toISOString()} -- ${range.end.toISOString()}`);
 
         if (energyRecords.length === 0) {
           lastTimeRangeUpperBound = range.end;
@@ -82,7 +83,8 @@ export class RetrieveEnergyRecordsTask implements ITask<Storage> {
 
         lastTimeRangeUpperBound = range.end;
       } catch (rawError: unknown) {
-        logger.logError({ message: `Cannot fetch range: <${range.start.toISOString()}, ${range.end.toISOString()}>. Aborting safely.`, error: rawError });
+        /** Error is double reported here, because there is bug in GGP logger that does not display error property in console */
+        logger.logError({ message: `Cannot fetch range: <${range.start.toISOString()}, ${range.end.toISOString()}>. Aborting safely. Error: ${JSON.stringify(rawError)}`, error: rawError });
         break;
       }
     }
@@ -150,7 +152,7 @@ export class RetrieveEnergyRecordsTask implements ITask<Storage> {
   private async sendMessageToGetEnergyRecords({ range, logger }: { range: { start: Date; end: Date }; logger: Logger }): Promise<{ requestId: string }> {
     const requestId = `gp-intelligent-req-id-${randomUUID()}`;
 
-    logger.logInfo(`Sending request for energy records for requestId=${requestId}`);
+    logger.logInfo(`Sending request for energy records for requestId=${requestId} and range=<${range.start.toISOString()}, ${range.end.toISOString()}>`);
     await this.messageBroker.send({
       requestId,
       payload: {
@@ -172,12 +174,13 @@ export class RetrieveEnergyRecordsTask implements ITask<Storage> {
         const gsyResponsesForRequestId = gsyResponses.filter(msg => msg.requestId === requestId); // usually only one message should match
 
         if (gsyResponsesForRequestId.length === 0) {
-          throw new Error(`Cannot read energy records: no messages for requestId=${requestId} found`);
+          logger.logInfo(`Found ${gsyResponses.length} messages, and 0 for requestId=${requestId}`);
+          return { success: false, delay: gsyResponses.length === 0 ? 5000 : 2000 }; // if we got >nothing< the delay should be longer, if we however received something not for us: shorter
         }
 
         const energyRecords = gsyResponsesForRequestId.flatMap(m => m.data);
 
-        return energyRecords;
+        return { success: true, data: energyRecords };
       },
     });
   }
@@ -186,5 +189,22 @@ export class RetrieveEnergyRecordsTask implements ITask<Storage> {
 const GSYResponse = z.object({
   requestId: z.string(),
   success: z.boolean(),
-  data: z.array(z.union([DomainTypes.LocalOriginRecord, DomainTypes.SelfConsumptionRecord])),
+  data: z.array(
+    // Payloads carry the discriminator only in `identity.record_type`, so lift it to the top level
+    // before the discriminated union inspects the input.
+    z.preprocess(
+      (value) => {
+        if (isPlainObject(value)) {
+          const recordType = get(value, 'identity.record_type');
+          return { record_type: recordType, ...value };
+        }
+
+        return value;
+      },
+      z.discriminatedUnion('record_type', [
+        DomainTypes.LocalOriginRecord.extend({ record_type: z.literal('local_origin_record') }),
+        DomainTypes.SelfConsumptionRecord.extend({ record_type: z.literal('self_consumption_record') }),
+      ]),
+    ),
+  ),
 });

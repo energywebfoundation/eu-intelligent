@@ -61,10 +61,7 @@ export const unitViewBuilder = (builder: UnitViewBuilder) =>
       issuance_timestamp: root.createdAt.toISOString(),
 
       // Other fields
-      claim_permitted: true,
       attribute_mode: 'not_marketed',
-      permitted_claim_text_id: '',
-      bundling_status: 'bundled',
     } satisfies Omit<UnitCertificate, 'content_hash'>;
 
     const normalizedCertificate = canonicalize(certificate);

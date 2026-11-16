@@ -142,10 +142,11 @@ function attributeProvenance(f: Faker, storageMediated: boolean, partial: Partia
     support_scheme_status: enumOf(f, 'SupportSchemeStatus'),
     storage_mediated_flag: storageMediated,
     attribute_mode: enumOf(f, 'AttributeMode'),
-    bundling_status: enumOf(f, 'BundlingStatus'),
-    claim_permitted: true,
-    permitted_claim_text_id: f.string.alphanumeric(8),
-    uniqueness_control_reference: f.string.alphanumeric(8),
+    // These fields are not supplied from GSY
+    // bundling_status: enumOf(f, 'BundlingStatus'),
+    // claim_permitted: true,
+    // permitted_claim_text_id: f.string.alphanumeric(8),
+    // uniqueness_control_reference: f.string.alphanumeric(8),
   });
 }
 
