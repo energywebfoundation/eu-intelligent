@@ -8,7 +8,7 @@
 
 > EU Horizon Project | Grant Agreement No. 101160678 | Work Package 3 (Lead: EWAG)
 
-This repository is maintained by **Energy Web AG (EWAG)** as the lead beneficiary of **WP3 — Data Integration and Interoperability Infrastructure** in the INTELLIGENT project. It serves as the central documentation and artefact store for EWAG's technical contributions, including the common data ontology, JSON Schema definitions, Energy Web Digital Spine customizations, and deployment materials. It is termed **INTELLIGENT EWDS 2.0** and published under GNU GPL v3 License.
+This repository is maintained by **Energy Web AG (EWAG)** as the lead beneficiary of **WP3 — Data Integration and Interoperability Infrastructure** in the INTELLIGENT project. It serves as the central documentation and artefact store for EWAG's technical contributions, including the common data ontology, JSON Schema definitions, Energy Web Digital Spine customizations, and deployment materials. It is termed **INTELLIGENT EWDS 2.0** and published under the GNU Affero General Public License v3.0.
 
 ## About the INTELLIGENT Project
  
@@ -61,5 +61,4 @@ This repository documents and version-controls EWAG's technical deliverables and
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 or later - see the [LICENSE](LICENSE) file for details
-
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
