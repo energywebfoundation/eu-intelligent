@@ -41,7 +41,7 @@ More precisely, the ontology serves three purposes:
 
 ## Scope
 
-The ontology covers the concepts required to semantically describe the INTELLIGENT project domain. It is organised into seven domains:
+The ontology covers the concepts required to semantically describe the INTELLIGENT project domain. It is organised into eight domains:
 
 | Domain | Core Classes |
 |--------|-------------|
@@ -52,6 +52,7 @@ The ontology covers the concepts required to semantically describe the INTELLIGE
 | **Energy Markets** | Market, MarketTimeSeries, EnergyOrder, EnergyTrade, ClearingResult, Tariff |
 | **Billing and Financial** | EnergyAccount, Invoice, Payment, StripePayment |
 | **Participants and Identity** | Participant, Actor, Address, ContactDetails, DecentralizedIdentity, IdentityCredential |
+| **Certification** | GreenProof |
 
 The ontology covers all four pilot sites and the full range of asset types, measurement types, and market mechanisms present across them:
 
@@ -202,6 +203,10 @@ This domain is the semantic core of the measurement model.
 
 `Participant` (`foaf:Agent`) is the community member concept — a person or organisation participating in the LEC. `Actor` is their legal identity for KYC and billing purposes. `DecentralizedIdentity` (W3C DID Core) is their cryptographic identity for EWDS messaging and credential issuance. `IdentityCredential` (W3C VC Data Model v2.0) is a verifiable credential held by an actor, used for KYC verification and Green Proof issuance. `Address` and `ContactDetails` are supporting classes for the Actor.
 
+### Certification
+
+`GreenProof` (`int:GreenProof`, added in v1.1.0) is a certification record for the origin of energy in one delivery interval, produced by the GSY DEX. A `local_origin_record` certifies the traded energy of one Executed `EnergyTrade`, issued only when the seller facility's measured net export covers the sale. A `self_consumption_record` certifies energy a facility generated and consumed itself. Each record is derived from one `sosa:Observation` and is issued only when it passes the class's issuance rules. Defined in [`v1.1.0/ontology/certification/green-proof.md`](v1.1.0/ontology/certification/green-proof.md).
+
 ---
 
 ## Contributing Partners
@@ -260,6 +265,7 @@ Full class-by-property standard cross-reference: see [`v1.0.0/docs/standard-mapp
 - Looking for a specific class? The `{version}/ontology/` directory is organised by domain. The domain overview above maps concepts to their files.
 - Unsure about an open design question or a structural decision? See `{version}/docs/design-decisions.md` and `{version}/ontology/open-questions.md`.
 - Want to propose a change? Use the GitHub Issue templates under `.github/ISSUE_TEMPLATE/`.
+- Which version? `v1.1.0` is the current version and adds the Certification domain (`int:GreenProof`). `v1.0.0` is kept unchanged for reference. Changes between versions are listed in [`CHANGELOG.md`](../CHANGELOG.md).
 - Looking for field-level implementation detail (data types, storage types, validation rules, enum values)? The authoritative source for that level of detail is the shared `.xlsx` working file. This repository contains the semantic ontology; the spreadsheet contains the implementation inventory.
 
 ---
